@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "backend": "native",
+  "rasterEngine": "libreoffice",
+  "source": "saved",
+  "inputPath": "E:\\软件质量保证与测试课程设计\\课程设计报告-模板版.docx",
+  "sourceSha256": "ec0041227ba978acf6626962087d06b3e8e04c52bb84e4c0501840fb30143e25",
+  "dpi": 144,
+  "pageCount": 21,
+  "images": [
+    {
+      "index": 1,
+      "page": 1,
+      "path": "E:\\软件质量保证与测试课程设计\\.dsh-office-bc30cc881ec446a6a32ed1908aad5ef9\\render\\page-0001.png",
+      "width": 1191,
+      "height": 1684,
+      "rectangle": {
+        "x": 0,
+        "y": 0,
+        "width": 793.7333333333333,
+        "height": 1122.5333333333333
+      },
+      "byteLength": 28082
+    },
+    {
+      "index": 2,
+      "page": 2,
+      "path": "E:\\软件质量保证与测试课程设计\\.dsh-office-bc30cc881ec446a6a32ed1908aad5ef9\\render\\page-0002.png",
+      "width": 1191,
+      "height": 1684,
+      "rectangle": {
+        "x": 0,
+        "y": 0,
+        "width": 793.7333333333333,
+        "height": 1122.5333333333333
+      },
+      "byteLength": 274212
+    },
+    {
+      "index": 3,
+      "page": 3,
+      "path": "E:\\软件质量保证与测试课程设计\\.dsh-office-bc30cc881ec446a6a32ed1908aad5ef9\\render\\page-0003.png",
+      "width": 1191,
+      "height": 1684,
+      "rectangle": {
+        "x": 0,
+        "y": 0,
+        "width": 793.7333333333333,
+        "height": 1122.5333333333333
+      },
+      "byteLength": 326614
+    },
+    {
+      "index": 4,
+      "page": 5,
+      "path": "E:\\软件质量保证与测试课程设计\\.dsh-office-bc30cc881ec446a6a32ed1908aad5ef9\\render\\page-0004.png",
+      "width": 1191,
+      "height": 1684,
+      "rectangle": {
+        "x": 0,
+        "y": 0,
+        "width": 793.7333333333333,
+        "height": 1122.5333333333333
+      },
+      "byteLength": 254983
+    }
+  ],
+  "missingFonts": [
+    "Courier"
+  ]
+}

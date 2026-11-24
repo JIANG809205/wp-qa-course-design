@@ -43,14 +43,14 @@
   },
   {
     "item": "权限格数",
-    "claimed": "30",
-    "actual": "30",
+    "claimed": "36",
+    "actual": "36",
     "ok": true
   },
   {
     "item": "三次一致的格数",
-    "claimed": "30",
-    "actual": "30",
+    "claimed": "36",
+    "actual": "36",
     "ok": true
   },
   {
@@ -181,32 +181,32 @@
   },
   {
     "item": "DeepSeek-V4.1-Flash 定位器保真",
-    "claimed": "21.1",
-    "actual": "21.1",
+    "claimed": "29.0",
+    "actual": "29.0",
     "ok": true
   },
   {
     "item": "DeepSeek-V4-Pro 定位器保真",
-    "claimed": "24.4",
-    "actual": "24.4",
+    "claimed": "33.1",
+    "actual": "33.1",
     "ok": true
   },
   {
     "item": "Qwen-Plus 定位器保真",
-    "claimed": "25.0",
-    "actual": "25.0",
+    "claimed": "34.9",
+    "actual": "34.9",
     "ok": true
   },
   {
     "item": "DeepSeek-V4.1-Flash 严格可运行",
-    "claimed": "5.0",
-    "actual": "5.0",
+    "claimed": "5.2",
+    "actual": "5.2",
     "ok": true
   },
   {
     "item": "DeepSeek-V4-Pro 严格可运行",
-    "claimed": "0.0",
-    "actual": "0.0",
+    "claimed": "1.0",
+    "actual": "1.0",
     "ok": true
   },
   {

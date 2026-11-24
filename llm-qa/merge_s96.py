@@ -7,7 +7,10 @@ import json
 import math
 import os
 
-BASE = r"E:\软件质量保证与测试课程设计\llm-qa"
+BASE = os.environ.get("WP_ROOT", "")
+if not BASE:
+    _w = r"E:\软件质量保证与测试课程设计\llm-qa"
+    BASE = _w if os.path.isdir(_w) else "/mnt/e/软件质量保证与测试课程设计/llm-qa"
 
 
 def wilson(k, n, z=1.96):

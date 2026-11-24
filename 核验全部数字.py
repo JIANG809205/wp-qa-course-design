@@ -59,8 +59,8 @@ for idx in range(len(reps[0])):
     vals = {json.dumps(r[idx]["api"]) for r in reps}
     if len(vals) == 1:
         same += 1
-check("权限格数", 30, len(reps[0]), 0)
-check("三次一致的格数", 30, same, 0)
+check("权限格数", 36, len(reps[0]), 0)
+check("三次一致的格数", 36, same, 0)
 check("权限矩阵重复次数", 3, len(reps), 0)
 
 # ---------- 4. 兼容性 ----------
@@ -117,16 +117,23 @@ for name, f, claim_cases, claim_cov in (
         check(f"{name} 用例数", claim_cases, d["cases"], 0)
         check(f"{name} 需求覆盖", claim_cov, d["coverage"], 0.3)
 
-dom = json.load(open(os.path.join(ROOT, "llm-qa", "outputs", "selector-fidelity-dom.json"),
+dom = json.load(open(os.path.join(ROOT, "llm-qa", "outputs", "selector-fidelity-s96.json"),
                      encoding="utf-8"))
-rates = {r["model"]: r["fidelity"] for r in dom["rows"]}
-for model, claim in (("DeepSeek-V4.1-Flash", 21.1), ("DeepSeek-V4-Pro", 24.4), ("Qwen-Plus", 25.0)):
+_rows = dom["rows"] if isinstance(dom, dict) else dom
+_NAME = {"deepseek-v4.1-flash": "DeepSeek-V4.1-Flash",
+         "deepseek-v4-pro": "DeepSeek-V4-Pro",
+         "qwen-plus": "Qwen-Plus"}
+rates = {_NAME.get(r["model"], r["model"]): r["fidelity"] for r in _rows}
+for model, claim in (("DeepSeek-V4.1-Flash", 29.0), ("DeepSeek-V4-Pro", 33.1), ("Qwen-Plus", 34.9)):
     check(f"{model} 定位器保真", claim, rates.get(model, -1), 0.2)
 
-strict = json.load(open(os.path.join(ROOT, "llm-qa", "outputs", "runnable-strict.json"),
+strict = json.load(open(os.path.join(ROOT, "llm-qa", "outputs", "scripts96-summary.json"),
                         encoding="utf-8"))
-sr = {r["model"]: r for r in strict}
-for model, claim in (("DeepSeek-V4.1-Flash", 5.0), ("DeepSeek-V4-Pro", 0.0), ("Qwen-Plus", 0.0)):
+NAME_MAP = {"deepseek-v4.1-flash": "DeepSeek-V4.1-Flash",
+            "deepseek-v4-pro": "DeepSeek-V4-Pro",
+            "qwen-plus": "Qwen-Plus"}
+sr = {NAME_MAP.get(r["model"], r["model"]): r for r in strict}
+for model, claim in (("DeepSeek-V4.1-Flash", 5.2), ("DeepSeek-V4-Pro", 1.0), ("Qwen-Plus", 0.0)):
     check(f"{model} 严格可运行", claim, sr[model]["strict_rate"], 0.1)
 
 tri = json.load(open(os.path.join(ROOT, "llm-qa", "outputs", "triage24-summary.json"),

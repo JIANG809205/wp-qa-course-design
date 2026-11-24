@@ -168,19 +168,23 @@ fig.savefig(os.path.join(OUT, "perf-cpu.png"))
 plt.close(fig)
 
 # ---------------- 图 4：定位器保真度三阶段 ----------------
-stages = ["3 条脚本\n手写基准", "10 条脚本\n手写基准", "20 条脚本\n真实 DOM"]
-vals = {"DeepSeek-V4.1-Flash": ([36.4, 52.0, 21.1], NAVY, "o"),
-        "DeepSeek-V4-Pro": ([30.0, 45.8, 24.4], ORANGE, "^"),
-        "Qwen-Plus": ([57.1, 47.8, 25.0], GREEN, "D")}
+stages = ["3 条脚本\n手写基准", "10 条脚本\n手写基准", "96 条脚本\n真实 DOM"]
+vals = {"DeepSeek-V4.1-Flash": ([36.4, 52.0, 29.0], NAVY, "o"),
+        "DeepSeek-V4-Pro": ([30.0, 45.8, 33.1], ORANGE, "^"),
+        "Qwen-Plus": ([57.1, 47.8, 34.9], GREEN, "D")}
 fig, ax = plt.subplots(figsize=(7.4, 4.6))
+DY = {"DeepSeek-V4.1-Flash": -18, "DeepSeek-V4-Pro": 12, "Qwen-Plus": 12}
 for name, (ys, color, marker) in vals.items():
     ax.plot(stages, ys, marker=marker, markersize=6, linewidth=2, color=color, label=name)
+    dy = DY.get(name, 8)
     for i, y in enumerate(ys):
-        ax.annotate(f"{y:.1f}", (i, y), textcoords="offset points", xytext=(0, 8),
-                    ha="center", fontsize=8, color=color)
-ax.axhspan(21, 25, color=NAVY, alpha=0.06)
+        if i < len(ys) - 1:
+            continue
+        ax.annotate(f"{y:.1f}%", (i, y), textcoords="offset points", xytext=(0, dy),
+                    ha="center", fontsize=9, color=color, fontweight="bold")
+ax.axhspan(29, 35, color=NAVY, alpha=0.07)
 ax.set_ylabel("定位器保真度（%）")
-ax.set_title("定位器保真度：两次修正后收敛到 21%–25%", pad=10)
+ax.set_title("定位器保真度：扩样与修正基准后落在 29%–35%", pad=10)
 ax.set_ylim(0, 68)
 style(ax)
 ax.legend(loc="upper right")
@@ -189,7 +193,7 @@ fig.savefig(os.path.join(OUT, "llm-fidelity.png"))
 plt.close(fig)
 
 # ---------------- 图 5：结构可运行 vs 严格可运行 ----------------
-strict = json.load(open(os.path.join(ROOT, "llm-qa", "outputs", "runnable-strict.json"),
+strict = json.load(open(os.path.join(ROOT, "llm-qa", "outputs", "scripts96-summary.json"),
                         encoding="utf-8"))
 models = [r["model"] for r in strict]
 short = ["Flash", "Pro", "Qwen"]

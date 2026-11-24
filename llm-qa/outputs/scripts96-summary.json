@@ -1,0 +1,62 @@
+[
+  {
+    "model": "deepseek-v4.1-flash",
+    "n": 96,
+    "struct_k": 62,
+    "struct_rate": 64.6,
+    "struct_ci": [
+      54.6,
+      73.4
+    ],
+    "strict_k": 5,
+    "strict_rate": 5.2,
+    "strict_ci": [
+      2.2,
+      11.6
+    ],
+    "class_rate": 99.0,
+    "url_rate": 64.6,
+    "assert_rate": 99.0,
+    "selector_rate": 10.4
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "n": 96,
+    "struct_k": 1,
+    "struct_rate": 1.0,
+    "struct_ci": [
+      0.2,
+      5.7
+    ],
+    "strict_k": 1,
+    "strict_rate": 1.0,
+    "strict_ci": [
+      0.2,
+      5.7
+    ],
+    "class_rate": 72.9,
+    "url_rate": 1.0,
+    "assert_rate": 86.5,
+    "selector_rate": 12.5
+  },
+  {
+    "model": "qwen-plus",
+    "n": 96,
+    "struct_k": 0,
+    "struct_rate": 0.0,
+    "struct_ci": [
+      0,
+      3.8
+    ],
+    "strict_k": 0,
+    "strict_rate": 0.0,
+    "strict_ci": [
+      0,
+      3.8
+    ],
+    "class_rate": 0.0,
+    "url_rate": 4.2,
+    "assert_rate": 99.0,
+    "selector_rate": 15.6
+  }
+]

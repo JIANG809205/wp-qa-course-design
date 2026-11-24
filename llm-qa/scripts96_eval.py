@@ -24,12 +24,15 @@ SPECS = json.load(open(os.path.join(BASE, "data", "scripts96.json"), encoding="u
 ap = argparse.ArgumentParser()
 ap.add_argument("--model", required=True)
 ap.add_argument("--outdir", required=True)
+ap.add_argument("--shard", type=int, default=0)
+ap.add_argument("--shards", type=int, default=1)
+ap.add_argument("--max-tokens", type=int, default=6000)
 args = ap.parse_args()
 
 os.makedirs(args.outdir, exist_ok=True)
 JAVA_DIR = os.path.join(args.outdir, "java")
 os.makedirs(JAVA_DIR, exist_ok=True)
-RESULT = os.path.join(args.outdir, "records.jsonl")
+RESULT = os.path.join(args.outdir, f"records-{args.shard}.jsonl")
 
 ENV = os.path.join(BASE, ".env")
 if os.path.exists(ENV):
@@ -74,9 +77,10 @@ def selectors_ok(body: str, is_api: bool):
     return bool(sels) and all(sels)
 
 
-backend = build_backend(Settings(provider="dashscope", model=args.model, max_tokens=6000).resolve())
+backend = build_backend(Settings(provider="dashscope", model=args.model, max_tokens=args.max_tokens).resolve())
 done = 0
-for spec in SPECS:
+my_specs = [s for i, s in enumerate(SPECS) if i % args.shards == args.shard]
+for spec in my_specs:
     out_java = os.path.join(JAVA_DIR, f"{spec['id']}.java")
     if os.path.exists(out_java) and os.path.getsize(out_java) > 50:
         done += 1
@@ -109,7 +113,17 @@ for spec in SPECS:
     if done % 10 == 0:
         print(f"  进度 {done}/96", flush=True)
 
-recs = [json.loads(l) for l in open(RESULT, encoding="utf-8") if l.strip()]
+recs = []
+for lf in sorted(glob.glob(os.path.join(args.outdir, "records-*.jsonl"))):
+    recs.extend(json.loads(l) for l in open(lf, encoding="utf-8") if l.strip())
+seen = set()
+uniq = []
+for r in recs:
+    if r["id"] in seen:
+        continue
+    seen.add(r["id"])
+    uniq.append(r)
+recs = uniq
 n = len(recs)
 k_s = sum(1 for r in recs if r["struct_ok"])
 k_t = sum(1 for r in recs if r["strict_ok"])

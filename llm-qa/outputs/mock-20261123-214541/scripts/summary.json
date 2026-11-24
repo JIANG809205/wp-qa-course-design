@@ -1,0 +1,31 @@
+{
+  "summary": {
+    "cases": 3,
+    "syntax_ok_rate": 0.0,
+    "assert_rate": 0.0,
+    "wait_rate": 0.0
+  },
+  "detail": [
+    {
+      "case": "TC-AUTH-001",
+      "syntax_ok": false,
+      "length": 44,
+      "has_assert": false,
+      "has_wait": false
+    },
+    {
+      "case": "TC-POST-001",
+      "syntax_ok": false,
+      "length": 44,
+      "has_assert": false,
+      "has_wait": false
+    },
+    {
+      "case": "TC-PERM-001",
+      "syntax_ok": false,
+      "length": 44,
+      "has_assert": false,
+      "has_wait": false
+    }
+  ]
+}

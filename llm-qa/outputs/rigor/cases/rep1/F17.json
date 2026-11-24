@@ -1,0 +1,122 @@
+[
+  {
+    "id": "TC001",
+    "title": "管理员使用有效应用密码创建发布文章",
+    "precondition": "管理员用户admin已存在, 已为其生成应用密码 \"abcd efgh ijkl mnop qrst uvwx\"",
+    "steps": [
+      "发送 POST 请求到 /wp-json/wp/v2/posts",
+      "设置 Authorization 头为 Basic base64(admin:abcd efgh ijkl mnop qrst uvwx)",
+      "请求体为 JSON {title:'测试', content:'正文', status:'publish'}"
+    ],
+    "expected": "状态码 201, 响应体包含 id, title='测试', status='publish' 等字段",
+    "method": "等价类划分"
+  },
+  {
+    "id": "TC002",
+    "title": "管理员使用有效应用密码修改任意文章",
+    "precondition": "文章 ID=100 已存在, 作者为另一用户; 管理员admin应用密码有效",
+    "steps": [
+      "发送 PUT 请求到 /wp-json/wp/v2/posts/100",
+      "设置 Authorization 头为 Basic base64(admin:密码)",
+      "请求体为 JSON {title:'更新标题'}"
+    ],
+    "expected": "状态码 200, 响应体 title 变为 '更新标题'",
+    "method": "判定表"
+  },
+  {
+    "id": "TC003",
+    "title": "作者使用有效应用密码创建并发布自己的文章",
+    "precondition": "作者用户 author1 已存在, 已生成应用密码 \"pass1 pass2 pass3 pass4 pass5 pass6\"",
+    "steps": [
+      "发送 POST 请求到 /wp-json/wp/v2/posts",
+      "设置 Authorization 头为 Basic base64(author1:密码)",
+      "请求体 {title:'我的文章', content:'内容', status:'publish'}"
+    ],
+    "expected": "状态码 201, 响应体 status='publish', author 为 author1",
+    "method": "等价类划分"
+  },
+  {
+    "id": "TC004",
+    "title": "作者使用有效应用密码修改自己创建的文章",
+    "precondition": "作者 author1 已创建文章 ID=200, 其应用密码有效",
+    "steps": [
+      "发送 PUT 请求到 /wp-json/wp/v2/posts/200",
+      "设置 Authorization 头为 Basic base64(author1:密码)",
+      "请求体 {content:'新内容'}"
+    ],
+    "expected": "状态码 200, 响应体 content 更新为 '新内容'",
+    "method": "判定表"
+  },
+  {
+    "id": "TC005",
+    "title": "投稿者使用有效应用密码创建草稿",
+    "precondition": "投稿者用户 contributor1 已存在, 已生成应用密码 \"cpass1 cpass2 cpass3 cpass4 cpass5 cpass6\"",
+    "steps": [
+      "发送 POST 请求到 /wp-json/wp/v2/posts",
+      "设置 Authorization 头为 Basic base64(contributor1:密码)",
+      "请求体 {title:'草稿', content:'内容', status:'draft'}"
+    ],
+    "expected": "状态码 201, 响应体 status='draft'",
+    "method": "等价类划分"
+  },
+  {
+    "id": "TC006",
+    "title": "投稿者尝试发布文章被拒绝",
+    "precondition": "投稿者 contributor1 应用密码有效",
+    "steps": [
+      "发送 POST 请求到 /wp-json/wp/v2/posts",
+      "设置 Authorization 头为 Basic base64(contributor1:密码)",
+      "请求体 {title:'试图发布', content:'正文', status:'publish'}"
+    ],
+    "expected": "状态码 403, 响应体包含权限不足错误信息",
+    "method": "判定表"
+  },
+  {
+    "id": "TC007",
+    "title": "作者修改他人文章被拒绝",
+    "precondition": "文章 ID=300 作者为另一用户 author2; author1 应用密码有效",
+    "steps": [
+      "发送 PUT 请求到 /wp-json/wp/v2/posts/300",
+      "设置 Authorization 头为 Basic base64(author1:密码)",
+      "请求体 {title:'企图修改'}"
+    ],
+    "expected": "状态码 403, 响应体包含权限不足错误信息",
+    "method": "判定表"
+  },
+  {
+    "id": "TC008",
+    "title": "订阅者尝试创建文章被拒绝",
+    "precondition": "订阅者用户 subscriber1 已存在, 已生成应用密码 \"spass1 spass2 spass3 spass4 spass5 spass6\"",
+    "steps": [
+      "发送 POST 请求到 /wp-json/wp/v2/posts",
+      "设置 Authorization 头为 Basic base64(subscriber1:密码)",
+      "请求体 {title:'无权限', content:'内容', status:'draft'}"
+    ],
+    "expected": "状态码 403, 响应体指示权限不足",
+    "method": "等价类划分"
+  },
+  {
+    "id": "TC009",
+    "title": "使用无效应用密码访问返回401",
+    "precondition": "用户 admin 存在，提供错误的密码字符串 'wrongpass'",
+    "steps": [
+      "发送 POST 请求到 /wp-json/wp/v2/posts",
+      "设置 Authorization 头为 Basic base64(admin:wrongpass)",
+      "请求体 {title:'test'}"
+    ],
+    "expected": "状态码 401, 响应体包含认证失败信息",
+    "method": "错误推测法"
+  },
+  {
+    "id": "TC010",
+    "title": "无认证信息访问返回401",
+    "precondition": "无需前置条件",
+    "steps": [
+      "发送 POST 请求到 /wp-json/wp/v2/posts",
+      "不设置 Authorization 头",
+      "请求体 {title:'test'}"
+    ],
+    "expected": "状态码 401, 提示需要认证",
+    "method": "错误推测法"
+  }
+]

@@ -1,0 +1,7 @@
+path,status,bytes
+/wp-content/debug.log,HTTP 200,4979
+/wp-content/uploads/,HTTP 200,965
+/xmlrpc.php,HTTP 405,42
+/?author=1,HTTP 200,83393
+/readme.html,HTTP 200,7200
+/wp-json/wp/v2/users,HTTP 200,710

@@ -1,0 +1,49 @@
+{
+  "summary": {
+    "logs": 5,
+    "accuracy": 40.0,
+    "hallucination_to_defect": 0
+  },
+  "detail": [
+    {
+      "category": "脚本问题",
+      "match": true,
+      "has_reason": true,
+      "id": "LOG-001",
+      "gold": "脚本问题",
+      "case": "TC-COMM-002"
+    },
+    {
+      "category": "脚本问题",
+      "match": false,
+      "has_reason": true,
+      "id": "LOG-002",
+      "gold": "环境问题",
+      "case": "TC-COMM-001"
+    },
+    {
+      "category": "脚本问题",
+      "match": false,
+      "has_reason": true,
+      "id": "LOG-003",
+      "gold": "环境问题",
+      "case": "TC-POST-001"
+    },
+    {
+      "category": "脚本问题",
+      "match": true,
+      "has_reason": true,
+      "id": "LOG-004",
+      "gold": "脚本问题",
+      "case": "TC-PERM-001"
+    },
+    {
+      "category": "脚本问题",
+      "match": false,
+      "has_reason": true,
+      "id": "LOG-005",
+      "gold": "系统缺陷",
+      "case": "TC-AUTH-005"
+    }
+  ]
+}

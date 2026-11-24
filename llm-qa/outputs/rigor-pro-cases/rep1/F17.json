@@ -1,0 +1,112 @@
+[
+  {
+    "id": "TC-001",
+    "title": "管理员使用有效应用密码创建文章",
+    "precondition": "已存在管理员账户且有有效的应用密码；REST API基础路径可用",
+    "steps": [
+      "使用管理员的应用密码生成Basic认证头",
+      "向/wp-json/wp/v2/posts发送POST请求，包含标题和内容JSON"
+    ],
+    "expected": "HTTP 201 Created，返回文章对象，状态为draft，作者为管理员",
+    "method": "等价类划分（有效认证+有权角色）"
+  },
+  {
+    "id": "TC-002",
+    "title": "作者使用有效应用密码创建文章",
+    "precondition": "已存在作者账户且有有效的应用密码",
+    "steps": [
+      "用作者的应用密码构造认证头",
+      "向/wp-json/wp/v2/posts发送POST请求，包含标题和内容"
+    ],
+    "expected": "HTTP 201 Created，返回文章对象，作者为当前作者",
+    "method": "等价类划分（有效认证+有权角色）"
+  },
+  {
+    "id": "TC-003",
+    "title": "投稿者使用有效应用密码创建文章被拒绝",
+    "precondition": "已存在投稿者账户且有有效的应用密码",
+    "steps": [
+      "用投稿者的应用密码构造认证头",
+      "向/wp-json/wp/v2/posts发送POST请求，包含标题和内容"
+    ],
+    "expected": "HTTP 403 Forbidden或401，提示无创建文章权限",
+    "method": "等价类划分（有效认证+无权角色）"
+  },
+  {
+    "id": "TC-004",
+    "title": "管理员使用有效应用密码修改他人文章",
+    "precondition": "已存在一篇作者A创建的文章",
+    "steps": [
+      "用管理员的应用密码构造认证头",
+      "向/wp-json/wp/v2/posts/{作者A的文章ID}发送PUT请求，更新标题"
+    ],
+    "expected": "HTTP 200 OK，返回更新后的文章对象，作者不变",
+    "method": "等价类划分（有效认证+高权限角色操作他人资源）"
+  },
+  {
+    "id": "TC-005",
+    "title": "作者使用有效应用密码修改自己的文章",
+    "precondition": "当前作者已创建一篇文章",
+    "steps": [
+      "用该作者的应用密码构造认证头",
+      "向/wp-json/wp/v2/posts/{自己文章的ID}发送PUT请求，更新内容"
+    ],
+    "expected": "HTTP 200 OK，返回更新后的文章对象",
+    "method": "等价类划分（有效认证+所有者操作自有资源）"
+  },
+  {
+    "id": "TC-006",
+    "title": "作者使用有效应用密码修改他人文章被拒绝",
+    "precondition": "存在作者A创建的文章，作者B拥有有效应用密码",
+    "steps": [
+      "用作者B的应用密码构造认证头",
+      "向/wp-json/wp/v2/posts/{作者A的文章ID}发送PUT请求"
+    ],
+    "expected": "HTTP 403 Forbidden，提示无权限编辑该文章",
+    "method": "等价类划分（有效认证+低权限角色操作他人资源）"
+  },
+  {
+    "id": "TC-007",
+    "title": "投稿者使用有效应用密码修改任意文章被拒绝",
+    "precondition": "存在一篇任意文章，投稿者拥有有效应用密码",
+    "steps": [
+      "用投稿者的应用密码构造认证头",
+      "向/wp-json/wp/v2/posts/{文章ID}发送PUT请求"
+    ],
+    "expected": "HTTP 403 Forbidden，提示无编辑权限",
+    "method": "等价类划分（有效认证+无修改权限角色）"
+  },
+  {
+    "id": "TC-008",
+    "title": "未提供认证信息创建文章",
+    "precondition": "无需特定账户",
+    "steps": [
+      "不添加Authorization头",
+      "向/wp-json/wp/v2/posts发送POST请求"
+    ],
+    "expected": "HTTP 401 Unauthorized，提示需要认证",
+    "method": "错误推测法（缺失认证）"
+  },
+  {
+    "id": "TC-009",
+    "title": "提供无效的应用密码创建文章",
+    "precondition": "存在任意用户，但使用错误的密码",
+    "steps": [
+      "使用用户名和错误密码生成Basic认证头",
+      "向/wp-json/wp/v2/posts发送POST请求"
+    ],
+    "expected": "HTTP 401 Unauthorized，提示认证失败",
+    "method": "错误推测法（无效凭据）"
+  },
+  {
+    "id": "TC-010",
+    "title": "管理员认证后修改不存在的文章ID",
+    "precondition": "管理员有有效应用密码",
+    "steps": [
+      "用管理员应用密码构造认证头",
+      "向/wp-json/wp/v2/posts/99999发送PUT请求（ID不存在）"
+    ],
+    "expected": "HTTP 404 Not Found，提示文章不存在",
+    "method": "边界值分析（不存在资源）"
+  }
+]

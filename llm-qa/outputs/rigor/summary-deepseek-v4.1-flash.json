@@ -1,0 +1,186 @@
+[
+  {
+    "model": "DeepSeek-V4.1-Flash",
+    "cases_per_rep": 198,
+    "strict_mean": 95.6,
+    "strict_sd": 3.2,
+    "strict_ci": 8.0,
+    "coverage_mean": 96.2,
+    "coverage_sd": 0.0,
+    "coverage_ci": 0.0,
+    "scripts": 10,
+    "class_rate": 100.0,
+    "url_ok_rate": 60.0,
+    "assert_rate": 100.0,
+    "runnable_rate": 60.0,
+    "triage_n": 24,
+    "triage_acc": 95.8,
+    "triage_wrong_defect": 0,
+    "reps": [
+      {
+        "cases": 198,
+        "strict_rate": 91.91919191919192,
+        "coverage": 96.15384615384616,
+        "rep": 1
+      },
+      {
+        "cases": 199,
+        "strict_rate": 97.48743718592965,
+        "coverage": 96.15384615384616,
+        "rep": 2
+      },
+      {
+        "cases": 200,
+        "strict_rate": 97.5,
+        "coverage": 96.15384615384616,
+        "rep": 3
+      }
+    ],
+    "triage_detail": [
+      {
+        "id": "H-01",
+        "gold": "脚本问题",
+        "got": "脚本问题",
+        "match": true
+      },
+      {
+        "id": "H-02",
+        "gold": "环境问题",
+        "got": "环境问题",
+        "match": true
+      },
+      {
+        "id": "H-03",
+        "gold": "环境问题",
+        "got": "环境问题",
+        "match": true
+      },
+      {
+        "id": "H-04",
+        "gold": "环境问题",
+        "got": "环境问题",
+        "match": true
+      },
+      {
+        "id": "H-05",
+        "gold": "系统缺陷",
+        "got": "系统缺陷",
+        "match": true
+      },
+      {
+        "id": "H-06",
+        "gold": "系统缺陷",
+        "got": "系统缺陷",
+        "match": true
+      },
+      {
+        "id": "H-07",
+        "gold": "系统缺陷",
+        "got": "系统缺陷",
+        "match": true
+      },
+      {
+        "id": "H-08",
+        "gold": "脚本问题",
+        "got": "脚本问题",
+        "match": true
+      },
+      {
+        "id": "H-09",
+        "gold": "系统缺陷",
+        "got": "环境问题",
+        "match": false
+      },
+      {
+        "id": "H-10",
+        "gold": "脚本问题",
+        "got": "脚本问题",
+        "match": true
+      },
+      {
+        "id": "H-11",
+        "gold": "系统缺陷",
+        "got": "系统缺陷",
+        "match": true
+      },
+      {
+        "id": "H-12",
+        "gold": "环境问题",
+        "got": "环境问题",
+        "match": true
+      },
+      {
+        "id": "E-05",
+        "gold": "环境问题",
+        "got": "环境问题",
+        "match": true
+      },
+      {
+        "id": "E-06",
+        "gold": "环境问题",
+        "got": "环境问题",
+        "match": true
+      },
+      {
+        "id": "E-07",
+        "gold": "环境问题",
+        "got": "环境问题",
+        "match": true
+      },
+      {
+        "id": "E-08",
+        "gold": "环境问题",
+        "got": "环境问题",
+        "match": true
+      },
+      {
+        "id": "S-05",
+        "gold": "脚本问题",
+        "got": "脚本问题",
+        "match": true
+      },
+      {
+        "id": "S-06",
+        "gold": "脚本问题",
+        "got": "脚本问题",
+        "match": true
+      },
+      {
+        "id": "S-07",
+        "gold": "脚本问题",
+        "got": "脚本问题",
+        "match": true
+      },
+      {
+        "id": "S-08",
+        "gold": "脚本问题",
+        "got": "脚本问题",
+        "match": true
+      },
+      {
+        "id": "D-05",
+        "gold": "系统缺陷",
+        "got": "系统缺陷",
+        "match": true
+      },
+      {
+        "id": "D-06",
+        "gold": "系统缺陷",
+        "got": "系统缺陷",
+        "match": true
+      },
+      {
+        "id": "D-07",
+        "gold": "系统缺陷",
+        "got": "系统缺陷",
+        "match": true
+      },
+      {
+        "id": "D-08",
+        "gold": "系统缺陷",
+        "got": "系统缺陷",
+        "match": true
+      }
+    ]
+  }
+]

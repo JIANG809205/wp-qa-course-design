@@ -1,0 +1,94 @@
+[{
+  "id": "TC001",
+  "title": "匿名用户获取文章列表，仅返回已发布文章",
+  "precondition": "存在已发布文章（publish）和草稿文章（draft）各一篇",
+  "steps": [
+    "1. 匿名用户发送 GET 请求到 /wp-json/wp/v2/posts，不带任何认证头"
+  ],
+  "expected": "HTTP 状态码 200，响应体中仅包含状态为 publish 的文章，不出现 draft 文章",
+  "method": "等价类划分、正向场景"
+}, {
+  "id": "TC002",
+  "title": "匿名用户尝试创建文章被拒绝",
+  "precondition": "无需预先条件",
+  "steps": [
+    "1. 匿名用户发送 POST 请求到 /wp-json/wp/v2/posts，携带请求体，包含 title 和 status=publish"
+  ],
+  "expected": "HTTP 状态码 401 Unauthorized 或 403 Forbidden，文章未被创建",
+  "method": "负向测试、权限校验"
+}, {
+  "id": "TC003",
+  "title": "作者使用应用密码创建文章并发布",
+  "precondition": "作者账户存在且已生成应用密码",
+  "steps": [
+    "1. 作者使用应用密码生成 Basic Auth 头",
+    "2. 发送 POST 请求到 /wp-json/wp/v2/posts，请求体中包含 title 和 status=publish"
+  ],
+  "expected": "HTTP 状态码 201 Created，响应体中返回新创建的文章对象，状态为 publish",
+  "method": "正向场景"
+}, {
+  "id": "TC004",
+  "title": "投稿者使用应用密码创建文章，不能直接发布",
+  "precondition": "投稿者账户存在且已生成应用密码",
+  "steps": [
+    "1. 投稿者使用应用密码生成 Basic Auth 头",
+    "2. 发送 POST 请求到 /wp-json/wp/v2/posts，请求体中包含 title 和 status=publish"
+  ],
+  "expected": "HTTP 状态码 403 Forbidden 或返回错误信息，文章未被创建或状态被强制改为 draft",
+  "method": "负向测试、权限校验"
+}, {
+  "id": "TC005",
+  "title": "投稿者使用应用密码创建草稿文章",
+  "precondition": "投稿者账户存在且已生成应用密码",
+  "steps": [
+    "1. 投稿者使用应用密码生成 Basic Auth 头",
+    "2. 发送 POST 请求到 /wp-json/wp/v2/posts，请求体中包含 title 和 status=draft"
+  ],
+  "expected": "HTTP 状态码 201 Created，文章状态为 draft",
+  "method": "正向场景"
+}, {
+  "id": "TC006",
+  "title": "per_page 参数设置为 100，正常返回上限",
+  "precondition": "存在 120 篇已发布文章",
+  "steps": [
+    "1. 匿名用户发送 GET 请求到 /wp-json/wp/v2/posts?per_page=100"
+  ],
+  "expected": "HTTP 状态码 200，响应体最多返回 100 篇文章，响应头 X-WP-Total 指示总数但返回数据量不超过 100",
+  "method": "边界值分析（上边界），等价类划分"
+}, {
+  "id": "TC007",
+  "title": "per_page 参数设置为 101，触发上限限制或报错",
+  "precondition": "存在超过 100 篇文章",
+  "steps": [
+    "1. 匿名用户发送 GET 请求到 /wp-json/wp/v2/posts?per_page=101"
+  ],
+  "expected": "HTTP 状态码 400 Bad Request 或参数被忽略默认为上限 100，响应中最多返回 100 篇文章，不应返回 101 条",
+  "method": "边界值分析（上边界 +1）、异常场景"
+}, {
+  "id": "TC008",
+  "title": "per_page 参数设置为 1，返回最小单页结果",
+  "precondition": "存在至少 1 篇文章",
+  "steps": [
+    "1. 匿名用户发送 GET 请求到 /wp-json/wp/v2/posts?per_page=1"
+  ],
+  "expected": "HTTP 状态码 200，响应体返回恰好 1 篇文章",
+  "method": "边界值分析（下边界）"
+}, {
+  "id": "TC009",
+  "title": "匿名用户获取文章时，确保不返回私有文章",
+  "precondition": "存在一篇已发布文章，一篇已发布但设置为私有的文章（post_status=private）",
+  "steps": [
+    "1. 匿名用户发送 GET 请求到 /wp-json/wp/v2/posts"
+  ],
+  "expected": "HTTP 状态码 200，响应体中仅包含公共的 publish 文章，不包含 private 文章",
+  "method": "负向测试、数据过滤校验"
+}, {
+  "id": "TC010",
+  "title": "无认证请求访问受保护的创建接口，验证通用认证失败处理",
+  "precondition": "无",
+  "steps": [
+    "1. 发送 POST 请求到 /wp-json/wp/v2/posts，不包含任何认证信息，请求体包含 title"
+  ],
+  "expected": "HTTP 状态码 401 或 403，响应体提示无权操作",
+  "method": "异常场景"
+}]

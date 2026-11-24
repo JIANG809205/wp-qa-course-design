@@ -1,0 +1,74 @@
+[
+  {
+    "id": "WPS-01",
+    "title": "readme.html 可访问（暴露版本）",
+    "expect": "403/404",
+    "actual": "HTTP 200，版本=未解析到版本",
+    "status": "DEFECT",
+    "evidence": "<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n\t<meta name=\"viewport\" content=\"width=device-width\" />\n\t<meta http-equiv=\"Content-Type\" content=\"text/html;"
+  },
+  {
+    "id": "WPS-02",
+    "title": "license.txt 可访问",
+    "expect": "影响很小，仅记录",
+    "actual": "HTTP 200",
+    "status": "OBSERVE",
+    "evidence": ""
+  },
+  {
+    "id": "WPS-03",
+    "title": "robots.txt",
+    "expect": "存在且不暴露敏感路径",
+    "actual": "HTTP 200 内容=User-agent: * Disallow: /wp-admin/ Allow: /wp-admin/admin-ajax.php  Sitemap: htt",
+    "status": "PASS",
+    "evidence": "User-agent: * Disallow: /wp-admin/ Allow: /wp-admin/admin-ajax.php  Sitemap: http://localhost:8080/wp-sitemap.xml "
+  },
+  {
+    "id": "WPS-04",
+    "title": "通过 ?author=N 枚举用户名",
+    "expect": "不重定向到作者归档页",
+    "actual": "author=1 -> 301 http://localhost:8080/author/admin/；author=2 -> 301 http://localhost:8080/author/editor/",
+    "status": "DEFECT",
+    "evidence": ""
+  },
+  {
+    "id": "WPS-05",
+    "title": "/wp-json/ 索引暴露命名空间",
+    "expect": "允许（正常特性），仅记录",
+    "actual": "HTTP 200，命名空间 5 个",
+    "status": "OBSERVE",
+    "evidence": "['oembed/1.0', 'wp/v2', 'wp-site-health/v1', 'wp-block-editor/v1', 'wp-abilities/v1']"
+  },
+  {
+    "id": "WPS-06a",
+    "title": "/wp-includes/version.php 直接访问",
+    "expect": "空白或 403/404",
+    "actual": "HTTP 200，0 字节",
+    "status": "PASS",
+    "evidence": ""
+  },
+  {
+    "id": "WPS-06b",
+    "title": "/wp-config-sample.php 直接访问",
+    "expect": "空白或 403/404",
+    "actual": "HTTP 500，2473 字节",
+    "status": "PASS",
+    "evidence": "<!DOCTYPE html>\n<html dir='ltr'>\n<head>\n\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset"
+  },
+  {
+    "id": "WPS-07",
+    "title": "REST 非法参数是否回显内部错误",
+    "expect": "仅返回参数错误，不暴露 SQL",
+    "actual": "HTTP 400",
+    "status": "PASS",
+    "evidence": "{\"code\":\"rest_invalid_param\",\"message\":\"\\u65e0\\u6548\\u53c2\\u6570\\uff1aorderby\",\"data\":{\"status\":400,\"params\":{\"orderby\":\"orderby \\u4e0d\\u662fauthor \\u"
+  },
+  {
+    "id": "WPS-08",
+    "title": "上传目录列表（复核）",
+    "expect": "403/404",
+    "actual": "HTTP 200",
+    "status": "DEFECT",
+    "evidence": ""
+  }
+]

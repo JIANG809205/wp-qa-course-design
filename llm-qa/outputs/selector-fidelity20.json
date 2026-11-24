@@ -1,0 +1,23 @@
+[
+  {
+    "model": "DeepSeek-V4.1-Flash",
+    "scripts": 20,
+    "selectors": 39,
+    "real": 14,
+    "fidelity": 35.9
+  },
+  {
+    "model": "DeepSeek-V4-Pro",
+    "scripts": 20,
+    "selectors": 63,
+    "real": 14,
+    "fidelity": 22.2
+  },
+  {
+    "model": "Qwen-Plus",
+    "scripts": 20,
+    "selectors": 47,
+    "real": 12,
+    "fidelity": 25.5
+  }
+]

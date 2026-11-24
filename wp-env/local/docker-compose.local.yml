@@ -1,0 +1,56 @@
+# 本地构建镜像版的 WordPress 测试栈
+# 镜像由 wp-env/local/ 下的 Dockerfile 基于 ubuntu:jammy-local 构建，不依赖外网仓库
+name: wp-test
+
+services:
+  db:
+    image: qa/mariadb:10.6
+    container_name: wp-db
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_pass_2026}
+      MARIADB_DATABASE: ${DB_NAME:-wordpress}
+      MARIADB_USER: ${DB_USER:-wpuser}
+      MARIADB_PASSWORD: ${DB_PASSWORD:-wp_pass_2026}
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci", "--max_connections=300"]
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "127.0.0.1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  redis:
+    image: redis:7-alpine
+    container_name: wp-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "256mb", "--maxmemory-policy", "allkeys-lru"]
+    volumes:
+      - redis_data:/data
+
+  wordpress:
+    image: qa/wordpress:7.1.5
+    container_name: wp-app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    ports:
+      - "${WP_PORT:-8080}:8080"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: ${DB_NAME:-wordpress}
+      WORDPRESS_DB_USER: ${DB_USER:-wpuser}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:-wp_pass_2026}
+      WORDPRESS_TABLE_PREFIX: ${TABLE_PREFIX:-wp_}
+    volumes:
+      - wp_data:/var/www/html
+
+volumes:
+  db_data:
+  redis_data:
+  wp_data:

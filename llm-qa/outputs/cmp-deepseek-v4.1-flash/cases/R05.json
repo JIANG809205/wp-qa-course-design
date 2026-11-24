@@ -1,0 +1,120 @@
+[
+  {
+    "id": "TC-01",
+    "title": "匿名访客获取文章列表仅返回已发布文章",
+    "precondition": "站点存在已发布、草稿、私密/定时文章各至少1篇；请求不携带认证信息",
+    "steps": [
+      "发送 GET /wp-json/wp/v2/posts?per_page=100",
+      "检查响应状态码和响应体",
+      "核对返回文章ID与状态字段"
+    ],
+    "expected": "返回 200；响应体为 JSON 数组；所有返回项的 status 均为 publish；包含已发布文章ID；不包含草稿和私密/定时文章ID；无需认证即可访问",
+    "method": "等价类划分 + 正向场景 + 权限验证"
+  },
+  {
+    "id": "TC-02",
+    "title": "匿名访客访问草稿文章详情返回404",
+    "precondition": "存在1篇草稿状态文章，记录其ID；请求不携带认证信息",
+    "steps": [
+      "发送 GET /wp-json/wp/v2/posts/{草稿文章ID}",
+      "检查响应状态码和错误码"
+    ],
+    "expected": "返回 404；错误码为 rest_post_invalid_id；响应中不泄露草稿文章标题和内容",
+    "method": "负向场景 + 等价类划分 + 信息泄露验证"
+  },
+  {
+    "id": "TC-03",
+    "title": "作者使用应用密码创建并发布文章成功",
+    "precondition": "存在具有发布权限的作者账号，并已生成有效应用密码",
+    "steps": [
+      "使用作者账号和应用密码构造 Basic Auth 请求头",
+      "发送 POST /wp-json/wp/v2/posts，JSON 体包含唯一标题、正文和 status=publish",
+      "检查响应状态码和返回字段",
+      "匿名发送 GET /wp-json/wp/v2/posts/{返回文章ID} 验证文章可见"
+    ],
+    "expected": "创建请求返回 201；返回文章 id 有效，status 为 publish，title/content 与请求一致；匿名详情请求返回 200 且文章可见",
+    "method": "正向场景 + 等价类划分 + 端到端验证"
+  },
+  {
+    "id": "TC-04",
+    "title": "投稿者以publish状态创建文章被拒绝",
+    "precondition": "存在投稿者账号，并已生成有效应用密码；投稿者无发布权限",
+    "steps": [
+      "使用投稿者账号和应用密码构造 Basic Auth 请求头",
+      "发送 POST /wp-json/wp/v2/posts，JSON 体包含标题、正文和 status=publish",
+      "检查响应状态码、错误码及文章是否被创建"
+    ],
+    "expected": "返回 403；错误码为 rest_cannot_publish；请求未创建已发布文章，公开文章列表不新增该标题文章",
+    "method": "负向场景 + 权限矩阵 + 状态校验"
+  },
+  {
+    "id": "TC-05",
+    "title": "per_page等于100时正常返回文章列表",
+    "precondition": "站点已发布文章数量不少于100篇；请求不携带认证信息",
+    "steps": [
+      "发送 GET /wp-json/wp/v2/posts?per_page=100&page=1",
+      "检查响应状态码、返回数组长度和分页响应头"
+    ],
+    "expected": "返回 200；响应体为 JSON 数组且长度不超过100；文章充足时长度为100；X-WP-Total 不小于100；X-WP-TotalPages 不小于1",
+    "method": "边界值分析 + 正向场景"
+  },
+  {
+    "id": "TC-06",
+    "title": "per_page等于101超过上限返回400",
+    "precondition": "接口可匿名访问；无需特殊数据准备",
+    "steps": [
+      "发送 GET /wp-json/wp/v2/posts?per_page=101",
+      "检查响应状态码、错误码和错误信息"
+    ],
+    "expected": "返回 400；错误码为 rest_invalid_param；错误信息指出 per_page 取值无效或必须在允许范围内；不返回文章列表数据",
+    "method": "边界值分析 + 负向场景"
+  },
+  {
+    "id": "TC-07",
+    "title": "per_page等于0低于下限返回400",
+    "precondition": "接口可匿名访问；无需特殊数据准备",
+    "steps": [
+      "发送 GET /wp-json/wp/v2/posts?per_page=0",
+      "检查响应状态码、错误码和错误信息"
+    ],
+    "expected": "返回 400；错误码为 rest_invalid_param；错误信息指出 per_page 取值无效或必须在1到100之间；不返回文章列表数据",
+    "method": "边界值分析 + 负向场景"
+  },
+  {
+    "id": "TC-08",
+    "title": "未认证请求创建文章返回401",
+    "precondition": "不提供任何认证信息；准备唯一文章标题用于校验未创建",
+    "steps": [
+      "发送 POST /wp-json/wp/v2/posts，JSON 体包含唯一标题、正文和 status=publish，不携带认证头",
+      "检查响应状态码和错误码",
+      "匿名查询文章列表确认该标题未出现在已发布文章中"
+    ],
+    "expected": "返回 401；错误码为 rest_cannot_create；文章未被创建或未发布；公开文章列表不包含该标题文章",
+    "method": "负向场景 + 权限验证 + 错误推测"
+  },
+  {
+    "id": "TC-09",
+    "title": "使用无效应用密码创建文章返回401",
+    "precondition": "存在作者账号；准备一个无效或已撤销的应用密码",
+    "steps": [
+      "使用作者账号和无效应用密码构造 Basic Auth 请求头",
+      "发送 POST /wp-json/wp/v2/posts，JSON 体包含唯一标题、正文和 status=publish",
+      "检查响应状态码和错误码"
+    ],
+    "expected": "返回 401；错误码为 rest_cannot_create；文章未被创建；响应不泄露账号敏感信息",
+    "method": "异常场景 + 认证失败验证"
+  },
+  {
+    "id": "TC-10",
+    "title": "创建文章请求体为非法JSON时返回400",
+    "precondition": "存在具有发布权限的作者账号，并已生成有效应用密码",
+    "steps": [
+      "使用作者账号和应用密码构造 Basic Auth 请求头",
+      "发送 POST /wp-json/wp/v2/posts，Content-Type 为 application/json，请求体为非法 JSON，例如 {\"title\":",
+      "检查响应状态码和错误码",
+      "查询公开文章列表确认未新增对应文章"
+    ],
+    "expected": "返回 400；错误码为 rest_invalid_json；文章未被创建；公开文章列表无新增异常数据",
+    "method": "异常场景 + 错误推测 + 输入校验"
+  }
+]

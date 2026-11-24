@@ -1,0 +1,82 @@
+[
+  {
+    "id": "TC001",
+    "title": "正向：普通文本评论正常提交并显示",
+    "precondition": "用户处于评论框页面，未登录（匿名访客）",
+    "steps": ["在评论框中输入 '这是一条正常评论。'", "点击提交按钮"],
+    "expected": "评论成功发布，页面显示原文本 '这是一条正常评论。'，无HTML标签解析或执行",
+    "method": "等价类划分"
+  },
+  {
+    "id": "TC002",
+    "title": "负向：包含 <script> 标签的评论被转义",
+    "precondition": "用户处于评论框页面，未登录（匿名访客）",
+    "steps": ["在评论框中输入 '<script>alert(1)</script>'", "点击提交按钮"],
+    "expected": "评论提交成功，但页面显示为 '&lt;script&gt;alert(1)&lt;/script&gt;'（HTML实体转义），无脚本执行",
+    "method": "错误推测法"
+  },
+  {
+    "id": "TC003",
+    "title": "负向：包含内联事件处理器（onerror）的img标签被转义",
+    "precondition": "用户处于评论框页面，未登录（匿名访客）",
+    "steps": ["在评论框中输入 '<img src=\"x\" onerror=\"alert(1)\">'", "点击提交按钮"],
+    "expected": "评论提交成功，页面显示为 '&lt;img src=&quot;x&quot; onerror=&quot;alert(1)&quot;&gt;'，无onerror触发或弹窗",
+    "method": "错误推测法"
+  },
+  {
+    "id": "TC004",
+    "title": "边界：超长script载荷（2048字符）仍被完整转义",
+    "precondition": "用户处于评论框页面，未登录（匿名访客）",
+    "steps": ["在评论框中输入长度为2048字符的恶意payload（含嵌套script/onload/onerror等）", "点击提交按钮"],
+    "expected": "评论提交成功，全文所有危险标签及属性均被HTML实体转义，无JS执行，渲染结果为纯文本",
+    "method": "边界值分析"
+  },
+  {
+    "id": "TC005",
+    "title": "负向：大小写混合的script标签（如 <ScRiPt>）被转义",
+    "precondition": "用户处于评论框页面，未登录（匿名访客）",
+    "steps": ["在评论框中输入 '<ScRiPt>console.log(1)</ScRiPt>'", "点击提交按钮"],
+    "expected": "提交成功，显示为 '&lt;ScRiPt&gt;console.log(1)&lt;/ScRiPt&gt;'，不触发解析或执行",
+    "method": "错误推测法"
+  },
+  {
+    "id": "TC006",
+    "title": "负向：注释包裹的script（<!-- <script> -->）被转义而非忽略",
+    "precondition": "用户处于评论框页面，未登录（匿名访客）",
+    "steps": ["在评论框中输入 '<!-- <script>alert(1)</script> -->'", "点击提交按钮"],
+    "expected": "提交成功，页面原样显示注释内容（含转义后的尖括号），无脚本执行；注释不导致过滤绕过",
+    "method": "错误推测法"
+  },
+  {
+    "id": "TC007",
+    "title": "异常：评论框为空时提交，script过滤逻辑不崩溃",
+    "precondition": "用户处于评论框页面，未登录（匿名访客）",
+    "steps": ["评论框留空", "点击提交按钮"],
+    "expected": "前端/后端返回合理提示（如'评论不能为空'），系统无500错误，script过滤模块未抛出异常",
+    "method": "异常场景分析"
+  },
+  {
+    "id": "TC008",
+    "title": "负向：URL编码的script载荷（%3Cscript%3E）被解码后转义",
+    "precondition": "用户处于评论框页面，未登录（匿名访客）",
+    "steps": ["在评论框中输入 '%3Cscript%3Ealert(1)%3C/script%3E'", "点击提交按钮"],
+    "expected": "提交成功，服务端完成URL解码后对<、>、\"等字符进行转义，最终显示为 '&lt;script&gt;alert(1)&lt;/script&gt;'，无执行",
+    "method": "错误推测法"
+  },
+  {
+    "id": "TC009",
+    "title": "正向：合法HTML标签（如<b>）未被误杀，仅渲染为文本",
+    "precondition": "用户处于评论框页面，未登录（匿名访客）",
+    "steps": ["在评论框中输入 '<b>加粗文字</b>'", "点击提交按钮"],
+    "expected": "提交成功，页面显示为 '&lt;b&gt;加粗文字&lt;/b&gt;'（未解析为加粗样式），证明白名单未开启，仅做通用转义",
+    "method": "等价类划分"
+  },
+  {
+    "id": "TC010",
+    "title": "异常：高频率连续提交含script评论（5次/秒×10秒），过滤逻辑不内存溢出或阻塞",
+    "precondition": "用户处于评论框页面，未登录（匿名访客）",
+    "steps": ["使用自动化脚本每200ms提交一次 '<script>1</script>'，持续10秒（共50次）"],
+    "expected": "每次响应状态码为200或400（业务校验），无500/502错误；服务稳定，CPU/内存无异常飙升；所有评论内容均被正确转义",
+    "method": "压力与异常场景分析"
+  }
+]

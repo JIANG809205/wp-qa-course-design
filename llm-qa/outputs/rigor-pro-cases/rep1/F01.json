@@ -1,0 +1,133 @@
+[
+  {
+    "id": "TC_LOGIN_001",
+    "title": "正向用例：管理员使用正确用户名和密码登录",
+    "precondition": "已注册管理员账号admin，密码P@ssw0rd123",
+    "steps": [
+      "打开 /wp-login.php 登录页面",
+      "在 #user_login 输入 admin",
+      "在 #user_pass 输入 P@ssw0rd123",
+      "点击 #wp-submit 按钮"
+    ],
+    "expected": "页面跳转至后台仪表盘 (/wp-admin/)，显示“欢迎”或仪表盘界面",
+    "method": "等价类划分法"
+  },
+  {
+    "id": "TC_LOGIN_002",
+    "title": "负向用例：管理员使用错误用户名登录",
+    "precondition": "已注册管理员账号admin，密码P@ssw0rd123",
+    "steps": [
+      "打开 /wp-login.php 登录页面",
+      "在 #user_login 输入 wrongadmin",
+      "在 #user_pass 输入 P@ssw0rd123",
+      "点击 #wp-submit 按钮"
+    ],
+    "expected": "页面停留在登录页，显示错误提示“用户名或密码错误”或类似信息，不跳转到后台",
+    "method": "错误推测法"
+  },
+  {
+    "id": "TC_LOGIN_003",
+    "title": "负向用例：管理员使用错误密码登录",
+    "precondition": "已注册管理员账号admin，密码P@ssw0rd123",
+    "steps": [
+      "打开 /wp-login.php 登录页面",
+      "在 #user_login 输入 admin",
+      "在 #user_pass 输入 WrongPass456",
+      "点击 #wp-submit 按钮"
+    ],
+    "expected": "页面停留在登录页，显示错误提示“用户名或密码错误”，不跳转",
+    "method": "错误推测法"
+  },
+  {
+    "id": "TC_LOGIN_004",
+    "title": "负向用例：用户名为空",
+    "precondition": "无",
+    "steps": [
+      "打开 /wp-login.php 登录页面",
+      "保持 #user_login 为空",
+      "在 #user_pass 输入任意密码",
+      "点击 #wp-submit 按钮"
+    ],
+    "expected": "页面提示用户名必填或“用户名不能为空”等前端/后端校验错误，不提交登录",
+    "method": "边界值分析法"
+  },
+  {
+    "id": "TC_LOGIN_005",
+    "title": "负向用例：密码为空",
+    "precondition": "已注册管理员账号admin",
+    "steps": [
+      "打开 /wp-login.php 登录页面",
+      "在 #user_login 输入 admin",
+      "保持 #user_pass 为空",
+      "点击 #wp-submit 按钮"
+    ],
+    "expected": "页面提示密码必填或“密码不能为空”错误，不提交登录",
+    "method": "边界值分析法"
+  },
+  {
+    "id": "TC_LOGIN_006",
+    "title": "异常用例：用户名输入SQL注入语句",
+    "precondition": "已注册管理员账号admin",
+    "steps": [
+      "打开 /wp-login.php 登录页面",
+      "在 #user_login 输入 ' OR '1'='1",
+      "在 #user_pass 输入任意值",
+      "点击 #wp-submit 按钮"
+    ],
+    "expected": "登录失败，显示错误信息，数据库未受影响，无绕过的访问权限",
+    "method": "安全测试"
+  },
+  {
+    "id": "TC_LOGIN_007",
+    "title": "异常用例：密码输入XSS脚本",
+    "precondition": "已注册管理员账号admin",
+    "steps": [
+      "打开 /wp-login.php 登录页面",
+      "在 #user_login 输入 admin",
+      "在 #user_pass 输入 <script>alert(1)</script>",
+      "点击 #wp-submit 按钮"
+    ],
+    "expected": "登录失败，页面不弹出脚本警告，输入内容被正确转义处理，无XSS漏洞",
+    "method": "安全测试"
+  },
+  {
+    "id": "TC_LOGIN_008",
+    "title": "边界用例：用户名超长输入（255字符）",
+    "precondition": "已注册管理员账号admin，但测试输入超长用户名",
+    "steps": [
+      "打开 /wp-login.php 登录页面",
+      "在 #user_login 输入一个255字符的字符串",
+      "在 #user_pass 输入任意密码",
+      "点击 #wp-submit 按钮"
+    ],
+    "expected": "系统正确处理超长输入，登录失败并提示错误，不出现服务器错误或崩溃",
+    "method": "边界值分析法"
+  },
+  {
+    "id": "TC_LOGIN_009",
+    "title": "异常用例：连续多次错误登录账户锁定检查",
+    "precondition": "WordPress已配置登录尝试限制插件或功能（如Limit Login Attempts），管理员账号admin",
+    "steps": [
+      "打开 /wp-login.php 登录页面",
+      "连续5次使用错误密码尝试登录管理员账号admin",
+      "第6次使用正确密码 admin / P@ssw0rd123 尝试登录"
+    ],
+    "expected": "前5次显示错误提示，第6次显示账户已被锁定或限制登录的提示，即使密码正确也无法登录，锁定时间后可恢复",
+    "method": "错误推测法/状态转换测试"
+  },
+  {
+    "id": "TC_LOGIN_010",
+    "title": "正向补充用例：登录后检查记住我功能",
+    "precondition": "管理员账号admin，密码P@ssw0rd123，勾选“记住我”复选框",
+    "steps": [
+      "打开 /wp-login.php 登录页面",
+      "在 #user_login 输入 admin",
+      "在 #user_pass 输入 P@ssw0rd123",
+      "勾选“记住我”选项",
+      "点击 #wp-submit 登录",
+      "关闭浏览器，重新打开并访问 /wp-admin/"
+    ],
+    "expected": "重新访问后台时无需再次登录，直接进入仪表盘，或cookie有效期延长",
+    "method": "场景测试法"
+  }
+]

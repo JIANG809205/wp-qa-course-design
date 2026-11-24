@@ -1,0 +1,102 @@
+[
+  {
+    "id": 1,
+    "title": "per_page取最小值1，合法status和id，正向验证",
+    "precondition": "无需登录，API端点存在",
+    "steps": [
+      "发送GET请求，查询参数per_page=1&status=draft&id=123（假设123存在且状态draft）"
+    ],
+    "expected": "HTTP状态码200，返回1条记录且status为draft的id=123的文章数据",
+    "method": "边界值分析,等价类划分"
+  },
+  {
+    "id": 2,
+    "title": "per_page取最大值100，合法status，正向边界验证",
+    "precondition": "测试数据至少有100条符合条件的文章",
+    "steps": [
+      "发送GET请求，查询参数per_page=100&status=published"
+    ],
+    "expected": "HTTP状态码200，返回最多100条status为published的文章",
+    "method": "边界值分析"
+  },
+  {
+    "id": 3,
+    "title": "per_page取边界值0，负向验证",
+    "precondition": "无",
+    "steps": [
+      "发送GET请求，查询参数per_page=0"
+    ],
+    "expected": "HTTP状态码400，响应体包含参数错误信息，如'per_page must be between 1 and 100'",
+    "method": "边界值分析,负向测试"
+  },
+  {
+    "id": 4,
+    "title": "per_page取边界值101，负向验证",
+    "precondition": "无",
+    "steps": [
+      "发送GET请求，查询参数per_page=101"
+    ],
+    "expected": "HTTP状态码400，响应体包含参数错误信息，如'per_page must be between 1 and 100'",
+    "method": "边界值分析,负向测试"
+  },
+  {
+    "id": 5,
+    "title": "per_page取负数-1，异常输入验证",
+    "precondition": "无",
+    "steps": [
+      "发送GET请求，查询参数per_page=-1"
+    ],
+    "expected": "HTTP状态码400，响应体提示参数不合法或取值范围错误",
+    "method": "错误推测法,异常测试"
+  },
+  {
+    "id": 6,
+    "title": "per_page传入非数字字符串'abc'，异常输入验证",
+    "precondition": "无",
+    "steps": [
+      "发送GET请求，查询参数per_page=abc"
+    ],
+    "expected": "HTTP状态码400，响应体提示参数类型错误或格式不正确",
+    "method": "等价类划分,异常测试"
+  },
+  {
+    "id": 7,
+    "title": "status传入非法值'deleted'，负向验证",
+    "precondition": "status有效值仅为'draft'和'published'",
+    "steps": [
+      "发送GET请求，查询参数status=deleted"
+    ],
+    "expected": "HTTP状态码400，响应体提示status值无效，如'Invalid status value'",
+    "method": "等价类划分,负向测试"
+  },
+  {
+    "id": 8,
+    "title": "文章ID传入非数字字符串'abc123'，异常验证",
+    "precondition": "无",
+    "steps": [
+      "发送GET请求，查询参数id=abc123"
+    ],
+    "expected": "HTTP状态码400，响应体提示id必须为数字或格式错误",
+    "method": "等价类划分,异常测试"
+  },
+  {
+    "id": 9,
+    "title": "文章ID传入不存在的数字如99999，负向验证",
+    "precondition": "数据库中不存在id=99999的文章",
+    "steps": [
+      "发送GET请求，查询参数id=99999"
+    ],
+    "expected": "HTTP状态码404，响应体提示文章不存在或返回空列表",
+    "method": "边界值分析,负向测试"
+  },
+  {
+    "id": 10,
+    "title": "per_page=100且status=publish且id存在，组合正向验证",
+    "precondition": "存在id=10且status=publish的文章，且总条数>=100",
+    "steps": [
+      "发送GET请求，查询参数per_page=100&status=publish&id=10"
+    ],
+    "expected": "HTTP状态码200，返回匹配条件的文章（可能仅1条）",
+    "method": "场景法,等价类划分"
+  }
+]

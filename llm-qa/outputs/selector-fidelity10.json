@@ -1,0 +1,179 @@
+[
+  {
+    "model": "DeepSeek-V4.1-Flash",
+    "scripts": 10,
+    "selectors": 25,
+    "real": 13,
+    "fidelity": 52.0,
+    "detail": [
+      {
+        "file": "TC-API-001.java",
+        "selectors": 0,
+        "real": 0
+      },
+      {
+        "file": "TC-AUTH-001.java",
+        "selectors": 4,
+        "real": 4
+      },
+      {
+        "file": "TC-AUTH-002.java",
+        "selectors": 2,
+        "real": 0
+      },
+      {
+        "file": "TC-COMM-001.java",
+        "selectors": 1,
+        "real": 1
+      },
+      {
+        "file": "TC-MEDIA-001.java",
+        "selectors": 0,
+        "real": 0
+      },
+      {
+        "file": "TC-PERM-001.java",
+        "selectors": 6,
+        "real": 0
+      },
+      {
+        "file": "TC-PERM-002.java",
+        "selectors": 7,
+        "real": 6
+      },
+      {
+        "file": "TC-POST-001.java",
+        "selectors": 2,
+        "real": 0
+      },
+      {
+        "file": "TC-POST-002.java",
+        "selectors": 0,
+        "real": 0
+      },
+      {
+        "file": "TC-SET-001.java",
+        "selectors": 3,
+        "real": 2
+      }
+    ]
+  },
+  {
+    "model": "DeepSeek-V4-Pro",
+    "scripts": 10,
+    "selectors": 24,
+    "real": 11,
+    "fidelity": 45.8,
+    "detail": [
+      {
+        "file": "TC-API-001.java",
+        "selectors": 0,
+        "real": 0
+      },
+      {
+        "file": "TC-AUTH-001.java",
+        "selectors": 4,
+        "real": 4
+      },
+      {
+        "file": "TC-AUTH-002.java",
+        "selectors": 4,
+        "real": 0
+      },
+      {
+        "file": "TC-COMM-001.java",
+        "selectors": 2,
+        "real": 2
+      },
+      {
+        "file": "TC-MEDIA-001.java",
+        "selectors": 1,
+        "real": 0
+      },
+      {
+        "file": "TC-PERM-001.java",
+        "selectors": 3,
+        "real": 0
+      },
+      {
+        "file": "TC-PERM-002.java",
+        "selectors": 4,
+        "real": 3
+      },
+      {
+        "file": "TC-POST-001.java",
+        "selectors": 2,
+        "real": 0
+      },
+      {
+        "file": "TC-POST-002.java",
+        "selectors": 2,
+        "real": 0
+      },
+      {
+        "file": "TC-SET-001.java",
+        "selectors": 2,
+        "real": 2
+      }
+    ]
+  },
+  {
+    "model": "Qwen-Plus",
+    "scripts": 10,
+    "selectors": 23,
+    "real": 11,
+    "fidelity": 47.8,
+    "detail": [
+      {
+        "file": "TC-API-001.java",
+        "selectors": 0,
+        "real": 0
+      },
+      {
+        "file": "TC-AUTH-001.java",
+        "selectors": 3,
+        "real": 3
+      },
+      {
+        "file": "TC-AUTH-002.java",
+        "selectors": 4,
+        "real": 0
+      },
+      {
+        "file": "TC-COMM-001.java",
+        "selectors": 3,
+        "real": 0
+      },
+      {
+        "file": "TC-MEDIA-001.java",
+        "selectors": 1,
+        "real": 0
+      },
+      {
+        "file": "TC-PERM-001.java",
+        "selectors": 2,
+        "real": 1
+      },
+      {
+        "file": "TC-PERM-002.java",
+        "selectors": 3,
+        "real": 3
+      },
+      {
+        "file": "TC-POST-001.java",
+        "selectors": 2,
+        "real": 1
+      },
+      {
+        "file": "TC-POST-002.java",
+        "selectors": 2,
+        "real": 0
+      },
+      {
+        "file": "TC-SET-001.java",
+        "selectors": 3,
+        "real": 3
+      }
+    ]
+  }
+]

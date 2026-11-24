@@ -1,0 +1,74 @@
+[
+  {
+    "id": "CHK-16",
+    "title": "作者身份创建管理员用户（完整参数）",
+    "expect": "401/403",
+    "actual": "HTTP 403",
+    "status": "PASS",
+    "evidence": "{\"code\":\"rest_cannot_create_user\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u521b\\u5efa\\u65b0\\u7528\\u6237\\u3002\",\"data\":{\"status\":403}}"
+  },
+  {
+    "id": "CHK-17",
+    "title": "未认证读取评论列表是否泄漏待审/垃圾评论",
+    "expect": "仅 approved",
+    "actual": "HTTP 200，共 100 条，状态集合 {'approved'}",
+    "status": "PASS",
+    "evidence": "[{\"id\":20000,\"post\":4,\"parent\":0,\"author\":0,\"author_name\":\"\\u8bbf\\u5ba219999\",\"author_url\":\"\",\"date\":\"2026-11-23T20:45:20\",\"date_gmt\":\"2026-11-23T20:45:20\",\"content\":{\"rendered\":\"<p>\\u8fd9\\u662f\\u4e00"
+  },
+  {
+    "id": "CHK-18",
+    "title": "调试日志 debug.log 是否可被匿名下载",
+    "expect": "403/404",
+    "actual": "HTTP 200，4437 字节",
+    "status": "DEFECT",
+    "evidence": "[23-Nov-2026 12:40:44 UTC] PHP Warning:  mysqli_real_connect(): (HY000/2002): Connection refused in /var/www/html/wp-includes/class-wpdb.php on line 1990\n[23-Nov-2026 12:40:46 UTC] PHP Warning:  mysql"
+  },
+  {
+    "id": "CHK-19",
+    "title": "wp-config.php 直接访问",
+    "expect": "空白/403，不输出内容",
+    "actual": "HTTP 200，0 字节",
+    "status": "PASS",
+    "evidence": ""
+  },
+  {
+    "id": "CHK-20",
+    "title": "上传 20MB 文件（超过 16M 限制）",
+    "expect": "4xx 且提示大小超限，不应 5xx",
+    "actual": "HTTP 400",
+    "status": "PASS",
+    "evidence": "{\"code\":\"rest_upload_no_content_disposition\",\"message\":\"\\u672a\\u63d0\\u4f9b Content-Disposition \\u6807\\u5934\\u503c\\u3002\",\"data\":{\"status\":400}}"
+  },
+  {
+    "id": "CHK-21",
+    "title": "中文文件名上传",
+    "expect": "上传成功且可访问",
+    "actual": "HTTP 201，文件名=%e6%b5%8b%e8%af%95%e5%9b%be%e7%89%87，URL 可访问=是",
+    "status": "PASS",
+    "evidence": "{\"id\":1025,\"date\":\"2026-11-23T22:28:51\",\"date_gmt\":\"2026-11-23T14:28:51\",\"guid\":{\"rendered\":\"http:\\/\\/localhost:8080\\/wp-content\\/uploads\\/2026\\/11\\/\\u6d4b\\u8bd5\\u56fe\\u7247.png\",\"raw\":\"http:\\/\\/local"
+  },
+  {
+    "id": "CHK-22",
+    "title": "搜索框 SQL 注入样式输入",
+    "expect": "不返回 5xx、不泄漏数据",
+    "actual": "HTTP 200，返回 78303 字节",
+    "status": "PASS",
+    "evidence": ""
+  },
+  {
+    "id": "CHK-23",
+    "title": "Server 响应头是否暴露版本号",
+    "expect": "不应暴露具体版本",
+    "actual": "Apache/2.4.52 (Ubuntu)",
+    "status": "DEFECT",
+    "evidence": ""
+  },
+  {
+    "id": "CHK-24",
+    "title": "路径遍历尝试",
+    "expect": "403/400/404",
+    "actual": "HTTP 200",
+    "status": "OBSERVE",
+    "evidence": ""
+  }
+]

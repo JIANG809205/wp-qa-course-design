@@ -1,0 +1,30 @@
+{
+  "7.1.5": {
+    "P01 安全响应头": true,
+    "P02 debug.log 可下载": true,
+    "P03 上传目录列表": true,
+    "P04 readme.html 可访问": true,
+    "P05 XML-RPC 开放": true,
+    "P06 作者枚举": true,
+    "P07 REST 用户匿名可读": true,
+    "P08 空文件上传 500": true,
+    "P09 重名用户返回 500": true,
+    "P10 登录无失败限制": true,
+    "P11 非法参数 500": false,
+    "P12 license.txt 可访问": true
+  },
+  "7.1.4": {
+    "P01 安全响应头": true,
+    "P02 debug.log 可下载": true,
+    "P03 上传目录列表": true,
+    "P04 readme.html 可访问": true,
+    "P05 XML-RPC 开放": true,
+    "P06 作者枚举": true,
+    "P07 REST 用户匿名可读": true,
+    "P08 空文件上传 500": true,
+    "P09 重名用户返回 500": true,
+    "P10 登录无失败限制": true,
+    "P11 非法参数 500": false,
+    "P12 license.txt 可访问": true
+  }
+}

@@ -1,0 +1,82 @@
+[
+  {
+    "id": "TC01",
+    "title": "匿名访客提交合法评论，进入待审核状态",
+    "precondition": "用户为未登录的匿名访客；文章页可正常访问；评论框为空",
+    "steps": ["在#author输入'游客123'", "在#email输入'test@example.com'", "在#comment输入'这是一条有效评论。'", "点击#submit"],
+    "expected": "页面显示提示文字'您的评论正在等待审核'；评论未出现在前台评论列表中；后台数据库中该条评论status=0（待审核）",
+    "method": "等价类划分"
+  },
+  {
+    "id": "TC02",
+    "title": "匿名访客提交空评论，提交失败",
+    "precondition": "用户为匿名访客；评论框、昵称、邮箱字段均为空",
+    "steps": ["保持#author、#email、#comment均为空", "点击#submit"],
+    "expected": "表单提交被阻止；#comment或整体表单显示红色错误提示'评论内容不能为空'；无网络请求发出",
+    "method": "边界值分析+错误推测"
+  },
+  {
+    "id": "TC03",
+    "title": "匿名访客提交超长评论（1001字符），触发长度校验",
+    "precondition": "用户为匿名访客；系统限制评论最大长度为1000字符",
+    "steps": ["在#author输入'游客'", "在#email输入'valid@domain.com'", "在#comment输入1001个'a'", "点击#submit"],
+    "expected": "前端拦截并提示'评论内容不能超过1000字'；无后端请求；数据库无新增记录",
+    "method": "边界值分析"
+  },
+  {
+    "id": "TC04",
+    "title": "匿名访客提交非法邮箱格式，前端校验失败",
+    "precondition": "用户为匿名访客",
+    "steps": ["在#author输入'游客'", "在#email输入'invalid-email'", "在#comment输入'测试评论'", "点击#submit"],
+    "expected": "前端阻止提交，#email字段高亮并提示'请输入有效的邮箱地址'；无网络请求",
+    "method": "等价类划分"
+  },
+  {
+    "id": "TC05",
+    "title": "匿名访客提交含XSS脚本的评论内容，前端应转义/后端应过滤",
+    "precondition": "用户为匿名访客",
+    "steps": ["在#author输入'<script>alert(1)</script>'", "在#email输入'test@xss.com'", "在#comment输入'<img src=x onerror=alert(1)>'", "点击#submit"],
+    "expected": "提交成功（进入待审核）；但所有输入内容在前后端存储及后续展示时均被HTML转义或过滤，不执行脚本；数据库中存为纯文本实体（如&amp;lt;script&amp;gt;）",
+    "method": "错误推测+安全测试"
+  },
+  {
+    "id": "TC06",
+    "title": "管理员后台审核通过后，前台立即展示该评论",
+    "precondition": "存在一条匿名访客提交的待审核评论（status=0）；管理员已登录后台审核系统",
+    "steps": ["管理员在后台将该条评论status更新为1（通过）", "匿名访客刷新原文章页"],
+    "expected": "该条评论出现在前台评论列表中；页面不再显示'您的评论正在等待审核'提示（仅对提交者本次会话）",
+    "method": "场景法"
+  },
+  {
+    "id": "TC07",
+    "title": "同一匿名访客短时间内重复提交相同评论，触发防刷机制",
+    "precondition": "用户为匿名访客；前1分钟内已成功提交过完全相同的评论（内容+邮箱）",
+    "steps": ["再次填写完全相同的#author、#email、#comment", "点击#submit"],
+    "expected": "前端提示'请勿重复提交相同评论'；或后端返回429 Too Many Requests；数据库无新增记录",
+    "method": "边界值分析+错误推测"
+  },
+  {
+    "id": "TC08",
+    "title": "匿名访客提交评论时网络中断，前端应有友好失败提示",
+    "precondition": "用户为匿名访客；模拟浏览器禁用网络或断网",
+    "steps": ["填写合法评论信息", "点击#submit", "断开网络连接后操作"],
+    "expected": "前端捕获请求异常，显示提示'提交失败，请检查网络后重试'；表单保持可编辑状态；无重复提交",
+    "method": "异常场景分析"
+  },
+  {
+    "id": "TC09",
+    "title": "匿名访客未填昵称但填了邮箱和评论，仍允许提交（昵称非必填）",
+    "precondition": "系统设计允许昵称为空（默认显示'匿名用户'）",
+    "steps": ["清空#author", "在#email输入'test@anon.com'", "在#comment输入'无昵称评论'", "点击#submit"],
+    "expected": "提交成功；页面显示'您的评论正在等待审核'；后台记录author字段为空或设为'匿名用户'；前台审核通过后展示为'匿名用户'",
+    "method": "等价类划分"
+  },
+  {
+    "id": "TC10",
+    "title": "评论提交后刷新页面，'正在等待审核'提示不重复出现（防误触）",
+    "precondition": "匿名访客已成功提交一条待审核评论；当前页面URL含唯一submission_id或token",
+    "steps": ["提交评论后，立即刷新文章页"],
+    "expected": "页面不重复显示'您的评论正在等待审核'提示；或提示仅在首次提交后单次显示（基于session或localStorage控制）",
+    "method": "场景法+状态测试"
+  }
+]

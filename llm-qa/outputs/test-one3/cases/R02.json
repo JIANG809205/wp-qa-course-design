@@ -1,0 +1,313 @@
+We need answer only JSON array. Need design test cases for feature. Must cover positive, negative, boundary, exception, with method field. Chinese likely. Each element id,title,precondition,steps(array),expected,method. Need no markdown. Need ensure JSON valid. Need think comprehensive.
+
+Feature: content management draft. Admin creates article, fill title can save draft; title allowed empty; draft visible in article list; after save prompt "文章草稿已更新". UI title #title, save draft #save-post, message #message. Roles admin, editor, author, contributor.
+
+Need design test cases by roles? Since feature says admin but roles list. Need include permissions maybe. Test design methods e.g. 等价类划分, 边界值分析, 场景法, 错误推测, 状态迁移, 权限矩阵. Need avoid too many? Desired maybe 20-30 cases. Need cover positive, negative, boundary, exception.
+
+Need consider:
+- Positive: admin with title saves draft, message, list visible, possibly draft status.
+- Empty title saves draft, message.
+- Title whitespace? Since title allowed empty, whitespace may be considered empty? Ambiguous. Boundary/exception. Need test whitespace-only? Could expect either saved as empty or trimmed. We can include as boundary but expected? Hmm if requirement only "允许为空", whitespace not specified. Test case could assert behavior? But test case should have expected. We could say if system trims, saved as empty; but expected must be clear. Better include "标题仅输入空格" as boundary/异常, expected should be "按产品规则处理；若未定义则不应报错? Hmm." As tester, we design to verify; if requirement doesn't specify, a test case can expect "允许保存；标题按系统规则 trim 后为空或保留空格" but that's vague. Maybe not include ambiguous. But coverage boundary needs empty and maybe very long title. Long title no max specified. We can test max allowed? No max in description. Boundary: empty string, whitespace-only, maximum length (if no max, current UI limit? not specified). We can use very long title as exception and expect graceful handling/no 500; either saved or validation message. But expected ambiguous. Could phrase "系统应正常保存或给出明确长度校验提示，不出现白屏/500；草稿列表不产生脏数据". That's acceptable for robustness.
+
+Need roles:
+- Admin can save draft.
+- Editor, author, contributor maybe permissions. Requirement doesn't explicitly state who can create. "管理员新建文章" but roles include all. Need test role permissions: admin allowed, editor maybe allowed? In WordPress roles: admin/editor/author/contributor can create posts? Contributor can create but not publish, author can publish own. Draft saving likely all roles except subscriber. But feature maybe only admin. We can design permission matrix tests: Admin, Editor, Author, Contributor each create/save draft; expected based on role权限: if role has create draft permission then success; otherwise no save and no prompt. But without spec, could be negative tests. Need not over-assume? We can say "管理员：成功", "编辑/作者/投稿者：按权限矩阵（若具备新建草稿权限则成功；否则无入口/无权限）". But expected needs clear. Could use precondition "当前角色不具备新建文章权限" and expected denied. But roles list includes potentially all. Maybe we should include permission cases:
+  - Admin saves draft success.
+  - Editor saves draft success? Many CMS editors can create. But not specified. Hmm.
+
+Maybe better to focus feature as admin. Include other roles as authorization negative: unauthorized roles cannot access save draft? But role list says editor etc. The task likely expects test cases for roles. Could include "管理员/编辑/作者/投稿者按权限访问". Since only admin described, we can test admin positive; editor/author/contributor negative if feature restricted to admin. But "管理员新建文章" not "仅管理员". The roles list likely meant to test different permissions. We can include cases: "编辑角色保存草稿（若系统允许）" but expected? Hmm.
+
+Could structure:
+- Positive cases for admin.
+- Negative cases: title containing only spaces? Maybe not. Save without title? Actually allowed empty, so not negative. Save draft with no title is positive/edge. Negative: unauthorized role, network failure, duplicate click, XSS/SQL injection? Title can include malicious scripts; expect escaped.
+- Boundary: empty title, whitespace-only title, max length, special chars, long title, leading/trailing spaces, unicode/emoji, line breaks? Title field likely single line. Need test.
+- Exception: network error, server error, session timeout, duplicate rapid clicks, concurrent edit? Maybe.
+
+Need mention test design method in each. method field could be "等价类划分", "边界值分析", "场景法", "错误推测法", "权限矩阵", "状态迁移法", "正交实验法"? Need only one method per case? Could include multiple. Field method string.
+
+Need JSON array. Each id. Use Chinese. Ensure valid JSON no trailing commas. No markdown. Need maybe 20 cases.
+
+Let's enumerate:
+
+1. TC-DRAFT-001 Admin with valid title saves draft (positive) precondition admin logged in, on new article page. steps enter title "测试文章标题"; click #save-post; expected message #message displays "文章草稿已更新"; draft appears in article list with title and draft status; method 场景法/等价类.
+2. TC-DRAFT-002 Admin with empty title saves draft (edge/positive). steps leave #title empty; click save; expected message; list shows draft with "无标题" or empty title per system? Need expected clear. Requirement title allowed empty. It should save. In list, maybe display "(无标题)"? Not specified. We can say list中可见该草稿，标题为空或系统默认占位（如“无标题”），状态为草稿. Hmm expected vague but okay.
+3. TC-DRAFT-003 Admin with whitespace-only title saves draft (boundary). Expected? Could say title按系统规则处理（trim 后为空或保留空格），保存成功并提示；不报错. This is ambiguous. Maybe include but expected "保存成功；若系统对标题做 trim，则按空标题草稿展示；若不去空格，则保留空格展示；提示一致". That's a test of undefined? Maybe okay but less rigorous. Could omit ambiguous. But boundary coverage could use title with spaces around, expected trimmed? Requirement not specify. Hmm.
+
+4. TC-DRAFT-004 Title with leading/trailing spaces saves and list displays (boundary). Expected "保存成功，提示；列表标题按系统规则展示（建议 trim 后展示），不丢失正文". Ambiguous. Could instead test special characters (negative/security).
+5. TC-DRAFT-005 Title at max length (if max 200). Need know max. We can set "达到系统允许的最大长度（如200字符）". Expected saved. Boundary.
+6. TC-DRAFT-006 Title over max length (e.g., max+1) expected validation and not save? But requirement doesn't specify max. Could say "若系统有限制" maybe. Hmm.
+
+Could include generic "超长标题（超过数据库/UI限制）" expected "保存失败并提示明确错误，不产生草稿；无500". But if no max, it may save. Maybe "系统应正常保存或给出明确长度限制提示，不出现异常". Not ideal.
+
+Maybe better not rely on unspecified max; use "极大长度标题（如 10000 字符）" as exception. Expected "应被前端/后端长度校验拦截或安全保存，不能出现 500/白屏；若保存成功，列表展示应截断且详情可正常打开". That's robust. Method 错误推测法.
+
+7. TC-DRAFT-007 Save draft with special characters `<script>alert(1)</script>` in title. Expected saved and escaped in message/list/detail; no script execution. Negative/security, method 错误推测.
+8. TC-DRAFT-008 Save draft with SQL injection payload `' OR 1=1 --`. Expected stored as plain text, no SQL error/data corruption. Negative/security.
+9. TC-DRAFT-009 Save draft with Unicode/emoji and Chinese. Expected saved and displayed correctly. Boundary/等价类.
+10. TC-DRAFT-010 Rapid double-click save draft. Expected only one draft created; message displayed; no duplicate. Exception/并发.
+11. TC-DRAFT-011 Network interruption during save. Expected no success message, show error/retry; draft not saved or saved once after retry; no inconsistent state. Exception.
+12. TC-DRAFT-012 Server 500 on save. Expected user-friendly error; no draft in list; no "文章草稿已更新" false success. Exception.
+13. TC-DRAFT-013 Session expired save. Expected redirect/login or error; no draft saved; no success message. Exception/权限.
+14. TC-DRAFT-014 Unauthorized role (e.g., 投稿者 without create draft permission) attempts save. Expected no #save-post or access denied; no draft. Negative/权限矩阵. But if contributor can create, this fails. Maybe say "不具备新建草稿权限的角色（如被限制的投稿者）". precondition set role permission denied. Good.
+15. TC-DRAFT-015 Editor/Author/Contributor with permission saves draft. Positive/权限矩阵. Expected success if permission. But does not test negative. Could include one matrix case? Maybe "管理员、编辑、作者、投稿者分别具备新建草稿权限时" but steps array can include multiple roles? It says steps array. We can create one case with role matrix: precondition each role has create draft permission; steps login each role and save; expected success. But one case spanning roles. Acceptable. Method 权限矩阵.
+16. TC-DRAFT-016 Save draft then view list. State transition? Actually already in positive. Could separate: draft visible in article list with status draft and title. We can make dedicated verification case.
+17. TC-DRAFT-017 Save draft then open edit, title retained. Positive.
+18. TC-DRAFT-018 Save draft then update title and save again. Expected message and list updated, no duplicate? Positive/state.
+19. TC-DRAFT-019 Save draft with empty title then list displays placeholder and editable. Edge.
+20. TC-DRAFT-020 Title contains newline? If input single line, newline is stripped or encoded. Boundary/异常. Expected saved safely, no layout break. Maybe.
+21. TC-DRAFT-021 Save draft while another user edits same article? Concurrency. Expected conflict handling? Not specified. Could include but complex.
+22. TC-DRAFT-022 XSS in title? Already.
+23. TC-DRAFT-023 HTML/XML tags in title. Negative/security.
+24. TC-DRAFT-024 Title with only emoji. Boundary/等价类.
+25. TC-DRAFT-025 Message auto-hide? Not specified. Maybe no.
+
+Need output only JSON, no explanations. Need ensure each element fields exactly. Use id like "TC-DRAFT-001". Steps array of strings. Expected string. Method string.
+
+Need decide length. Maybe 24 cases. But final answer oververbosity 5; user asks JSON array. Need comprehensive. 20-25 okay. Need not too huge but enough.
+
+Let's think of test methods:
+- 场景法
+- 等价类划分
+- 边界值分析
+- 错误推测法
+- 权限矩阵法
+- 状态迁移法
+- 因果图/判定表? Not needed.
+- 并发测试法
+- 故障注入法
+- 安全测试法
+
+Need cover "正向、负向、边界与异常" explicitly. We can include cases labeled. Ensure negative: unauthorized, invalid title? But title allowed empty, so no required field negative. Negative could be title too long, script, unauthorized, server error. Also "保存草稿按钮不可用" maybe if no permission. Negative "未登录". "在非新建文章页面调用保存接口" maybe API.
+
+Need include API? UI given. Could include UI-level. Maybe API-level? Test cases can be UI. But "管理员新建文章" UI. Could include direct API for authorization and validation? Not necessary but robust.
+
+Need be careful with expected for empty title: "文章草稿已更新" and list visible. But how list displays empty title? Requirement only says draft can be seen in article list. We can say "列表出现该草稿记录，标题为空或显示系统占位符，状态为草稿". That's acceptable.
+
+Need include title input with exactly empty (no whitespace). Good.
+
+Need include whitespace-only. Since title allowed empty, whitespace maybe not empty. Expected could be "若系统将纯空格视为空标题，则保存成功；否则按普通标题保存；两种情况下均不应报错且提示正确." That's not a test oracle. Better maybe not include. But boundary coverage often includes whitespace. Could state expected as "保存成功，提示“文章草稿已更新”；列表可见该草稿，标题按系统规则 trim 后为空或保留空格，不应出现错误页". This is a valid expected at high level. It doesn't assert trim behavior. Fine.
+
+Need include "标题为空且正文有内容" and "标题为空且正文为空"? Requirement only title. If title empty allowed, save draft. Could test both? Maybe one case empty title; another empty title and no content. But body not in UI. Could skip.
+
+Need include "保存后提示区 #message 显示 '文章草稿已更新'". Positive. Also "提示区不显示错误". Good.
+
+Need include "草稿在文章列表看到" maybe list status. Add dedicated.
+
+Need include "重复保存不产生重复草稿" important. When editing existing draft and clicking save, should update same draft, not create duplicate. Test.
+
+Need include "保存草稿后发布"? Not feature.
+
+Need include "标题长度边界" maybe max not defined. Could use "系统允许的最大长度" with precondition "已知标题最大长度为 N（如 200）". Steps input N chars, save, expected success; input N+1, expected validation. But if N unknown, test case can be parameterized. Use N. Good. Method boundary. This is precise enough. Precondition "已知标题最大长度为 N". But if requirement doesn't define, we can still design parameterized boundary. Need maybe include both max and max+1. That's two cases. But the feature description doesn't mention max; test design can use "产品定义的最大长度 N". If no product definition, test would be blocked. But we can write "若已定义最大长度 N". Hmm. Expected for max+1: "保存失败，提示标题长度超限，不产生草稿；若产品未限制长度，则该项转为超长异常用例". Ambiguous. Maybe include "N为系统配置的标题最大长度". Fine.
+
+Need include "空标题 + 特殊字符"? no.
+
+Need include "标题包含 HTML 标签" security. Good.
+
+Need include "SQL 注入" security. Good.
+
+Need include "未登录用户" negative. Role? Precondition no login. Steps attempt access new article page or direct save. Expected redirect login/no save. Method 错误推测/权限.
+
+Need include "不具备权限角色" negative. Precondition role no create draft. Steps login as contributor with permission disabled; open new article; expected no #save-post or disabled; direct API 403; no message. Method 权限矩阵.
+
+Need include "具备权限角色" positive matrix. Precondition roles admin/editor/author/contributor with create draft permission. Steps for each login and save. Expected success. Method 权限矩阵. But if one case loops all roles, okay.
+
+Need include "网络慢/重复点击" exception. Good.
+
+Need include "保存中断后重试" exception. Good.
+
+Need include "服务端 500" exception. Good.
+
+Need include "会话过期" exception. Good.
+
+Need include "浏览器刷新/返回" maybe after save? Not necessary.
+
+Need include "草稿列表排序" not in feature. Skip.
+
+Need include "保存后提示文案精确匹配". Maybe case.
+
+Need include "保存草稿不触发发布" state. Important: draft status not published. Test: save draft, list status draft; front-end not visible. Could include. Method 状态迁移. Since feature is draft. Good.
+
+Need include "文章列表可见性" dedicated. Already.
+
+Need include "草稿标题为空，列表可见" edge. Good.
+
+Need include "保存后再次打开编辑器，标题为空" maybe.
+
+Need include "标题前后空格" boundary. Could include.
+
+Need include "特殊字符/emoji" boundary/等价类. Good.
+
+Need maybe "标题包含换行" boundary. If input single-line, browser strips. Could include as异常. But maybe too many.
+
+Need output valid JSON. No markdown. Need ensure Chinese quotes not unescaped inside strings? We can use Chinese quotes “ ” which are fine. Use double quotes for JSON strings; avoid unescaped double quotes inside expected. Use Chinese quotes or single quotes? JSON strings can contain single quotes. For payload `<script>alert(1)</script>` no double quotes. For SQL `' OR 1=1 --` contains single quotes fine. For expected include "文章草稿已更新" with Chinese quotes okay. Avoid ASCII double quotes inside strings. Need ensure no newline raw? Steps array strings. JSON can be pretty printed with newlines outside strings. That's fine. Need not use markdown.
+
+Need decide number. Let's create 24 cases. Need avoid too verbose expected? Fine.
+
+Let's draft:
+
+[
+{
+"id":"TC-DRAFT-001",
+"title":"管理员填写有效标题保存草稿成功",
+"precondition":"管理员已登录；进入新建文章页面；系统正常",
+"steps":["在#title输入“测试文章标题”","点击#save-post","观察#message提示","进入文章列表查看"],
+"expected":"#message显示“文章草稿已更新”；文章列表出现标题为“测试文章标题”的草稿记录，状态为草稿；未生成已发布文章",
+"method":"场景法"
+},
+{
+"id":"TC-DRAFT-002",
+"title":"管理员标题为空保存草稿成功",
+"precondition":"管理员已登录；进入新建文章页面",
+"steps":["保持#title为空","点击#save-post","观察#message提示","进入文章列表查看"],
+"expected":"#message显示“文章草稿已更新”；文章列表出现该草稿记录，标题为空或显示系统默认占位符，状态为草稿",
+"method":"边界值分析"
+},
+{
+"id":"TC-DRAFT-003",
+"title":"标题仅包含空格时保存草稿",
+"precondition":"管理员已登录；进入新建文章页面",
+"steps":["在#title输入若干空格","点击#save-post","观察#message提示","进入文章列表查看"],
+"expected":"保存不报错，#message显示“文章草稿已更新”；列表可见该草稿，标题按系统规则trim后为空或保留空格展示，不出现错误页",
+"method":"边界值分析"
+},
+{
+"id":"TC-DRAFT-004",
+"title":"标题前后包含空格保存草稿",
+"precondition":"管理员已登录；进入新建文章页面",
+"steps":["在#title输入“  测试标题  ”","点击#save-post","进入文章列表查看标题"],
+"expected":"保存成功并提示“文章草稿已更新”；列表标题按系统规则展示，若系统trim则显示“测试标题”，不丢失内容",
+"method":"边界值分析"
+},
+{
+"id":"TC-DRAFT-005",
+"title":"标题达到系统允许最大长度保存草稿",
+"precondition":"管理员已登录；已知标题最大长度为N",
+"steps":["在#title输入N个字符","点击#save-post","进入文章列表查看"],
+"expected":"保存成功，#message显示“文章草稿已更新”；列表可见该草稿，标题完整展示或按列表规则截断，详情中标题完整",
+"method":"边界值分析"
+},
+{
+"id":"TC-DRAFT-006",
+"title":"标题超过系统允许最大长度保存草稿",
+"precondition":"管理员已登录；已知标题最大长度为N",
+"steps":["在#title输入N+1个字符","点击#save-post","观察页面提示和文章列表"],
+"expected":"系统阻止保存并给出明确的长度超限提示；#message不显示“文章草稿已更新”；文章列表不新增该草稿",
+"method":"边界值分析"
+},
+{
+"id":"TC-DRAFT-007",
+"title":"标题包含中文、英文、数字和emoji保存草稿",
+"precondition":"管理员已登录；进入新建文章页面",
+"steps":["在#title输入“测试Article123😀”","点击#save-post","进入文章列表和编辑页查看"],
+"expected":"保存成功并提示“文章草稿已更新”；列表和编辑页正确显示中文、英文、数字和emoji，无乱码",
+"method":"等价类划分"
+},
+{
+"id":"TC-DRAFT-008",
+"title":"标题包含HTML脚本时保存草稿",
+"precondition":"管理员已登录；进入新建文章页面",
+"steps":["在#title输入<script>alert(1)</script>","点击#save-post","进入文章列表并打开该草稿"],
+"expected":"内容按纯文本保存和展示，脚本被转义不执行；提示区显示“文章草稿已更新”；页面无弹窗或异常",
+"method":"错误推测法"
+},
+{
+"id":"TC-DRAFT-009",
+"title":"标题包含SQL注入字符串时保存草稿",
+"precondition":"管理员已登录；进入新建文章页面",
+"steps":["在#title输入' OR 1=1 --","点击#save-post","进入文章列表查看"],
+"expected":"字符串按普通文本保存和展示；无SQL错误、数据泄露或异常；提示“文章草稿已更新”",
+"method":"错误推测法"
+},
+{
+"id":"TC-DRAFT-010",
+"title":"标题包含换行和制表符时保存草稿",
+"precondition":"管理员已登录；进入新建文章页面",
+"steps":["尝试在#title输入包含换行和制表符的标题","点击#save-post","查看列表和编辑页展示"],
+"expected":"系统按单行标题规则处理换行/制表符；保存成功或给出明确校验提示；页面布局不被破坏，无脚本错误",
+"method":"错误推测法"
+},
+{
+"id":"TC-DRAFT-011",
+"title":"连续快速点击保存草稿按钮",
+"precondition":"管理员已登录；进入新建文章页面；标题已填写",
+"steps":["快速连续点击#save-post两次或多次","观察#message提示","进入文章列表查看草稿数量"],
+"expected":"只创建一条草稿记录；#message显示“文章草稿已更新”；不出现重复草稿或重复提交错误",
+"method":"并发测试法"
+},
+{
+"id":"TC-DRAFT-012",
+"title":"保存草稿时网络中断",
+"precondition":"管理员已登录；进入新建文章页面；标题已填写；可模拟断网",
+"steps":["断网或限制网络","点击#save-post","观察#message提示","恢复网络后重试保存","查看文章列表"],
+"expected":"首次保存失败时给出网络错误提示，不显示“文章草稿已更新”；恢复网络重试后保存成功且只生成一条草稿",
+"method":"故障注入法"
+},
+{
+"id":"TC-DRAFT-013",
+"title":"保存草稿时服务端返回500错误",
+"precondition":"管理员已登录；进入新建文章页面；标题已填写；可模拟服务端500",
+"steps":["模拟保存接口返回500","点击#save-post","观察#message提示","进入文章列表查看"],
+"expected":"页面给出友好错误提示；#message不显示“文章草稿已更新”；文章列表不新增脏草稿；无白屏或未捕获异常",
+"method":"故障注入法"
+},
+{
+"id":"TC-DRAFT-014",
+"title":"登录会话过期后保存草稿",
+"precondition":"管理员已登录；进入新建文章页面；标题已填写；会话已过期",
+"steps":["使登录会话过期","点击#save-post","观察页面跳转和提示","重新登录后查看文章列表"],
+"expected":"系统要求重新登录或提示无权限；不显示“文章草稿已更新”；未保存该草稿或重登后按产品规则处理，不产生重复数据",
+"method":"错误推测法"
+},
+{
+"id":"TC-DRAFT-015",
+"title":"未登录用户访问新建文章并尝试保存草稿",
+"precondition":"用户未登录",
+"steps":["直接访问新建文章页面URL","尝试在#title输入内容并调用保存草稿操作"],
+"expected":"被重定向到登录页或提示未登录；无法保存草稿；不显示“文章草稿已更新”",
+"method":"权限矩阵法"
+},
+{
+"id":"TC-DRAFT-016",
+"title":"无新建草稿权限的角色尝试保存草稿",
+"precondition":"当前角色不具备新建/保存草稿权限（如受限投稿者）；已登录",
+"steps":["尝试进入新建文章页面","若可进入，在#title输入标题并点击#save-post","直接调用保存接口"],
+"expected":"页面无保存草稿入口或按钮不可用；直接调用返回无权限；文章列表不新增草稿；不显示成功提示",
+"method":"权限矩阵法"
+},
+{
+"id":"TC-DRAFT-017",
+"title":"具备新建草稿权限的各角色保存草稿",
+"precondition":"管理员、编辑、作者、投稿者均被授予新建草稿权限；各自已登录",
+"steps":["依次以各角色进入新建文章页面","在#title输入对应角色测试标题","点击#save-post","查看#message和文章列表"],
+"expected":"各角色均保存成功并显示“文章草稿已更新”；文章列表可见对应草稿；权限范围内数据隔离符合系统规则",
+"method":"权限矩阵法"
+},
+{
+"id":"TC-DRAFT-018",
+"title":"保存草稿后在文章列表可见且状态正确",
+"precondition":"管理员已登录；已保存标题为“列表可见性测试”的草稿",
+"steps":["进入文章列表","查找标题“列表可见性测试”的记录","查看状态和操作入口"],
+"expected":"文章列表出现该记录；状态显示为草稿；标题正确；可进入编辑该草稿",
+"method":"状态迁移法"
+},
+{
+"id":"TC-DRAFT-019",
+"title":"保存草稿后再次打开编辑页标题保留",
+"precondition":"管理员已登录；已保存标题为“编辑保留测试”的草稿",
+"steps":["在文章列表点击该草稿编辑","查看#title值"],
+"expected":"编辑页#title显示“编辑保留测试”；内容未丢失；草稿状态未变为已发布",
+"method":"状态迁移法"
+},
+{
+"id":"TC-DRAFT-020",
+"title":"已有草稿修改标题后再次保存草稿",
+"precondition":"管理员已登录；存在标题为“旧标题”的草稿",
+"steps":["打开该草稿编辑页","将#title修改为“新标题”","点击#save-post","进入文章列表查看"],
+"expected":"#message显示“文章草稿已更新”；文章列表仍只有一条该草稿记录且标题更新为“新标题”；不新增重复草稿",
+"method":"状态迁移法"
+},
+{
+"id":"TC-DRAFT-021",
+"title":"空标题草稿保存后在列表和编辑页的展示",
+"precondition":"管理员已登录；已保存一条标题为空的草稿",
+"steps":["进入文章列表查看该草稿

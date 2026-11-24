@@ -1,0 +1,32 @@
+[
+  {
+    "id": "LOG-001",
+    "case": "TC-COMM-002",
+    "log": "org.openqa.selenium.TimeoutException: Expected condition failed: waiting for element (By.id: comment) to become stale (tried for 15 second(s) with 500 milliseconds interval)\n页面实际停留在文章页，URL 未变化；提交后出现“您的评论正在等待审核”。",
+    "gold": "脚本问题"
+  },
+  {
+    "id": "LOG-002",
+    "case": "TC-COMM-001",
+    "log": "提交第二条评论后页面显示：您提交评论的速度太快了，请稍后再发表评论。\nURL: http://localhost:8080/wp-comments-post.php",
+    "gold": "环境问题"
+  },
+  {
+    "id": "LOG-003",
+    "case": "TC-POST-001",
+    "log": "org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#title\"}\n页面标题：写文章 ‹ WP-QA-Lab，DOM 中存在 block-editor 容器与“欢迎使用编辑器”弹窗。",
+    "gold": "环境问题"
+  },
+  {
+    "id": "LOG-004",
+    "case": "TC-PERM-001",
+    "log": "断言失败：投稿者页面应无“发布”按钮，实际按钮 value=提交复审。\n页面元素 #publish 存在，文案为“提交复审”，点击后文章状态为“待审核”。",
+    "gold": "脚本问题"
+  },
+  {
+    "id": "LOG-005",
+    "case": "TC-AUTH-005",
+    "log": "连续 6 次输入错误密码后，登录页仍返回“密码不正确”，未出现验证码、锁定或延迟。响应时间无明显变化。",
+    "gold": "系统缺陷"
+  }
+]

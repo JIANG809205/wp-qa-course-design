@@ -1,0 +1,345 @@
+{
+  "rows": [
+    {
+      "model": "DeepSeek-V4.1-Flash",
+      "accuracy": 91.7,
+      "detail": [
+        {
+          "id": "H-01",
+          "gold": "脚本问题",
+          "got": "脚本问题",
+          "match": true,
+          "raw": "{\"category\":\"脚本问题\",\"reason\":\"报错为 StaleElementReferenceException，发生在 PostEditor.save 的第42行，说明页面对象持有的元素引用在页面文档重新渲染/刷新后已失效，脚本未重新定位元素；前置请求 HTTP 200 且服务端无 5xx，暂无系统缺陷证据。\",\"evidence_needed\":[\"PostEditor.java 第42行附近代码及元素定位方式\",\"失败时页面截图或 DOM 快照\",\"失败步骤的网络请求记录（确认无后端异常）\",\"该用例最近一次通过/失败记录以判断是否为偶发 DOM 刷新\"]}"
+        },
+        {
+          "id": "H-02",
+          "gold": "环境问题",
+          "got": "环境问题",
+          "match": true,
+          "raw": "{\"category\":\"环境问题\",\"reason\":\"页面实际为区块编辑器结构，DOM 中存在 .block-editor 与 .editor-post-title，但不存在脚本预期的 #title；属于测试环境/页面版本与脚本预期不一致，并非系统功能缺陷。\",\"evidence_needed\":\"确认测试环境编辑器版本与用例预期一致；提供失败时页面DOM快照、实际页面URL及元素定位配置，以验证 #title 缺失是否由环境差异导致。\"}"
+        },
+        {
+          "id": "H-03",
+          "gold": "环境问题",
+          "got": "环境问题",
+          "match": true,
+          "raw": "{\"category\":\"环境问题\",\"reason\":\"日志显示 mysqli_real_connect() 报 (HY000/2002) Connection refused，发生在 12:40:44～12:40:47；12:40:50 后同一接口返回 200，说明失败是短暂的。这类现象通常是数据库服务未启动、尚未就绪、端口未监听或网络/容器启动时序问题，属于环境不稳定；代码逻辑本身并未持续失败，因此不能据此断定系统缺陷。\",\"evidence_needed\":[\"数据库服务启动时间与监听端口状态（如 netstat、ss，或容器 readiness，用于确认 12:40:44 时是否已就"
+        },
+        {
+          "id": "H-04",
+          "gold": "环境问题",
+          "got": "环境问题",
+          "match": true,
+          "raw": "{\n  \"category\": \"环境问题\",\n  \"reason\": \"日志显示评论提交返回 200，但页面提示“您提交评论的速度太快了，请稍后再发表评论”，且 wp_comments 无新增记录、服务端无异常。说明失败由 WordPress 评论频率限制/防刷机制触发，属于测试环境状态或配置影响，而非系统缺陷。\",\n  \"evidence_needed\": \"需确认测试环境是否开启评论频率限制或防刷插件、是否存在连续提交/同一 IP 触发限制、相关 transient/缓存是否未清理；等待限制窗口后重试或清理环境限制，验证能否正常新增评论。\"\n}"
+        },
+        {
+          "id": "H-05",
+          "gold": "系统缺陷",
+          "got": "系统缺陷",
+          "match": true,
+          "raw": "{\"category\":\"系统缺陷\",\"reason\":\"对 admin 账号连续 6 次使用不同错误密码登录，均返回 HTTP 200 且仅提示“密码不正确”，未出现验证码、429 限流或锁定提示，说明连续失败登录未触发预期的防暴力破解/锁定机制；请求与响应正常，暂不支持环境问题或脚本问题。\",\"evidence_needed\":[\"确认 TC-AUTH-005 的需求预期：连续失败次数阈值、是否要求锁定/限流/验证码\",\"确认测试环境已启用相关安全策略或插件，并记录当前配置\",\"检查服务端认证与安全日志，确认 6 次失败是否被记录及是否触发内部策略\",\"对比其他账号或直接调用接口，排除仅 "
+        },
+        {
+          "id": "H-06",
+          "gold": "系统缺陷",
+          "got": "系统缺陷",
+          "match": true,
+          "raw": "{\"category\":\"系统缺陷\",\"reason\":\"重复用户名触发业务校验错误时返回 HTTP 500，而响应体已给出 existing_user_login 业务错误码，说明服务端将可预期的参数/业务校验失败错误地作为服务器内部错误处理；首次创建返回 201 也排除了基本接口不可用。\",\"evidence_needed\":\"复现步骤与请求体、WordPress/REST API 版本、服务端错误日志、同接口重复用户名的预期状态码（通常应为 400/409）及对照其他校验错误返回状态\"}"
+        },
+        {
+          "id": "H-07",
+          "gold": "系统缺陷",
+          "got": "系统缺陷",
+          "match": true,
+          "raw": "{\"category\":\"系统缺陷\",\"reason\":\"GET /wp-content/debug.log 返回 HTTP 200，说明调试日志可被公网直接访问，并泄露 PHP 警告、数据库连接错误、服务器绝对路径等信息，属于信息暴露类系统缺陷；日志中的 Connection refused 只是被泄露的内容，不是本次判定为环境问题的依据。\",\"evidence_needed\":[\"确认 debug.log 是否位于 Web 可访问目录且未被访问控制策略拦截\",\"从外部网络复现请求并记录完整响应头与响应体\",\"确认该日志内容是否包含敏感信息及生产环境是否允许公开访问\",\"检查 Web 服务器"
+        },
+        {
+          "id": "H-08",
+          "gold": "脚本问题",
+          "got": "脚本问题",
+          "match": true,
+          "raw": "{\"category\":\"脚本问题\",\"reason\":\"失败是断言期望值与实际控件语义不匹配导致的：定位器 #publish 实际命中的按钮文本为“提交复审”，且日志说明该角色仅出现此按钮，说明是用例预期写错（该角色无“发布”权限，期望值不应为“发布”），或元素定位器选择不当（用 #publish 命中了语义不同的按钮）。属于测试脚本/用例数据缺陷，而非被测系统行为异常。\",\"evidence_needed\":[\"确认该角色在需求/权限矩阵中是否应具备“发布”权限的说明\",\"#publish 定位器对应的前端控件定义与页面 DOM 快照\",\"该角色账号下页面实际可见按钮列表截图或接口返回的权"
+        },
+        {
+          "id": "H-09",
+          "gold": "系统缺陷",
+          "got": "环境问题",
+          "match": false,
+          "raw": "{\"category\":\"环境问题\",\"reason\":\"20MB 上传返回 rest_upload_no_content_disposition，而同一文件压缩到15MB后上传成功，表现与上传体积阈值相关；常见原因是 PHP 的 post_max_size/upload_max_filesize 或 Web 服务器/反向代理的请求体大小限制导致文件未被解析，WordPress 因 $_FILES 为空而返回该错误。现有证据不足以判定为系统缺陷。\",\"evidence_needed\":[\"PHP upload_max_filesize、post_max_size、memory_limit 配置"
+        },
+        {
+          "id": "H-10",
+          "gold": "脚本问题",
+          "got": "脚本问题",
+          "match": true,
+          "raw": "{\"category\":\"脚本问题\",\"reason\":\"脚本直接操作 display:none 的 input[type=file]，触发 ElementNotInteractableException；页面存在可见上传按钮 #plupload-browse-button，应改用该按钮触发上传或按产品实现方式处理隐藏文件输入。\",\"evidence_needed\":\"已有日志说明隐藏文件输入和可见上传按钮；可补充页面 HTML 及上传组件交互逻辑以确认正确操作路径。\"}"
+        },
+        {
+          "id": "H-11",
+          "gold": "系统缺陷",
+          "got": "系统缺陷",
+          "match": true,
+          "raw": "{\"category\":\"系统缺陷\",\"reason\":\"GET /wp-content/uploads/ 返回 HTTP 200，响应体包含目录索引标题和文件链接，说明 uploads 目录启用了目录浏览，暴露文件列表。\",\"evidence_needed\":\"保留完整 HTTP 响应头与响应体，确认该目录浏览在生产/目标环境可复现且非预期配置；补充同路径下可访问文件示例。\"}"
+        },
+        {
+          "id": "H-12",
+          "gold": "环境问题",
+          "got": "环境问题",
+          "match": true,
+          "raw": "{\"category\":\"环境问题\",\"reason\":\"主题激活后立即请求出现 404，且 Apache 报 index.php 不存在；等待 5 秒并 flush rewrite 后恢复 200 并稳定，表现为文件/重写规则/缓存传播的时序性环境问题，而非可复现的系统缺陷。\",\"evidence_needed\":\"失败瞬间的 /var/www/html/index.php 是否存在及权限、Apache DocumentRoot 配置、rewrite 规则与缓存状态、flush rewrite 前后差异、等待后是否稳定复现为 200、是否可在干净环境重复出现。\"}"
+        }
+      ]
+    },
+    {
+      "model": "DeepSeek-V4-Pro",
+      "accuracy": 91.7,
+      "detail": [
+        {
+          "id": "H-01",
+          "gold": "脚本问题",
+          "got": "脚本问题",
+          "match": true,
+          "raw": "{\n  \"category\": \"脚本问题\",\n  \"reason\": \"StaleElementReferenceException 是由于元素引用失效导致，通常因页面动态更新或脚本未正确处理等待/刷新，非环境或系统缺陷。\",\n  \"evidence_needed\": \"确认页面在 save 操作前是否触发了局部刷新或异步加载，以及脚本中是否缺少显式等待或元素重新获取逻辑。\"\n}"
+        },
+        {
+          "id": "H-02",
+          "gold": "环境问题",
+          "got": "脚本问题",
+          "match": false,
+          "raw": "{\n  \"category\": \"脚本问题\",\n  \"reason\": \"页面 DOM 中存在 .editor-post-title 等元素，但脚本使用 #title 选择器未能找到，可能为选择器编写错误或未等待元素可见。\",\n  \"evidence_needed\": \"页面完整 DOM 快照及定位策略\"\n}"
+        },
+        {
+          "id": "H-03",
+          "gold": "环境问题",
+          "got": "环境问题",
+          "match": true,
+          "raw": "{\n  \"category\": \"环境问题\",\n  \"reason\": \"日志显示连续多个时间点出现 mysqli_real_connect() 连接被拒绝的错误，之后同一接口恢复正常返回200，属于临时性环境连接故障，非测试脚本逻辑或系统代码缺陷。\",\n  \"evidence_needed\": null\n}"
+        },
+        {
+          "id": "H-04",
+          "gold": "环境问题",
+          "got": "环境问题",
+          "match": true,
+          "raw": "{\n  \"category\": \"环境问题\",\n  \"reason\": \"评论提交触发 WordPress 内置的速率限制（防垃圾评论机制），导致评论未写入数据库。\",\n  \"evidence_needed\": \"检查 WordPress 的评论速率限制设置（如 comment_flood_filter、comment_flood_threshold）或测试环境是否有额外安全插件。\"\n}"
+        },
+        {
+          "id": "H-05",
+          "gold": "系统缺陷",
+          "got": "系统缺陷",
+          "match": true,
+          "raw": "{\n  \"category\": \"系统缺陷\",\n  \"reason\": \"连续6次错误密码登录均返回200且无锁定、限速或验证码，不符合账户爆破防护预期\",\n  \"evidence_needed\": \"确认系统是否应具备账户锁定或速率限制策略等预期安全机制\"\n}"
+        },
+        {
+          "id": "H-06",
+          "gold": "系统缺陷",
+          "got": "系统缺陷",
+          "match": true,
+          "raw": "{\n  \"category\": \"系统缺陷\",\n  \"reason\": \"请求创建已存在的用户时，接口返回了 HTTP 500 状态码，但响应体包含清晰的业务错误信息（用户名已存在）。正常情况下应返回 4xx 客户端错误（如 409 冲突），返回 500 表明服务器内部处理有误。\",\n  \"evidence_needed\": false\n}"
+        },
+        {
+          "id": "H-07",
+          "gold": "系统缺陷",
+          "got": "系统缺陷",
+          "match": true,
+          "raw": "{\n  \"category\": \"系统缺陷\",\n  \"reason\": \"可公开访问的 /wp-content/debug.log 文件泄露了 PHP 警告信息，包含数据库连接错误细节。\",\n  \"evidence_needed\": \"确认该文件是否应为非公开访问，以及是否属于默认配置错误或信息泄露。\"\n}"
+        },
+        {
+          "id": "H-08",
+          "gold": "脚本问题",
+          "got": "脚本问题",
+          "match": true,
+          "raw": "{\n  \"category\": \"脚本问题\",\n  \"reason\": \"断言预期按钮文本为“发布”，但实际为“提交复审”，根据描述该角色仅出现此按钮，说明测试脚本的期望值未适配被测系统该角色的实际权限配置，属于脚本逻辑错误而非环境异常或系统缺陷。\",\n  \"evidence_needed\": \"确认测试用例TC-PERM-001所针对的角色权限需求是否与脚本编写的预期一致，若需求为“提交复审”则脚本断言错误；若需求为“发布”则需排查环境配置或系统缺陷。\"\n}"
+        },
+        {
+          "id": "H-09",
+          "gold": "系统缺陷",
+          "got": "系统缺陷",
+          "match": true,
+          "raw": "{\n  \"category\": \"系统缺陷\",\n  \"reason\": \"同一脚本上传15MB成功，上传20MB却返回缺少Content-Disposition头错误，说明系统在处理大文件上传时可能错误解析了multipart请求，导致丢失头信息，属于系统缺陷而非脚本或环境问题。\",\n  \"evidence_needed\": \"可能需要进一步抓包检查20MB上传时的请求头，确认是否确实缺失Content-Disposition，或检查系统日志中是否有解析异常。\"\n}"
+        },
+        {
+          "id": "H-10",
+          "gold": "脚本问题",
+          "got": "脚本问题",
+          "match": true,
+          "raw": "{\n  \"category\": \"脚本问题\",\n  \"reason\": \"脚本直接操作隐藏的 input[type=file] 元素，导致 ElementNotInteractableException；页面存在可见的上传按钮 #plupload-browse-button，脚本未按预期交互。\",\n  \"evidence_needed\": null\n}"
+        },
+        {
+          "id": "H-11",
+          "gold": "系统缺陷",
+          "got": "系统缺陷",
+          "match": true,
+          "raw": "{\n  \"category\": \"系统缺陷\",\n  \"reason\": \"GET /wp-content/uploads/ 返回 200 并显示目录索引，表明服务器启用了目录列表，泄露文件信息，属于安全配置缺陷。\",\n  \"evidence_needed\": false\n}"
+        },
+        {
+          "id": "H-12",
+          "gold": "环境问题",
+          "got": "环境问题",
+          "match": true,
+          "raw": "{\n  \"category\": \"环境问题\",\n  \"reason\": \"主题激活后立即请求出现404，但等待数秒并刷新重写后恢复正常，Apache报错提示文件不存在，表明服务器端的重写规则或缓存机制未能即时生效，属于部署环境中的时序问题。\",\n  \"evidence_needed\": [\"确认Apache重写模块配置及刷新机制\", \"检查是否存在页面缓存或CDN缓存\", \"验证主题激活钩子是否正确触发flush_rewrite_rules操作\"]\n}"
+        }
+      ]
+    },
+    {
+      "model": "Qwen-Plus",
+      "accuracy": 83.3,
+      "detail": [
+        {
+          "id": "H-01",
+          "gold": "脚本问题",
+          "got": "脚本问题",
+          "match": true,
+          "raw": "{\"category\": \"脚本问题\", \"reason\": \"StaleElementReferenceException 表明页面元素已从 DOM 中移除或刷新，但脚本仍尝试操作该过期引用，属于 WebDriver 元素定位/使用不当，常见于未重新查找元素或未处理页面动态更新；服务端无 5xx 错误且前置请求成功，排除环境与系统缺陷。\", \"evidence_needed\": \"PostEditor.java 第42行附近代码（是否在页面跳转/刷新后复用旧元素引用）\"}"
+        },
+        {
+          "id": "H-02",
+          "gold": "环境问题",
+          "got": "脚本问题",
+          "match": false,
+          "raw": "{\"category\": \"脚本问题\", \"reason\": \"脚本使用了错误的 CSS 选择器 '#title' 定位标题元素，而实际 DOM 中标题元素位于 .editor-post-title 下（非 ID 为 'title' 的元素），且页面 title 显示正常、关键编辑器容器存在，说明环境和系统功能正常。\", \"evidence_needed\": \"检查测试脚本中定位标题元素的选择器逻辑，确认是否应使用 '.editor-post-title' 或其他正确选择器而非 '#title'\"}"
+        },
+        {
+          "id": "H-03",
+          "gold": "环境问题",
+          "got": "环境问题",
+          "match": true,
+          "raw": "{\"category\": \"环境问题\", \"reason\": \"数据库连接被拒绝，但后续接口调用成功返回200，表明服务本身可访问，问题在于启动时依赖的MySQL服务未就绪或不可达\", \"evidence_needed\": \"MySQL服务状态、启动顺序日志、网络连通性检查（如telnet 127.0.0.1:3306）\"}"
+        },
+        {
+          "id": "H-04",
+          "gold": "环境问题",
+          "got": "环境问题",
+          "match": true,
+          "raw": "{\"category\": \"环境问题\", \"reason\": \"评论提交被速率限制拦截，属于测试环境配置或状态异常（如未清理历史请求、IP限流等），非脚本错误或系统功能缺陷\", \"evidence_needed\": [\"测试执行前的环境状态快照（如近期评论记录、IP请求频率）\", \"速率限制配置（如WordPress插件或Nginx限流规则）\"]}"
+        },
+        {
+          "id": "H-05",
+          "gold": "系统缺陷",
+          "got": "系统缺陷",
+          "match": true,
+          "raw": "{\"category\": \"系统缺陷\", \"reason\": \"连续6次错误登录未触发任何防暴力破解机制（如验证码、限流、账户锁定），违反安全设计要求\", \"evidence_needed\": \"OWASP ASVS V2.1.1 或系统安全策略文档中关于登录失败处理的明确要求\"}"
+        },
+        {
+          "id": "H-06",
+          "gold": "系统缺陷",
+          "got": "系统缺陷",
+          "match": true,
+          "raw": "{\"category\": \"系统缺陷\", \"reason\": \"API 在用户名重复时应返回 400（Bad Request）等客户端错误状态码，而非 500（Internal Server Error）；500 表明服务端未正确处理预期的业务冲突，属于错误的状态码语义 misuse\", \"evidence_needed\": \"确认 WordPress REST API 官方文档中 /wp-json/wp/v2/users 端点对重复 username 的规范 HTTP 状态码要求；验证相同请求在标准 WordPress 环境下的行为是否一致\"}"
+        },
+        {
+          "id": "H-07",
+          "gold": "系统缺陷",
+          "got": "环境问题",
+          "match": false,
+          "raw": "{\"category\": \"环境问题\", \"reason\": \"数据库连接被拒绝，表明 WordPress 尝试连接 MySQL 服务失败，常见于数据库服务未启动、配置错误或网络不通，属于测试环境依赖服务异常，非脚本逻辑错误或系统功能缺陷\", \"evidence_needed\": \"检查数据库服务状态、wp-config.php 中的 DB_HOST/DB_PORT 配置、容器/主机间网络连通性\"}"
+        },
+        {
+          "id": "H-08",
+          "gold": "脚本问题",
+          "got": "脚本问题",
+          "match": true,
+          "raw": "{\"category\": \"脚本问题\", \"reason\": \"断言期望按钮文本为'发布'，但实际页面显示为'提交复审'，且日志明确指出'该角色仅出现此按钮'，说明测试脚本中对按钮文本的预期与被测系统当前业务逻辑（如角色权限导致的操作流程差异）不匹配，属于测试脚本未适配实际UI状态或业务规则变化。\", \"evidence_needed\": \"测试脚本中对#publish元素的断言逻辑、被测系统对应角色在该场景下的正确操作按钮定义（如需求文档或UI设计稿）\"}"
+        },
+        {
+          "id": "H-09",
+          "gold": "系统缺陷",
+          "got": "系统缺陷",
+          "match": true,
+          "raw": "{\"category\": \"系统缺陷\", \"reason\": \"服务端对 Content-Disposition 头的校验逻辑在大文件上传时异常触发，导致 20MB 文件被错误拒绝，而压缩后同内容文件可成功上传，排除环境与脚本问题\", \"evidence_needed\": \"服务端 /wp-json/wp/v2/media 接口对 Content-Disposition 头的校验条件及文件大小关联逻辑的源码或配置\"}"
+        },
+        {
+          "id": "H-10",
+          "gold": "脚本问题",
+          "got": "脚本问题",
+          "match": true,
+          "raw": "{\"category\": \"脚本问题\", \"reason\": \"测试脚本直接操作了被隐藏的 file input 元素（display:none），而该元素不可交互；实际应操作可见的上传按钮 #plupload-browse-button，说明脚本未适配页面真实交互逻辑。\", \"evidence_needed\": \"测试脚本中对 input[type=file] 的定位与操作代码\"}"
+        },
+        {
+          "id": "H-11",
+          "gold": "系统缺陷",
+          "got": "系统缺陷",
+          "match": true,
+          "raw": "{\"category\": \"系统缺陷\", \"reason\": \"WordPress 默认应禁用 uploads 目录的目录浏览功能，返回 200 并列出文件索引表明服务器配置错误或权限失控，暴露敏感路径，属于安全类系统缺陷\", \"evidence_needed\": \"确认 WordPress 配置（如 Apache 的 Options -Indexes 或 Nginx 的 autoindex off）是否被覆盖，以及该行为在标准安装中是否复现\"}"
+        },
+        {
+          "id": "H-12",
+          "gold": "环境问题",
+          "got": "环境问题",
+          "match": true,
+          "raw": "{\"category\": \"环境问题\", \"reason\": \"主题激活后 WordPress 重写规则未及时生效，需手动 flush 才能正常路由，属于 WordPress 运行时环境（Apache + WP rewrite）的初始化延迟问题，非脚本逻辑错误或系统功能缺陷。\", \"evidence_needed\": \"确认测试未在 theme activate 后自动执行 rewrite flush，且该行为在标准 WordPress 环境中属预期延迟（非 bug）\"}"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "DeepSeek-V4.1-Flash": {
+      "accuracy": 91.7,
+      "matrix": {
+        "脚本问题": {
+          "脚本问题": 3,
+          "环境问题": 0,
+          "系统缺陷": 0,
+          "其他/空": 0
+        },
+        "环境问题": {
+          "脚本问题": 0,
+          "环境问题": 4,
+          "系统缺陷": 0,
+          "其他/空": 0
+        },
+        "系统缺陷": {
+          "脚本问题": 0,
+          "环境问题": 1,
+          "系统缺陷": 4,
+          "其他/空": 0
+        }
+      }
+    },
+    "DeepSeek-V4-Pro": {
+      "accuracy": 91.7,
+      "matrix": {
+        "脚本问题": {
+          "脚本问题": 3,
+          "环境问题": 0,
+          "系统缺陷": 0,
+          "其他/空": 0
+        },
+        "环境问题": {
+          "脚本问题": 1,
+          "环境问题": 3,
+          "系统缺陷": 0,
+          "其他/空": 0
+        },
+        "系统缺陷": {
+          "脚本问题": 0,
+          "环境问题": 0,
+          "系统缺陷": 5,
+          "其他/空": 0
+        }
+      }
+    },
+    "Qwen-Plus": {
+      "accuracy": 83.3,
+      "matrix": {
+        "脚本问题": {
+          "脚本问题": 3,
+          "环境问题": 0,
+          "系统缺陷": 0,
+          "其他/空": 0
+        },
+        "环境问题": {
+          "脚本问题": 1,
+          "环境问题": 3,
+          "系统缺陷": 0,
+          "其他/空": 0
+        },
+        "系统缺陷": {
+          "脚本问题": 0,
+          "环境问题": 1,
+          "系统缺陷": 4,
+          "其他/空": 0
+        }
+      }
+    }
+  }
+}

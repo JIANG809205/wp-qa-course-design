@@ -1,0 +1,22 @@
+{
+  "F01": {"feature": "登录-正常流程", "description": "管理员在 /wp-login.php 输入正确用户名与密码后进入后台仪表盘。", "ui": "#user_login, #user_pass, #wp-submit", "roles": ["管理员"]},
+  "F02": {"feature": "登录-异常凭据", "description": "密码错误、用户名不存在、用户名或密码为空时的提示与拦截行为。", "ui": "#login_error 提示区", "roles": ["匿名访客"]},
+  "F03": {"feature": "登录-安全限制", "description": "连续多次失败后的限流、锁定或验证码机制。", "ui": "登录页", "roles": ["匿名访客"]},
+  "F04": {"feature": "账号-个人资料", "description": "登录后修改显示名称、邮箱、个人简介，以及密码重置流程。", "ui": "/wp-admin/profile.php", "roles": ["管理员", "订阅者"]},
+  "F05": {"feature": "文章-草稿保存", "description": "新建文章填写标题后保存为草稿，可在列表看到并继续编辑。", "ui": "#title, #save-post, #message", "roles": ["管理员", "作者"]},
+  "F06": {"feature": "文章-发布与状态迁移", "description": "草稿→待审→已发布的状态流转，以及各状态下前台的可见性。", "ui": "#publish, 状态面板", "roles": ["管理员", "编辑", "投稿者"]},
+  "F07": {"feature": "文章-定时发布", "description": "设置未来发布时间后，文章在到点前保持 scheduled 状态，到点后自动发布。", "ui": "发布面板时间字段", "roles": ["管理员"]},
+  "F08": {"feature": "文章-回收站", "description": "文章移入回收站、从回收站还原、永久删除三种操作及其前台表现。", "ui": "文章列表批量操作", "roles": ["管理员"]},
+  "F09": {"feature": "媒体-正常上传", "description": "在媒体库上传图片，生成多尺寸缩略图并可插入文章。", "ui": "input[type=file], #plupload-browse-button", "roles": ["管理员", "作者"]},
+  "F10": {"feature": "媒体-边界与类型", "description": "上传超限文件（>16MB）、0 字节文件、伪装成图片的 php 文件时的处理与提示。", "ui": "媒体库上传", "roles": ["管理员"]},
+  "F11": {"feature": "媒体-中文文件名", "description": "上传中文名文件后，媒体库显示名称、URL 可访问性与下载行为。", "ui": "媒体库", "roles": ["管理员"]},
+  "F12": {"feature": "评论-提交与审核", "description": "匿名访客提交评论后进入待审核，审核通过后才在前台展示。", "ui": "#comment, #author, #email, #submit", "roles": ["匿名访客", "管理员"]},
+  "F13": {"feature": "评论-脚本过滤", "description": "评论内容包含 script、onerror 等载荷时是否被转义。", "ui": "评论框", "roles": ["匿名访客"]},
+  "F14": {"feature": "评论-回复嵌套", "description": "管理员对已有评论回复，前台以嵌套层级展示。", "ui": "后台评论列表", "roles": ["管理员"]},
+  "F15": {"feature": "评论-垃圾标记", "description": "将评论标记为垃圾后，前台列表与后台列表的变化。", "ui": "后台评论列表", "roles": ["管理员", "编辑"]},
+  "F16": {"feature": "REST-匿名读取", "description": "未认证读取文章、评论、用户列表时的返回内容与字段暴露范围。", "ui": "/wp-json/wp/v2/*", "roles": ["匿名访客"]},
+  "F17": {"feature": "REST-鉴权写入", "description": "使用应用密码认证后创建/修改文章，以及无权限角色的拒绝行为。", "ui": "/wp-json/wp/v2/posts", "roles": ["管理员", "作者", "投稿者"]},
+  "F18": {"feature": "REST-参数校验", "description": "per_page 边界（1/100/101/0）、非法 status、非法文章 ID 的错误返回。", "ui": "查询参数", "roles": ["匿名访客"]},
+  "F19": {"feature": "权限-投稿者与订阅者", "description": "投稿者只能提交待审、不能上传媒体；订阅者不能进入后台功能页。", "ui": "后台菜单与按钮", "roles": ["投稿者", "订阅者"]},
+  "F20": {"feature": "权限-作者与编辑", "description": "作者不能编辑或删除他人文章；编辑可审核评论但不能新建用户、不能改站点设置。", "ui": "后台菜单与 REST", "roles": ["作者", "编辑"]}
+}

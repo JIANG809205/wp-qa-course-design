@@ -1,0 +1,82 @@
+[
+  {
+    "id": "TC001",
+    "title": "per_page=1（最小合法值）",
+    "precondition": "系统正常运行，文章列表接口可用",
+    "steps": ["发送 GET 请求到 /api/articles?per_page=1"],
+    "expected": "HTTP 200，响应体包含 per_page=1 的分页数据，无错误信息",
+    "method": "等价类划分+边界值分析"
+  },
+  {
+    "id": "TC002",
+    "title": "per_page=100（最大合法值）",
+    "precondition": "系统正常运行，文章列表接口可用",
+    "steps": ["发送 GET 请求到 /api/articles?per_page=100"],
+    "expected": "HTTP 200，响应体包含 per_page=100 的分页数据，无错误信息",
+    "method": "等价类划分+边界值分析"
+  },
+  {
+    "id": "TC003",
+    "title": "per_page=101（超上限非法值）",
+    "precondition": "系统正常运行，文章列表接口可用",
+    "steps": ["发送 GET 请求到 /api/articles?per_page=101"],
+    "expected": "HTTP 400，响应体含明确错误字段 'per_page' 超出范围（1-100）的提示",
+    "method": "边界值分析+错误推测法"
+  },
+  {
+    "id": "TC004",
+    "title": "per_page=0（下界外非法值）",
+    "precondition": "系统正常运行，文章列表接口可用",
+    "steps": ["发送 GET 请求到 /api/articles?per_page=0"],
+    "expected": "HTTP 400，响应体含明确错误字段 'per_page' 必须大于等于 1 的提示",
+    "method": "边界值分析+错误推测法"
+  },
+  {
+    "id": "TC005",
+    "title": "per_page=-5（负数非法值）",
+    "precondition": "系统正常运行，文章列表接口可用",
+    "steps": ["发送 GET 请求到 /api/articles?per_page=-5"],
+    "expected": "HTTP 400，响应体含明确错误字段 'per_page' 必须为正整数的提示",
+    "method": "错误推测法+等价类划分"
+  },
+  {
+    "id": "TC006",
+    "title": "status=invalid（非法枚举值）",
+    "precondition": "系统正常运行，文章列表接口支持 status 过滤",
+    "steps": ["发送 GET 请求到 /api/articles?status=invalid"],
+    "expected": "HTTP 400，响应体含明确错误字段 'status' 不在允许枚举值（如 draft/published/archived）中的提示",
+    "method": "等价类划分+错误推测法"
+  },
+  {
+    "id": "TC007",
+    "title": "status=（空字符串）",
+    "precondition": "系统正常运行，文章列表接口支持 status 过滤",
+    "steps": ["发送 GET 请求到 /api/articles?status="],
+    "expected": "HTTP 400，响应体含明确错误字段 'status' 不能为空或无效的提示",
+    "method": "错误推测法+边界值分析"
+  },
+  {
+    "id": "TC008",
+    "title": "文章 ID 为非数字字符串（如 abc）",
+    "precondition": "系统正常运行，文章详情接口路径含 ID（如 /api/articles/{id}）",
+    "steps": ["发送 GET 请求到 /api/articles/abc"],
+    "expected": "HTTP 400 或 404（依设计），响应体含明确错误字段 'id' 格式不合法（应为正整数）的提示",
+    "method": "错误推测法+等价类划分"
+  },
+  {
+    "id": "TC009",
+    "title": "文章 ID 为 0（非法ID）",
+    "precondition": "系统正常运行，文章详情接口路径含 ID",
+    "steps": ["发送 GET 请求到 /api/articles/0"],
+    "expected": "HTTP 400 或 404，响应体含明确错误字段 'id' 必须为正整数的提示",
+    "method": "边界值分析+错误推测法"
+  },
+  {
+    "id": "TC010",
+    "title": "同时触发多个非法参数（per_page=101&status=xyz&id=abc）",
+    "precondition": "系统正常运行，文章列表或详情接口支持组合参数",
+    "steps": ["发送 GET 请求到 /api/articles?per_page=101&status=xyz&id=abc"],
+    "expected": "HTTP 400，响应体包含所有非法参数的校验失败详情（至少覆盖全部三个字段）",
+    "method": "错误推测法+场景组合法"
+  }
+]

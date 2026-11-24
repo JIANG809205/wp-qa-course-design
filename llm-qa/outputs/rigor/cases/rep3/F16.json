@@ -1,0 +1,127 @@
+[
+  {
+    "id": "TC-01",
+    "title": "匿名获取文章列表仅返回已发布文章及公开字段",
+    "precondition": "站点存在已发布文章、草稿文章、私密文章各至少1篇；请求未携带任何认证凭据。",
+    "steps": [
+      "不携带 Cookie、Authorization 等认证信息，发送 GET /wp-json/wp/v2/posts",
+      "检查 HTTP 响应状态码",
+      "遍历响应中的文章，核对 status 字段与返回字段集合",
+      "检查响应体中是否出现 password、私有 meta 等敏感字段"
+    ],
+    "expected": "返回 200；仅返回 status=publish 的文章；每条文章包含 id、date、slug、title、content、excerpt、author、featured_media 等公开字段；不包含 password、私有 meta 等敏感字段；草稿和私密文章不出现在列表中。",
+    "method": "等价类划分法（有效等价类：已发布文章）"
+  },
+  {
+    "id": "TC-02",
+    "title": "匿名获取单篇已发布文章详情返回完整公开内容",
+    "precondition": "存在 ID 已知的已发布文章，文章包含标题、正文、作者、分类等数据。",
+    "steps": [
+      "不携带认证凭据，发送 GET /wp-json/wp/v2/posts/{id}",
+      "检查 HTTP 响应状态码与响应体结构",
+      "核对 title、content、excerpt、author、categories 等字段",
+      "检查响应中是否暴露作者邮箱、用户角色等非公开信息"
+    ],
+    "expected": "返回 200；返回该文章的完整公开字段；title、content、excerpt 等内容正确；不暴露作者邮箱、用户角色、能力列表等非公开信息。",
+    "method": "等价类划分法（有效等价类：单篇已发布文章）"
+  },
+  {
+    "id": "TC-03",
+    "title": "匿名访问草稿或私密文章被拒绝且不泄露正文",
+    "precondition": "存在 status=draft 和 status=private 的文章各1篇，并记录其 ID。",
+    "steps": [
+      "不携带认证凭据，发送 GET /wp-json/wp/v2/posts/{draft_id}",
+      "不携带认证凭据，发送 GET /wp-json/wp/v2/posts/{private_id}",
+      "检查两次响应的状态码与响应体"
+    ],
+    "expected": "返回 401、403 或 404（按站点策略）；响应体不包含草稿或私密文章的 title、content、excerpt 等正文数据；错误码为 rest_forbidden 或 rest_post_invalid_id 等，不泄露内部信息。",
+    "method": "错误推测法 + 等价类划分法（无效等价类：非公开文章）"
+  },
+  {
+    "id": "TC-04",
+    "title": "匿名获取评论列表仅返回已批准评论且不暴露敏感字段",
+    "precondition": "存在已批准、待审核、垃圾评论各至少1条，且均关联已发布文章。",
+    "steps": [
+      "不携带认证凭据，发送 GET /wp-json/wp/v2/comments",
+      "检查 HTTP 响应状态码",
+      "遍历响应中的评论，核对 status 与关联文章状态",
+      "检查响应字段中是否包含 author_email、author_ip、author_user_agent 等敏感字段"
+    ],
+    "expected": "返回 200；仅返回已批准且关联已发布文章的评论；字段包含 id、post、parent、author_name、author_avatar_urls、date、content 等公开字段；不包含 author_email、author_ip、author_user_agent 等敏感字段。",
+    "method": "等价类划分法（有效等价类：已批准评论）"
+  },
+  {
+    "id": "TC-05",
+    "title": "匿名直接读取待审核或垃圾评论 ID 被拒绝",
+    "precondition": "已知待审核评论和垃圾评论的 ID；请求未认证。",
+    "steps": [
+      "不携带认证凭据，发送 GET /wp-json/wp/v2/comments/{pending_id}",
+      "不携带认证凭据，发送 GET /wp-json/wp/v2/comments/{spam_id}",
+      "检查两次响应的状态码与响应体"
+    ],
+    "expected": "返回 401、403 或 404；响应体不返回待审核或垃圾评论的 content、author_email 等内容；错误码为 rest_forbidden 或 rest_comment_invalid_id 等。",
+    "method": "错误推测法"
+  },
+  {
+    "id": "TC-06",
+    "title": "匿名获取用户列表仅暴露公开字段",
+    "precondition": "存在至少1名拥有已发布文章的作者用户，该用户配置了邮箱、角色等敏感信息。",
+    "steps": [
+      "不携带认证凭据，发送 GET /wp-json/wp/v2/users",
+      "检查 HTTP 响应状态码",
+      "遍历返回用户对象，核对字段集合",
+      "检查是否出现 email、roles、capabilities、extra_capabilities、registered_date、登录用户名等字段"
+    ],
+    "expected": "返回 200；仅返回 id、name、url、description、link、slug、avatar_urls、公开 meta 等公开字段；不包含 email、roles、capabilities、extra_capabilities、registered_date、登录用户名等敏感字段。",
+    "method": "等价类划分法 + 安全字段核查"
+  },
+  {
+    "id": "TC-07",
+    "title": "匿名读取无已发布文章用户详情被拒绝",
+    "precondition": "存在订阅者角色或无已发布文章的用户，记录其用户 ID；请求未认证。",
+    "steps": [
+      "不携带认证凭据，发送 GET /wp-json/wp/v2/users/{id}",
+      "检查 HTTP 响应状态码与响应体",
+      "确认响应中是否返回该用户的任何资料字段"
+    ],
+    "expected": "返回 401（rest_user_cannot_view）或 404；响应体不返回该用户的 name、email、roles 等任何资料字段。",
+    "method": "错误推测法"
+  },
+  {
+    "id": "TC-08",
+    "title": "文章列表分页参数 per_page 边界值校验",
+    "precondition": "站点已发布文章数量大于 100；请求未认证。",
+    "steps": [
+      "发送 GET /wp-json/wp/v2/posts?per_page=100&page=1",
+      "发送 GET /wp-json/wp/v2/posts?per_page=101",
+      "检查两次响应的状态码、返回条数与错误信息"
+    ],
+    "expected": "per_page=100 返回 200，且单页最多返回 100 条文章；per_page=101 返回 400，错误码为 rest_invalid_param，提示 per_page 必须小于等于 100。",
+    "method": "边界值分析法（上限 100 与 101）"
+  },
+  {
+    "id": "TC-09",
+    "title": "请求不存在的文章或用户 ID 返回 404 且不泄露内部信息",
+    "precondition": "数据库中不存在 ID=999999 的文章和用户；请求未认证。",
+    "steps": [
+      "发送 GET /wp-json/wp/v2/posts/999999",
+      "发送 GET /wp-json/wp/v2/users/999999",
+      "检查两次响应的状态码、错误码与错误消息"
+    ],
+    "expected": "均返回 404；文章接口错误码为 rest_post_invalid_id，用户接口错误码为 rest_user_invalid_id；错误消息不包含数据库语句、文件路径、堆栈等内部信息。",
+    "method": "错误推测法（异常 ID）"
+  },
+  {
+    "id": "TC-10",
+    "title": "通过 _fields 参数尝试获取敏感字段被忽略",
+    "precondition": "存在已发布文章、已批准评论和拥有已发布文章的作者用户；请求未认证。",
+    "steps": [
+      "发送 GET /wp-json/wp/v2/users?_fields=id,name,email,roles",
+      "发送 GET /wp-json/wp/v2/comments?_fields=id,author_email,author_ip",
+      "发送 GET /wp-json/wp/v2/posts?_fields=id,title,password",
+      "检查各响应状态码与返回字段"
+    ],
+    "expected": "均返回 200 或按参数策略返回 400；仅返回允许的公开字段；email、roles、author_email、author_ip、password 等敏感字段被忽略或不返回，响应中不出现任何敏感数据。",
+    "method": "错误推测法（参数篡改）+ 边界值分析法"
+  }
+]

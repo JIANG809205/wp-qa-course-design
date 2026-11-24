@@ -1,0 +1,82 @@
+[
+  {
+    "id": "TC001",
+    "title": "匿名用户成功获取公开文章列表（正向）",
+    "precondition": "系统中存在至少1篇状态为'publish'的公开文章",
+    "steps": ["发送GET请求至/wp-json/wp/v2/posts", "不携带任何认证头（如Authorization）"],
+    "expected": "HTTP 200；响应体为JSON数组；每篇文章包含字段：id、date、title、content.rendered、excerpt.rendered、link；不包含meta、author、acf、password等敏感字段",
+    "method": "等价类划分"
+  },
+  {
+    "id": "TC002",
+    "title": "匿名用户获取单篇文章详情（正向）",
+    "precondition": "存在ID为1的已发布文章",
+    "steps": ["发送GET请求至/wp-json/wp/v2/posts/1", "不携带认证头"],
+    "expected": "HTTP 200；响应包含id=1、status='publish'、且字段同TC001限制；content.raw与content.protected应被过滤或为空字符串",
+    "method": "等价类划分"
+  },
+  {
+    "id": "TC003",
+    "title": "匿名用户尝试获取私有文章（负向-权限）",
+    "precondition": "存在ID为999、status='private'的文章",
+    "steps": ["发送GET请求至/wp-json/wp/v2/posts/999", "不携带认证头"],
+    "expected": "HTTP 401 或 HTTP 404（取决于WP配置，但不得返回200及私有内容）；响应体不含文章内容字段",
+    "method": "错误推测法"
+  },
+  {
+    "id": "TC004",
+    "title": "匿名用户获取评论列表（正向）",
+    "precondition": "存在至少1条approved状态的公开评论",
+    "steps": ["发送GET请求至/wp-json/wp/v2/comments", "不携带认证头"],
+    "expected": "HTTP 200；响应为JSON数组；每条评论包含id、post、author_name、content.rendered、date；不包含author_email、author_url、author_ip、meta、agent等敏感字段",
+    "method": "等价类划分"
+  },
+  {
+    "id": "TC005",
+    "title": "匿名用户获取用户列表（负向-隐私保护）",
+    "precondition": "系统中存在至少2个已注册用户",
+    "steps": ["发送GET请求至/wp-json/wp/v2/users", "不携带认证头"],
+    "expected": "HTTP 401 或 HTTP 403；响应体不含任何用户信息；禁止返回id、name、email、roles等字段",
+    "method": "安全测试+错误推测法"
+  },
+  {
+    "id": "TC006",
+    "title": "匿名用户通过_embed参数请求嵌入资源（边界）",
+    "precondition": "存在ID为1的已发布文章且含图片附件",
+    "steps": ["发送GET请求至/wp-json/wp/v2/posts/1?_embed", "不携带认证头"],
+    "expected": "HTTP 200；响应中_embedded对象仅包含允许嵌入的公开资源（如wp:featuredmedia），且媒体对象字段受限（不含meta、author、upload_date等）",
+    "method": "边界值分析"
+  },
+  {
+    "id": "TC007",
+    "title": "匿名用户请求不存在的端点（异常）",
+    "precondition": "无特殊前提",
+    "steps": ["发送GET请求至/wp-json/wp/v2/nonexistent", "不携带认证头"],
+    "expected": "HTTP 404；响应体为标准WP REST错误格式（code、message、data），且不泄露内部路径、插件名或调试信息",
+    "method": "错误推测法"
+  },
+  {
+    "id": "TC008",
+    "title": "匿名用户使用非法分页参数（边界）",
+    "precondition": "系统中存在≥10篇公开文章",
+    "steps": ["发送GET请求至/wp-json/wp/v2/posts?page=999&per_page=100", "不携带认证头"],
+    "expected": "HTTP 200 或 HTTP 400；若200则返回空数组或默认分页结果；若400则返回规范错误；禁止返回500或堆栈跟踪",
+    "method": "边界值分析"
+  },
+  {
+    "id": "TC009",
+    "title": "匿名用户请求带密码保护的文章（负向-内容过滤）",
+    "precondition": "存在ID为100、status='publish'且post_password非空的文章",
+    "steps": ["发送GET请求至/wp-json/wp/v2/posts/100", "不携带认证头"],
+    "expected": "HTTP 200；响应中content.rendered与excerpt.rendered为占位文本（如'Protected: …'）或空字符串；不暴露原始内容、密码字段或解密线索",
+    "method": "错误推测法"
+  },
+  {
+    "id": "TC010",
+    "title": "匿名用户发起OPTIONS预检请求（正向-跨域兼容）",
+    "precondition": "服务器启用CORS且未禁用OPTIONS",
+    "steps": ["发送OPTIONS请求至/wp-json/wp/v2/posts", "不携带认证头"],
+    "expected": "HTTP 200；响应头包含Access-Control-Allow-Origin:*（或指定域名）、Access-Control-Allow-Methods:GET,HEAD；响应体为空或含标准REST元信息",
+    "method": "场景法"
+  }
+]

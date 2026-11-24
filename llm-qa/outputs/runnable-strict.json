@@ -1,0 +1,404 @@
+[
+  {
+    "model": "DeepSeek-V4.1-Flash",
+    "n": 20,
+    "struct_ok": 13,
+    "strict_ok": 1,
+    "struct_rate": 65.0,
+    "strict_rate": 5.0,
+    "strict_ci": [
+      0.9,
+      23.6
+    ],
+    "detail": [
+      {
+        "file": "TC-API-001.java",
+        "struct": false,
+        "selectors": 0,
+        "all_real": true
+      },
+      {
+        "file": "TC-API-004.java",
+        "struct": true,
+        "selectors": 0,
+        "all_real": true
+      },
+      {
+        "file": "TC-AUTH-001.java",
+        "struct": false,
+        "selectors": 4,
+        "all_real": true
+      },
+      {
+        "file": "TC-AUTH-002.java",
+        "struct": false,
+        "selectors": 4,
+        "all_real": false
+      },
+      {
+        "file": "TC-AUTH-005.java",
+        "struct": false,
+        "selectors": 5,
+        "all_real": false
+      },
+      {
+        "file": "TC-COMM-001.java",
+        "struct": true,
+        "selectors": 3,
+        "all_real": false
+      },
+      {
+        "file": "TC-COMM-004.java",
+        "struct": true,
+        "selectors": 6,
+        "all_real": false
+      },
+      {
+        "file": "TC-MEDIA-001.java",
+        "struct": true,
+        "selectors": 4,
+        "all_real": false
+      },
+      {
+        "file": "TC-MEDIA-002.java",
+        "struct": false,
+        "selectors": 4,
+        "all_real": false
+      },
+      {
+        "file": "TC-PERM-001.java",
+        "struct": true,
+        "selectors": 5,
+        "all_real": false
+      },
+      {
+        "file": "TC-PERM-002.java",
+        "struct": true,
+        "selectors": 5,
+        "all_real": false
+      },
+      {
+        "file": "TC-PERM-004.java",
+        "struct": true,
+        "selectors": 5,
+        "all_real": false
+      },
+      {
+        "file": "TC-PERM-005.java",
+        "struct": true,
+        "selectors": 9,
+        "all_real": false
+      },
+      {
+        "file": "TC-POST-001.java",
+        "struct": true,
+        "selectors": 2,
+        "all_real": false
+      },
+      {
+        "file": "TC-POST-002.java",
+        "struct": false,
+        "selectors": 4,
+        "all_real": false
+      },
+      {
+        "file": "TC-POST-003.java",
+        "struct": false,
+        "selectors": 6,
+        "all_real": false
+      },
+      {
+        "file": "TC-POST-006.java",
+        "struct": true,
+        "selectors": 10,
+        "all_real": false
+      },
+      {
+        "file": "TC-POST-007.java",
+        "struct": true,
+        "selectors": 2,
+        "all_real": false
+      },
+      {
+        "file": "TC-SET-001.java",
+        "struct": true,
+        "selectors": 4,
+        "all_real": false
+      },
+      {
+        "file": "TC-SET-002.java",
+        "struct": true,
+        "selectors": 8,
+        "all_real": false
+      }
+    ]
+  },
+  {
+    "model": "DeepSeek-V4-Pro",
+    "n": 20,
+    "struct_ok": 0,
+    "strict_ok": 0,
+    "struct_rate": 0.0,
+    "strict_rate": 0.0,
+    "strict_ci": [
+      0.0,
+      16.1
+    ],
+    "detail": [
+      {
+        "file": "TC-API-001.java",
+        "struct": false,
+        "selectors": 0,
+        "all_real": true
+      },
+      {
+        "file": "TC-API-004.java",
+        "struct": false,
+        "selectors": 0,
+        "all_real": true
+      },
+      {
+        "file": "TC-AUTH-001.java",
+        "struct": false,
+        "selectors": 3,
+        "all_real": true
+      },
+      {
+        "file": "TC-AUTH-002.java",
+        "struct": false,
+        "selectors": 4,
+        "all_real": false
+      },
+      {
+        "file": "TC-AUTH-005.java",
+        "struct": false,
+        "selectors": 9,
+        "all_real": false
+      },
+      {
+        "file": "TC-COMM-001.java",
+        "struct": false,
+        "selectors": 3,
+        "all_real": false
+      },
+      {
+        "file": "TC-COMM-004.java",
+        "struct": false,
+        "selectors": 5,
+        "all_real": false
+      },
+      {
+        "file": "TC-MEDIA-001.java",
+        "struct": false,
+        "selectors": 2,
+        "all_real": false
+      },
+      {
+        "file": "TC-MEDIA-002.java",
+        "struct": false,
+        "selectors": 3,
+        "all_real": false
+      },
+      {
+        "file": "TC-PERM-001.java",
+        "struct": false,
+        "selectors": 5,
+        "all_real": false
+      },
+      {
+        "file": "TC-PERM-002.java",
+        "struct": false,
+        "selectors": 4,
+        "all_real": true
+      },
+      {
+        "file": "TC-PERM-004.java",
+        "struct": false,
+        "selectors": 4,
+        "all_real": false
+      },
+      {
+        "file": "TC-PERM-005.java",
+        "struct": false,
+        "selectors": 9,
+        "all_real": false
+      },
+      {
+        "file": "TC-POST-001.java",
+        "struct": false,
+        "selectors": 3,
+        "all_real": false
+      },
+      {
+        "file": "TC-POST-002.java",
+        "struct": false,
+        "selectors": 2,
+        "all_real": false
+      },
+      {
+        "file": "TC-POST-003.java",
+        "struct": false,
+        "selectors": 3,
+        "all_real": false
+      },
+      {
+        "file": "TC-POST-006.java",
+        "struct": false,
+        "selectors": 8,
+        "all_real": false
+      },
+      {
+        "file": "TC-POST-007.java",
+        "struct": false,
+        "selectors": 3,
+        "all_real": false
+      },
+      {
+        "file": "TC-SET-001.java",
+        "struct": false,
+        "selectors": 2,
+        "all_real": true
+      },
+      {
+        "file": "TC-SET-002.java",
+        "struct": false,
+        "selectors": 6,
+        "all_real": false
+      }
+    ]
+  },
+  {
+    "model": "Qwen-Plus",
+    "n": 20,
+    "struct_ok": 0,
+    "strict_ok": 0,
+    "struct_rate": 0.0,
+    "strict_rate": 0.0,
+    "strict_ci": [
+      0.0,
+      16.1
+    ],
+    "detail": [
+      {
+        "file": "TC-API-001.java",
+        "struct": false,
+        "selectors": 0,
+        "all_real": true
+      },
+      {
+        "file": "TC-API-004.java",
+        "struct": false,
+        "selectors": 0,
+        "all_real": true
+      },
+      {
+        "file": "TC-AUTH-001.java",
+        "struct": false,
+        "selectors": 3,
+        "all_real": true
+      },
+      {
+        "file": "TC-AUTH-002.java",
+        "struct": false,
+        "selectors": 4,
+        "all_real": false
+      },
+      {
+        "file": "TC-AUTH-005.java",
+        "struct": false,
+        "selectors": 6,
+        "all_real": false
+      },
+      {
+        "file": "TC-COMM-001.java",
+        "struct": false,
+        "selectors": 3,
+        "all_real": false
+      },
+      {
+        "file": "TC-COMM-004.java",
+        "struct": false,
+        "selectors": 4,
+        "all_real": false
+      },
+      {
+        "file": "TC-MEDIA-001.java",
+        "struct": false,
+        "selectors": 4,
+        "all_real": false
+      },
+      {
+        "file": "TC-MEDIA-002.java",
+        "struct": false,
+        "selectors": 3,
+        "all_real": false
+      },
+      {
+        "file": "TC-PERM-001.java",
+        "struct": false,
+        "selectors": 2,
+        "all_real": false
+      },
+      {
+        "file": "TC-PERM-002.java",
+        "struct": false,
+        "selectors": 3,
+        "all_real": true
+      },
+      {
+        "file": "TC-PERM-004.java",
+        "struct": false,
+        "selectors": 3,
+        "all_real": false
+      },
+      {
+        "file": "TC-PERM-005.java",
+        "struct": false,
+        "selectors": 2,
+        "all_real": false
+      },
+      {
+        "file": "TC-POST-001.java",
+        "struct": false,
+        "selectors": 2,
+        "all_real": false
+      },
+      {
+        "file": "TC-POST-002.java",
+        "struct": false,
+        "selectors": 2,
+        "all_real": false
+      },
+      {
+        "file": "TC-POST-003.java",
+        "struct": false,
+        "selectors": 4,
+        "all_real": false
+      },
+      {
+        "file": "TC-POST-006.java",
+        "struct": false,
+        "selectors": 7,
+        "all_real": false
+      },
+      {
+        "file": "TC-POST-007.java",
+        "struct": false,
+        "selectors": 2,
+        "all_real": false
+      },
+      {
+        "file": "TC-SET-001.java",
+        "struct": false,
+        "selectors": 5,
+        "all_real": false
+      },
+      {
+        "file": "TC-SET-002.java",
+        "struct": false,
+        "selectors": 3,
+        "all_real": false
+      }
+    ]
+  }
+]

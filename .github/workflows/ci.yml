@@ -1,0 +1,99 @@
+name: QA-Course-Design-CI
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  # 1) 静态检查：Python 语法 + Java 编译（不需要被测系统）
+  static-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Python 语法检查
+        run: |
+          python -m compileall -q llm-qa wp-api-tests defect-hunt || true
+          python -m py_compile llm-qa/run.py llm-qa/evaluate_v2.py wp-api-tests/test_cases.py
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: 编译 Selenium 工程（跳过执行）
+        working-directory: wp-autotest
+        run: mvn -B -q -DskipTests package
+
+  # 2) 端到端冒烟：用官方镜像起 WordPress，跑匿名接口检查
+  smoke:
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: mariadb:10.11
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: wordpress
+          MARIADB_USER: wpuser
+          MARIADB_PASSWORD: wp_pass_2026
+        ports: [ "3306:3306" ]
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    steps:
+      - uses: actions/checkout@v4
+      - name: 启动官方 WordPress 容器
+        run: |
+          docker run -d --name wp --network host \
+            -e WORDPRESS_DB_HOST=127.0.0.1:3306 \
+            -e WORDPRESS_DB_NAME=wordpress \
+            -e WORDPRESS_DB_USER=wpuser \
+            -e WORDPRESS_DB_PASSWORD=wp_pass_2026 \
+            wordpress:7.1.5
+      - name: 等待站点就绪
+        run: |
+          for i in $(seq 1 60); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1/ || true)
+            [ "$code" != "000" ] && echo "HTTP $code" && break
+            sleep 5
+          done
+          curl -sf http://127.0.0.1/wp-login.php > /dev/null && echo "登录页 OK"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: 匿名接口冒烟
+        run: |
+          pip install requests pytest
+          python - <<'PY'
+          import requests
+          base = "http://127.0.0.1"
+          assert requests.get(f"{base}/", timeout=20).status_code == 200
+          assert requests.get(f"{base}/wp-login.php", timeout=20).status_code == 200
+          r = requests.get(f"{base}/wp-json/wp/v2/posts?per_page=101", timeout=20)
+          assert r.status_code in (400, 401), f"per_page 越界应被拒，实际 {r.status_code}"
+          r = requests.get(f"{base}/wp-json/wp/v2/posts?per_page=1", timeout=20)
+          assert r.status_code == 200
+          print("匿名接口冒烟通过")
+          PY
+
+  # 3) 大模型评测流水线（无密钥时自动跳过，不阻塞构建）
+  llm-eval-mock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: 流水线自检（mock 后端，不需要 API Key）
+        working-directory: llm-qa
+        run: |
+          pip install openai
+          python run.py --provider mock --task all --out /tmp/mock-run
+          python - <<'PY'
+          import json, os
+          m = json.load(open("/tmp/mock-run/metrics.json", encoding="utf-8"))
+          assert "cases" in m and "triage" in m
+          print("mock 评测流水线可用:", m["cases"], m["triage"])
+          PY

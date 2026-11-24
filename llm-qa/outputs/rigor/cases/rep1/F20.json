@@ -1,0 +1,112 @@
+[
+  {
+    "id": 1,
+    "title": "作者编辑自己的文章",
+    "precondition": "作者已登录，且存在一篇自己创建的文章",
+    "steps": [
+      "发送PUT请求到 /api/articles/{文章ID}，请求体包含新的标题和内容",
+      "验证返回状态码"
+    ],
+    "expected": "状态码200，文章内容更新成功",
+    "method": "正向测试，权限矩阵"
+  },
+  {
+    "id": 2,
+    "title": "作者尝试编辑他人文章",
+    "precondition": "作者已登录，且存在一篇其他作者创建的文章",
+    "steps": [
+      "发送PUT请求到 /api/articles/{他人文章ID}，请求体包含新的标题和内容",
+      "验证返回状态码和错误信息"
+    ],
+    "expected": "状态码403，提示无权限修改他人文章",
+    "method": "负向测试，权限矩阵"
+  },
+  {
+    "id": 3,
+    "title": "作者删除自己的文章",
+    "precondition": "作者已登录，且存在一篇自己创建的文章",
+    "steps": [
+      "发送DELETE请求到 /api/articles/{文章ID}",
+      "验证返回状态码"
+    ],
+    "expected": "状态码204，文章删除成功",
+    "method": "正向测试，权限矩阵"
+  },
+  {
+    "id": 4,
+    "title": "作者尝试删除他人文章",
+    "precondition": "作者已登录，且存在一篇其他作者创建的文章",
+    "steps": [
+      "发送DELETE请求到 /api/articles/{他人文章ID}",
+      "验证返回状态码和错误信息"
+    ],
+    "expected": "状态码403，提示无权限删除他人文章",
+    "method": "负向测试，权限矩阵"
+  },
+  {
+    "id": 5,
+    "title": "编辑审核评论为通过",
+    "precondition": "编辑已登录，且存在一条待审核的评论",
+    "steps": [
+      "发送PATCH请求到 /api/comments/{评论ID}/approve",
+      "验证返回状态码和评论状态"
+    ],
+    "expected": "状态码200，评论状态变为已通过",
+    "method": "正向测试，权限矩阵"
+  },
+  {
+    "id": 6,
+    "title": "编辑尝试新建用户",
+    "precondition": "编辑已登录",
+    "steps": [
+      "发送POST请求到 /api/users，包含用户名和密码",
+      "验证返回状态码和错误信息"
+    ],
+    "expected": "状态码403，提示无权限创建用户",
+    "method": "负向测试，权限矩阵"
+  },
+  {
+    "id": 7,
+    "title": "编辑尝试修改站点设置",
+    "precondition": "编辑已登录",
+    "steps": [
+      "发送PUT请求到 /api/settings，请求体包含站点名称",
+      "验证返回状态码和错误信息"
+    ],
+    "expected": "状态码403，提示无权限修改站点设置",
+    "method": "负向测试，权限矩阵"
+  },
+  {
+    "id": 8,
+    "title": "作者编辑文章时文章ID不存在",
+    "precondition": "作者已登录，且数据库不存在指定ID的文章",
+    "steps": [
+      "发送PUT请求到 /api/articles/99999，请求体包含内容",
+      "验证返回状态码和错误信息"
+    ],
+    "expected": "状态码404，提示文章不存在",
+    "method": "异常测试，边界值"
+  },
+  {
+    "id": 9,
+    "title": "编辑审核评论时评论ID不存在",
+    "precondition": "编辑已登录，且数据库不存在指定ID的评论",
+    "steps": [
+      "发送PATCH请求到 /api/comments/88888/approve",
+      "验证返回状态码和错误信息"
+    ],
+    "expected": "状态码404，提示评论不存在",
+    "method": "异常测试，边界值"
+  },
+  {
+    "id": 10,
+    "title": "未登录用户尝试访问编辑接口",
+    "precondition": "用户未登录或token无效",
+    "steps": [
+      "发送PATCH请求到 /api/comments/1/approve（无需登录）",
+      "验证返回状态码"
+    ],
+    "expected": "状态码401，要求提供有效身份凭证",
+    "method": "异常测试，安全性"
+  }
+]

@@ -1,0 +1,103 @@
+[
+  {
+    "id": "TC-01",
+    "title": "匿名用户获取已发布文章列表，验证返回公开字段且无敏感信息",
+    "precondition": "存在至少两篇已发布文章，其中一篇文章作者有设置电子邮件地址",
+    "steps": [
+      "以匿名身份发送 GET 请求到 /wp-json/wp/v2/posts"
+    ],
+    "expected": "返回状态码 200；返回文章列表；每篇文章对象包含 id, title, excerpt, link 等公开字段；不包含作者电子邮件 (_author_email) 或用户邮箱等敏感信息",
+    "method": "等价类划分（有效访问）"
+  },
+  {
+    "id": "TC-02",
+    "title": "匿名用户获取单篇已发布文章详情，验证内容正确且无敏感字段",
+    "precondition": "存在一篇已发布文章，ID 为 1",
+    "steps": [
+      "以匿名身份发送 GET 请求到 /wp-json/wp/v2/posts/1"
+    ],
+    "expected": "返回状态码 200；返回文章对象，包含 content, title 等字段；不包含作者邮箱或 IP 等内部信息",
+    "method": "等价类划分（有效单个资源）"
+  },
+  {
+    "id": "TC-03",
+    "title": "匿名用户获取未发布文章（草稿/私密），应返回 404 或 403",
+    "precondition": "存在一篇状态为 'draft' 或 'private' 的文章，ID 为 2，属于某个作者",
+    "steps": [
+      "以匿名身份发送 GET 请求到 /wp-json/wp/v2/posts/2"
+    ],
+    "expected": "返回状态码 404 或 403；不暴露文章任意内容",
+    "method": "错误推测法（权限不足）"
+  },
+  {
+    "id": "TC-04",
+    "title": "匿名用户获取公开文章下的评论列表，验证限制敏感字段暴露",
+    "precondition": "一篇已发布文章 ID 1 下有两条公开评论，评论者提供了邮箱（设置中允许公开）",
+    "steps": [
+      "以匿名身份发送 GET 请求到 /wp-json/wp/v2/comments?post=1"
+    ],
+    "expected": "返回状态码 200；返回评论列表；每条评论不包含作者 IP 或邮箱字段（或邮箱字段内容被屏蔽/不返回），只暴露作者名称、日期、内容等",
+    "method": "等价类划分（嵌套资源验证）"
+  },
+  {
+    "id": "TC-05",
+    "title": "匿名用户获取用户列表，验证仅返回必要公开信息",
+    "precondition": "系统存在至少两个用户，其中一个在个人资料中填写了邮箱地址",
+    "steps": [
+      "以匿名身份发送 GET 请求到 /wp-json/wp/v2/users"
+    ],
+    "expected": "返回状态码 200；返回用户数组；每个用户对象包含 id, name, slug, link 等公开字段；不包含用户邮箱、注册 IP 或密码相关信息",
+    "method": "等价类划分（集合资源字段过滤）"
+  },
+  {
+    "id": "TC-06",
+    "title": "匿名用户获取单个用户信息，验证不暴露敏感字段",
+    "precondition": "存在用户 ID 为 3，该用户有设置电子邮件",
+    "steps": [
+      "以匿名身份发送 GET 请求到 /wp-json/wp/v2/users/3"
+    ],
+    "expected": "返回状态码 200；返回用户对象包含 id, name, avatar_url 等，但 email 字段不存在或为空白，不包含密码哈希等",
+    "method": "错误推测法（字段泄露风险）"
+  },
+  {
+    "id": "TC-07",
+    "title": "匿名用户请求不存在的资源 ID，应返回 404",
+    "precondition": "不存在 ID 为 99999 的文章或用户",
+    "steps": [
+      "以匿名身份发送 GET 请求到 /wp-json/wp/v2/posts/99999",
+      "以匿名身份发送 GET 请求到 /wp-json/wp/v2/users/99999"
+    ],
+    "expected": "两个请求均返回状态码 404 及其内部错误信息（但不泄露系统细节）",
+    "method": "边界值分析（无效 ID）"
+  },
+  {
+    "id": "TC-08",
+    "title": "匿名用户访问需要认证的端点（如设置），应返回 401 或 403",
+    "precondition": "WordPress 默认配置，/wp-json/wp/v2/settings 需要认证",
+    "steps": [
+      "以匿名身份发送 GET 请求到 /wp-json/wp/v2/settings"
+    ],
+    "expected": "返回状态码 401 或 403，响应指出无权访问",
+    "method": "错误推测法（越权访问）"
+  },
+  {
+    "id": "TC-09",
+    "title": "匿名用户使用分页参数获取文章，验证字段泄露限制在分页场景下依然有效",
+    "precondition": "存在 15 篇已发布文章，且其中一篇文章作者隐藏了某些信息",
+    "steps": [
+      "以匿名身份发送 GET 请求到 /wp-json/wp/v2/posts?per_page=5&page=2"
+    ],
+    "expected": "返回状态码 200；第二页包含 5 篇文章；所有文章不包含作者邮箱等受限字段；分页头信息正确 (X-WP-TotalPages 等)",
+    "method": "边界值分析（分页参数）"
+  },
+  {
+    "id": "TC-10",
+    "title": "匿名用户通过上下文参数修改响应格式，验证敏感字段不会被嵌入",
+    "precondition": "存在一篇已发布文章 ID 1，且存在对应的作者数据",
+    "steps": [
+      "以匿名身份发送 GET 请求到 /wp-json/wp/v2/posts/1?context=edit"
+    ],
+    "expected": "返回状态码 401 或 403，或忽略 context 参数只返回 view 上下文字段（不暴露编辑所需的额外敏感数据）",
+    "method": "错误推测法（参数篡改）"
+  }
+]

@@ -1,0 +1,92 @@
+[
+  {
+    "id": "TC-001",
+    "title": "正向-有效status参数且默认per_page",
+    "precondition": "无",
+    "steps": [
+      "发送GET请求，查询参数status='published'"
+    ],
+    "expected": "响应状态码200，返回默认分页的文章列表",
+    "method": "等价类划分"
+  },
+  {
+    "id": "TC-002",
+    "title": "边界值-per_page最小值1",
+    "precondition": "无",
+    "steps": [
+      "发送GET请求，查询参数status='published', per_page=1"
+    ],
+    "expected": "响应状态码200，返回1条文章数据",
+    "method": "边界值分析"
+  },
+  {
+    "id": "TC-003",
+    "title": "边界值-per_page最大值100",
+    "precondition": "无",
+    "steps": [
+      "发送GET请求，查询参数status='published', per_page=100"
+    ],
+    "expected": "响应状态码200，返回最多100条文章数据",
+    "method": "边界值分析"
+  },
+  {
+    "id": "TC-004",
+    "title": "非法边界-per_page=0",
+    "precondition": "无",
+    "steps": [
+      "发送GET请求，查询参数status='published', per_page=0"
+    ],
+    "expected": "响应状态码400，错误信息提示per_page不能小于1",
+    "method": "边界值分析"
+  },
+  {
+    "id": "TC-005",
+    "title": "非法边界-per_page=101",
+    "precondition": "无",
+    "steps": [
+      "发送GET请求，查询参数status='published', per_page=101"
+    ],
+    "expected": "响应状态码400，错误信息提示per_page不能超过100",
+    "method": "边界值分析"
+  },
+  {
+    "id": "TC-006",
+    "title": "负向-非法status值",
+    "precondition": "无",
+    "steps": [
+      "发送GET请求，查询参数status='invalid_status', per_page=10"
+    ],
+    "expected": "响应状态码400，错误信息提示status值无效",
+    "method": "等价类划分"
+  },
+  {
+    "id": "TC-007",
+    "title": "负向-非法文章ID格式",
+    "precondition": "无",
+    "steps": [
+      "发送GET请求，查询参数article_id='xyz', status='published'"
+    ],
+    "expected": "响应状态码400，错误信息提示文章ID格式错误",
+    "method": "等价类划分"
+  },
+  {
+    "id": "TC-008",
+    "title": "负向-per_page为负数",
+    "precondition": "无",
+    "steps": [
+      "发送GET请求，查询参数status='published', per_page=-1"
+    ],
+    "expected": "响应状态码400，错误信息提示per_page必须为正整数",
+    "method": "错误推测"
+  },
+  {
+    "id": "TC-009",
+    "title": "负向-per_page为非整数",
+    "precondition": "无",
+    "steps": [
+      "发送GET请求，查询参数status='published', per_page=1.5"
+    ],
+    "expected": "响应状态码400，错误信息提示per_page格式错误",
+    "method": "错误推测"
+  }
+]

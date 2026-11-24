@@ -1,0 +1,74 @@
+[
+  {
+    "id": "TC001",
+    "title": "管理员使用正确用户名和密码成功登录",
+    "precondition": "存在已激活的管理员账号（如：admin/admin123）；用户处于未登录状态，访问 /wp-login.php",
+    "steps": ["在 #user_login 输入 'admin'", "在 #user_pass 输入 'admin123'", "点击 #wp-submit"],
+    "expected": "跳转至 WordPress 后台仪表盘（/wp-admin/），页面无 #login_error 元素显示",
+    "method": "等价类划分（有效等价类）"
+  },
+  {
+    "id": "TC002",
+    "title": "密码错误时显示明确错误提示",
+    "precondition": "存在管理员账号 'admin'；用户访问 /wp-login.php",
+    "steps": ["在 #user_login 输入 'admin'", "在 #user_pass 输入 'wrongpass'", "点击 #wp-submit"],
+    "expected": "页面保留在 /wp-login.php，#login_error 元素可见且文本包含 '用户名或密码错误' 或类似提示",
+    "method": "等价类划分（无效等价类-密码错误）"
+  },
+  {
+    "id": "TC003",
+    "title": "用户名为空时拒绝提交并提示",
+    "precondition": "用户访问 /wp-login.php",
+    "steps": ["清空 #user_login 字段", "在 #user_pass 输入 'admin123'", "点击 #wp-submit"],
+    "expected": "页面保留在 /wp-login.php，#login_error 元素可见且文本提示用户名不能为空或类似信息",
+    "method": "边界值分析 + 等价类划分（空字符串边界）"
+  },
+  {
+    "id": "TC004",
+    "title": "用户名仅含空白字符时视为无效",
+    "precondition": "用户访问 /wp-login.php",
+    "steps": ["在 #user_login 输入 '   '", "在 #user_pass 输入 'admin123'", "点击 #wp-submit"],
+    "expected": "页面保留在 /wp-login.php，#login_error 元素可见且提示用户名不能为空或无效",
+    "method": "边界值分析（空白字符边界）"
+  },
+  {
+    "id": "TC005",
+    "title": "密码为空时拒绝登录并提示",
+    "precondition": "用户访问 /wp-login.php",
+    "steps": ["在 #user_login 输入 'admin'", "清空 #user_pass 字段", "点击 #wp-submit"],
+    "expected": "页面保留在 /wp-login.php，#login_error 元素可见且提示密码不能为空或类似信息",
+    "method": "等价类划分（无效等价类-空密码）"
+  },
+  {
+    "id": "TC006",
+    "title": "超长用户名（>60字符）触发前端/后端校验（若存在）或至少不崩溃",
+    "precondition": "用户访问 /wp-login.php",
+    "steps": ["在 #user_login 输入 65 个 'a'", "在 #user_pass 输入 'admin123'", "点击 #wp-submit"],
+    "expected": "页面不崩溃；若后端有长度限制则显示合理错误提示（如'用户名过长'）；否则按常规逻辑处理（如失败提示）",
+    "method": "边界值分析（上边界+健壮性测试）"
+  },
+  {
+    "id": "TC007",
+    "title": "SQL注入尝试（用户名输入 'admin' OR '1'='1）不导致登录绕过或报错泄露敏感信息",
+    "precondition": "用户访问 /wp-login.php",
+    "steps": ["在 #user_login 输入 \"admin' OR '1'='1\"", "在 #user_pass 输入 'anything'", "点击 #wp-submit"],
+    "expected": "登录失败，#login_error 显示通用错误（如'用户名或密码错误'），无数据库错误堆栈、无500响应、无异常重定向",
+    "method": "错误推测法（安全测试）"
+  },
+  {
+    "id": "TC008",
+    "title": "XSS尝试（用户名输入 <script>alert(1)</script>）不触发脚本执行且错误提示被正确转义",
+    "precondition": "用户访问 /wp-login.php",
+    "steps": ["在 #user_login 输入 \"<script>alert(1)</script>\"", "在 #user_pass 输入 'admin123'", "点击 #wp-submit"],
+    "expected": "登录失败，#login_error 文本中该脚本字符串被HTML转义显示为纯文本（如 &lt;script&gt;alert(1)&lt;/script&gt;），无弹窗，无DOM XSS",
+    "method": "错误推测法（安全测试）"
+  },
+  {
+    "id": "TC009",
+    "title": "连续5次错误登录后仍可继续尝试（验证无当前限流机制）",
+    "precondition": "用户访问 /wp-login.php；无会话或IP级锁定",
+    "steps": ["重复执行 TC002 步骤共5次（每次均用错误密码）", "第6次输入正确凭据：'admin' + 'admin123'", "点击 #wp-submit"],
+    "expected": "第6次提交后成功登录至后台（/wp-admin/），验证系统未因前5次失败而阻止本次有效登录",
+    "method": "场景法（多步骤状态流转）"
+  }
+]

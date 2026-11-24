@@ -1,0 +1,157 @@
+[
+  {
+    "model": "DeepSeek-V4.1-Flash",
+    "n": 20,
+    "class_rate": 100.0,
+    "url_ok_rate": 65.0,
+    "assert_rate": 100.0,
+    "runnable_k": 13,
+    "runnable_rate": 65.0,
+    "runnable_ci": [
+      43.3,
+      81.9
+    ],
+    "detail": [
+      {
+        "id": "TC-AUTH-001",
+        "has_class": true,
+        "url_ok": false,
+        "asserts": 2,
+        "runnable": false
+      },
+      {
+        "id": "TC-AUTH-002",
+        "has_class": true,
+        "url_ok": false,
+        "asserts": 1,
+        "runnable": false
+      },
+      {
+        "id": "TC-POST-001",
+        "has_class": true,
+        "url_ok": true,
+        "asserts": 1,
+        "runnable": true
+      },
+      {
+        "id": "TC-POST-002",
+        "has_class": true,
+        "url_ok": false,
+        "asserts": 3,
+        "runnable": false
+      },
+      {
+        "id": "TC-MEDIA-001",
+        "has_class": true,
+        "url_ok": true,
+        "asserts": 4,
+        "runnable": true
+      },
+      {
+        "id": "TC-COMM-001",
+        "has_class": true,
+        "url_ok": true,
+        "asserts": 3,
+        "runnable": true
+      },
+      {
+        "id": "TC-API-001",
+        "has_class": true,
+        "url_ok": false,
+        "asserts": 3,
+        "runnable": false
+      },
+      {
+        "id": "TC-PERM-001",
+        "has_class": true,
+        "url_ok": true,
+        "asserts": 2,
+        "runnable": true
+      },
+      {
+        "id": "TC-PERM-002",
+        "has_class": true,
+        "url_ok": true,
+        "asserts": 1,
+        "runnable": true
+      },
+      {
+        "id": "TC-SET-001",
+        "has_class": true,
+        "url_ok": true,
+        "asserts": 1,
+        "runnable": true
+      },
+      {
+        "id": "TC-AUTH-005",
+        "has_class": true,
+        "url_ok": false,
+        "asserts": 1,
+        "runnable": false
+      },
+      {
+        "id": "TC-POST-003",
+        "has_class": true,
+        "url_ok": false,
+        "asserts": 2,
+        "runnable": false
+      },
+      {
+        "id": "TC-POST-006",
+        "has_class": true,
+        "url_ok": true,
+        "asserts": 3,
+        "runnable": true
+      },
+      {
+        "id": "TC-MEDIA-002",
+        "has_class": true,
+        "url_ok": false,
+        "asserts": 3,
+        "runnable": false
+      },
+      {
+        "id": "TC-COMM-004",
+        "has_class": true,
+        "url_ok": true,
+        "asserts": 3,
+        "runnable": true
+      },
+      {
+        "id": "TC-API-004",
+        "has_class": true,
+        "url_ok": true,
+        "asserts": 4,
+        "runnable": true
+      },
+      {
+        "id": "TC-PERM-004",
+        "has_class": true,
+        "url_ok": true,
+        "asserts": 3,
+        "runnable": true
+      },
+      {
+        "id": "TC-PERM-005",
+        "has_class": true,
+        "url_ok": true,
+        "asserts": 5,
+        "runnable": true
+      },
+      {
+        "id": "TC-SET-002",
+        "has_class": true,
+        "url_ok": true,
+        "asserts": 3,
+        "runnable": true
+      },
+      {
+        "id": "TC-POST-007",
+        "has_class": true,
+        "url_ok": true,
+        "asserts": 2,
+        "runnable": true
+      }
+    ]
+  }
+]

@@ -1,0 +1,8 @@
+[
+  {
+    "id": "D-08",
+    "case": "探索性",
+    "gold": "系统缺陷",
+    "log": "未登录访问 /?author=1 返回 301，Location: http://localhost:8080/author/admin/；/?author=2 跳转 /author/editor/。"
+  }
+]

@@ -1,0 +1,60 @@
+{
+  "summary": {
+    "features": 6,
+    "generated_cases": 56,
+    "valid_json_rate": 100.0,
+    "field_complete_rate": 100.0,
+    "human_overlap_rate": 8.9,
+    "new_cases": 51
+  },
+  "detail": [
+    {
+      "valid_json": true,
+      "count": 8,
+      "fields_ok": 8,
+      "overlap": 1,
+      "feature": "登录与账号",
+      "id": "R01"
+    },
+    {
+      "valid_json": true,
+      "count": 9,
+      "fields_ok": 9,
+      "overlap": 0,
+      "feature": "内容管理-草稿",
+      "id": "R02"
+    },
+    {
+      "valid_json": true,
+      "count": 10,
+      "fields_ok": 10,
+      "overlap": 0,
+      "feature": "媒体库上传",
+      "id": "R03"
+    },
+    {
+      "valid_json": true,
+      "count": 10,
+      "fields_ok": 10,
+      "overlap": 0,
+      "feature": "评论审核",
+      "id": "R04"
+    },
+    {
+      "valid_json": true,
+      "count": 10,
+      "fields_ok": 10,
+      "overlap": 2,
+      "feature": "REST API 文章接口",
+      "id": "R05"
+    },
+    {
+      "valid_json": true,
+      "count": 9,
+      "fields_ok": 9,
+      "overlap": 2,
+      "feature": "角色权限",
+      "id": "R06"
+    }
+  ]
+}

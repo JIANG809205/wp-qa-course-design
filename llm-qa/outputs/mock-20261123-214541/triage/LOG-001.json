@@ -1,0 +1,10 @@
+```java
+@Test
+public void loginSuccess() {
+    driver.get(BASE_URL + "/wp-login.php");
+    driver.findElement(By.id("user_login")).sendKeys("admin");
+    driver.findElement(By.id("user_pass")).sendKeys("Admin@2026");
+    driver.findElement(By.id("wp-submit")).click();
+    Assert.assertTrue(driver.getCurrentUrl().contains("wp-admin"));
+}
+```

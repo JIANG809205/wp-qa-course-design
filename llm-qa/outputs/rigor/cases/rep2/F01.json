@@ -1,0 +1,133 @@
+```json
+[
+  {
+    "id": "TC-001",
+    "title": "正确用户名与密码正常登录",
+    "precondition": "已存在管理员账号 'admin'，密码为 'P@ssw0rd123'。用户未登录。",
+    "steps": [
+      "1. 访问 /wp-login.php",
+      "2. 在 #user_login 输入 'admin'",
+      "3. 在 #user_pass 输入 'P@ssw0rd123'",
+      "4. 点击 #wp-submit"
+    ],
+    "expected": "页面跳转至 /wp-admin/ 后台仪表盘，无错误提示",
+    "method": "等价类划分（有效用户名与密码）"
+  },
+  {
+    "id": "TC-002",
+    "title": "正确用户名但密码错误",
+    "precondition": "同上，已知正确用户名 'admin'",
+    "steps": [
+      "1. 访问 /wp-login.php",
+      "2. 在 #user_login 输入 'admin'",
+      "3. 在 #user_pass 输入 'WrongPass123'",
+      "4. 点击 #wp-submit"
+    ],
+    "expected": "留在登录页面，显示错误提示：密码不正确，或不显示用户名错误信息，但提示需重新输入",
+    "method": "等价类划分（无效密码）"
+  },
+  {
+    "id": "TC-003",
+    "title": "不存在用户名登录",
+    "precondition": "已知系统不存在用户 'nonexist'",
+    "steps": [
+      "1. 访问 /wp-login.php",
+      "2. 在 #user_login 输入 'nonexist'",
+      "3. 在 #user_pass 输入任意密码 'Test1234'",
+      "4. 点击 #wp-submit"
+    ],
+    "expected": "留在登录页面，显示错误提示：无效用户名或密码",
+    "method": "等价类划分（无效用户名）"
+  },
+  {
+    "id": "TC-004",
+    "title": "用户名为空",
+    "precondition": "无",
+    "steps": [
+      "1. 访问 /wp-login.php",
+      "2. 保持 #user_login 为空",
+      "3. 在 #user_pass 输入 'P@ssw0rd123'",
+      "4. 点击 #wp-submit"
+    ],
+    "expected": "提示错误：用户名不能为空",
+    "method": "边界值分析（空值）"
+  },
+  {
+    "id": "TC-005",
+    "title": "密码为空",
+    "precondition": "无",
+    "steps": [
+      "1. 访问 /wp-login.php",
+      "2. 在 #user_login 输入 'admin'",
+      "3. 保持 #user_pass 为空",
+      "4. 点击 #wp-submit"
+    ],
+    "expected": "提示错误：密码不能为空",
+    "method": "边界值分析（空值）"
+  },
+  {
+    "id": "TC-006",
+    "title": "用户名和密码均为空",
+    "precondition": "无",
+    "steps": [
+      "1. 访问 /wp-login.php",
+      "2. 保持 #user_login 和 #user_pass 均为空",
+      "3. 点击 #wp-submit"
+    ],
+    "expected": "提示错误：用户名和密码不能为空",
+    "method": "边界值分析（双空值）"
+  },
+  {
+    "id": "TC-007",
+    "title": "用户名最大长度边界（60字符）",
+    "precondition": "创建一个用户名长度为60字符的管理员账号，密码 'Boundary123'",
+    "steps": [
+      "1. 访问 /wp-login.php",
+      "2. 输入60字符长度的用户名",
+      "3. 输入正确密码 'Boundary123'",
+      "4. 点击 #wp-submit"
+    ],
+    "expected": "登录成功，跳转至仪表盘",
+    "method": "边界值分析（最大长度）"
+  },
+  {
+    "id": "TC-008",
+    "title": "密码超长但正确",
+    "precondition": "管理员账号 'admin'，密码设置为100字符的随机复杂字符串",
+    "steps": [
+      "1. 访问 /wp-login.php",
+      "2. 输入 'admin'",
+      "3. 输入100字符正确密码",
+      "4. 点击 #wp-submit"
+    ],
+    "expected": "登录成功，跳转至仪表盘",
+    "method": "边界值（超长密码）"
+  },
+  {
+    "id": "TC-009",
+    "title": "SQL注入尝试作为用户名",
+    "precondition": "无",
+    "steps": [
+      "1. 访问 /wp-login.php",
+      "2. 在 #user_login 输入 ' OR '1'='1' -- ",
+      "3. 在 #user_pass 输入任意值 'test'",
+      "4. 点击 #wp-submit"
+    ],
+    "expected": "登录失败，显示无效用户名或密码，无任何数据泄露，系统正常运行",
+    "method": "错误推测法（SQL注入防护）"
+  },
+  {
+    "id": "TC-010",
+    "title": "XSS脚本尝试作为用户名",
+    "precondition": "无",
+    "steps": [
+      "1. 访问 /wp-login.php",
+      "2. 在 #user_login 输入 <script>alert(1)</script>",
+      "3. 在 #user_pass 输入任意值 'test'",
+      "4. 点击 #wp-submit"
+    ],
+    "expected": "无弹窗，页面正常显示错误提示，输入内容被转义或过滤",
+    "method": "错误推测法（XSS防护）"
+  }
+]
+```

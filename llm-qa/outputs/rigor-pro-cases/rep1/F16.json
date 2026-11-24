@@ -1,0 +1,107 @@
+```json
+[
+  {
+    "id": "TC-01",
+    "title": "匿名获取已发布文章列表-返回公开字段",
+    "precondition": "无",
+    "steps": [
+      "发送 GET 请求到 /wp-json/wp/v2/posts"
+    ],
+    "expected": "返回200 OK；响应体为JSON数组，仅包含已发布状态的文章，每个文章对象包含id、title、excerpt、link等公开字段，不包含sticky、password等受限属性",
+    "method": "等价类划分"
+  },
+  {
+    "id": "TC-02",
+    "title": "匿名获取单个公开文章-返回完整公开内容",
+    "precondition": "存在至少一篇已发布文章，ID已知",
+    "steps": [
+      "发送 GET 请求到 /wp-json/wp/v2/posts/{公开文章ID}"
+    ],
+    "expected": "返回200 OK；响应体为单个文章对象，包含title.content.rendered等字段，content长度合理，不含草稿或私密状态标记",
+    "method": "正面测试"
+  },
+  {
+    "id": "TC-03",
+    "title": "匿名获取评论列表-仅返回已批准评论",
+    "precondition": "至少有一条已批准评论关联公开文章",
+    "steps": [
+      "发送 GET 请求到 /wp-json/wp/v2/comments"
+    ],
+    "expected": "返回200 OK；仅包含comment_approved为1的评论，每个评论对象含id、content.rendered、author_name等公开信息，不应出现author_email或author_IP",
+    "method": "等价类划分"
+  },
+  {
+    "id": "TC-04",
+    "title": "匿名获取用户列表-仅暴露公开字段",
+    "precondition": "至少存在一个用户",
+    "steps": [
+      "发送 GET 请求到 /wp-json/wp/v2/users"
+    ],
+    "expected": "返回200 OK；每个用户对象包含id、name、avatar_urls等公开字段，不得包含email、capabilities、registered_date等敏感字段",
+    "method": "安全测试"
+  },
+  {
+    "id": "TC-05",
+    "title": "匿名获取私密文章-应被排除或返回404",
+    "precondition": "存在一篇状态为private或pending的文章",
+    "steps": [
+      "发送 GET 请求到 /wp-json/wp/v2/posts/{私密文章ID}"
+    ],
+    "expected": "返回404 Not Found 或 200 但列表中不包含该文章；不得泄露私密文章的任何内容",
+    "method": "负面测试"
+  },
+  {
+    "id": "TC-06",
+    "title": "匿名获取未批准评论-应被过滤",
+    "precondition": "存在一条未批准或被标记为垃圾的评论",
+    "steps": [
+      "发送 GET 请求到 /wp-json/wp/v2/comments"
+    ],
+    "expected": "返回200 OK；列表中不包含未批准或垃圾评论，即使直接请求该评论ID也应返回404",
+    "method": "负面测试"
+  },
+  {
+    "id": "TC-07",
+    "title": "匿名使用_fields参数获取用户邮箱-应被忽略或报错",
+    "precondition": "无",
+    "steps": [
+      "发送 GET 请求到 /wp-json/wp/v2/users?_fields=id,name,email"
+    ],
+    "expected": "返回200 OK；响应中email字段不存在或值为空，或返回400/403提示无权请求该字段；不允许匿名获取邮箱",
+    "method": "安全测试"
+  },
+  {
+    "id": "TC-08",
+    "title": "匿名请求不存在资源-返回404",
+    "precondition": "无",
+    "steps": [
+      "发送 GET 请求到 /wp-json/wp/v2/posts/99999999",
+      "发送 GET 请求到 /wp-json/wp/v2/users/0"
+    ],
+    "expected": "均返回404 Not Found，响应体为标准的WP REST错误消息，不应返回空对象或200",
+    "method": "边界值分析"
+  },
+  {
+    "id": "TC-09",
+    "title": "匿名分页获取文章列表-边界页码处理",
+    "precondition": "文章数量多于每页限制",
+    "steps": [
+      "发送 GET 请求到 /wp-json/wp/v2/posts?page=0",
+      "发送 GET 请求到 /wp-json/wp/v2/posts?page=-1",
+      "发送 GET 请求到 /wp-json/wp/v2/posts?page=9999"
+    ],
+    "expected": "page=0或-1返回第一页数据或400错误；page=9999返回空数组或404，不应返回非最后一页数据",
+    "method": "边界值分析"
+  },
+  {
+    "id": "TC-10",
+    "title": "匿名使用非法查询参数-返回400错误",
+    "precondition": "无",
+    "steps": [
+      "发送 GET 请求到 /wp-json/wp/v2/posts?invalid_param=abc"
+    ],
+    "expected": "返回400 Bad Request，包含错误码rest_invalid_param，不应造成服务器错误或静默忽略",
+    "method": "异常测试"
+  }
+]
+```

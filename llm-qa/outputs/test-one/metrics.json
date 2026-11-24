@@ -1,0 +1,14 @@
+{
+  "provider": "dashscope",
+  "model": "deepseek-v4.1-flash",
+  "temperature": 0.2,
+  "time": "20261123-215106",
+  "cases": {
+    "features": 6,
+    "generated_cases": 0,
+    "valid_json_rate": 0.0,
+    "field_complete_rate": 0,
+    "human_overlap_rate": 0,
+    "new_cases": 0
+  }
+}

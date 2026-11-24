@@ -1,0 +1,82 @@
+[
+  {
+    "id": "TC001",
+    "title": "匿名用户成功获取已发布文章列表（默认分页）",
+    "precondition": "系统中存在至少3条状态为'publish'的文章",
+    "steps": ["发送 GET 请求至 /wp-json/wp/v2/posts"],
+    "expected": "响应状态码200；返回JSON数组，每项包含'id'、'status':'publish'、'title'等字段；默认per_page=10，返回不超过10条已发布文章",
+    "method": "等价类划分"
+  },
+  {
+    "id": "TC002",
+    "title": "匿名用户请求时指定per_page=100，应返回最多100条已发布文章",
+    "precondition": "系统中存在至少100条状态为'publish'的文章",
+    "steps": ["发送 GET 请求至 /wp-json/wp/v2/posts?per_page=100"],
+    "expected": "响应状态码200；返回恰好100条已发布文章（若存在）；无未发布文章混入",
+    "method": "边界值分析"
+  },
+  {
+    "id": "TC003",
+    "title": "匿名用户请求per_page=101，应被截断为100",
+    "precondition": "系统中存在至少100条状态为'publish'的文章",
+    "steps": ["发送 GET 请求至 /wp-json/wp/v2/posts?per_page=101"],
+    "expected": "响应状态码200；实际返回per_page=100（响应头X-WP-TotalPages等与100一致）；不报错",
+    "method": "边界值分析"
+  },
+  {
+    "id": "TC004",
+    "title": "作者使用有效应用密码成功创建publish状态文章",
+    "precondition": "作者账户已启用应用密码；具备'post'能力",
+    "steps": ["构造POST请求至 /wp-json/wp/v2/posts，Header含Authorization: Basic {base64(app_pass)}；Body含{ \"title\": \"Test\", \"status\": \"publish\", \"content\": \"ok\" }"],
+    "expected": "响应状态码201；返回JSON中'status'为'publish'；'author'为该作者ID",
+    "method": "等价类划分"
+  },
+  {
+    "id": "TC005",
+    "title": "投稿者使用应用密码尝试创建publish状态文章，应被拒绝",
+    "precondition": "投稿者账户已启用应用密码；不具备publish文章权限",
+    "steps": ["构造POST请求至 /wp-json/wp/v2/posts，Header含Authorization: Basic {base64(app_pass)}；Body含{ \"title\": \"Test\", \"status\": \"publish\", \"content\": \"ok\" }"],
+    "expected": "响应状态码401或403；响应体含错误代码如'rest_cannot_publish_post'或'woocommerce_rest_cannot_create'；不创建文章",
+    "method": "错误推测法"
+  },
+  {
+    "id": "TC006",
+    "title": "投稿者使用应用密码创建draft状态文章，应成功",
+    "precondition": "投稿者账户已启用应用密码；具备'draft'创建权限",
+    "steps": ["构造POST请求至 /wp-json/wp/v2/posts，Header含Authorization: Basic {base64(app_pass)}；Body含{ \"title\": \"Draft Test\", \"status\": \"draft\", \"content\": \"ok\" }"],
+    "expected": "响应状态码201；返回JSON中'status'为'draft'；'author'为该投稿者ID",
+    "method": "等价类划分"
+  },
+  {
+    "id": "TC007",
+    "title": "匿名用户请求包含未发布文章（如draft/private）的查询，不应返回",
+    "precondition": "系统中存在1条publish文章和1条draft文章",
+    "steps": ["发送 GET 请求至 /wp-json/wp/v2/posts"],
+    "expected": "响应状态码200；仅返回publish文章（1条）；draft文章不可见",
+    "method": "场景法"
+  },
+  {
+    "id": "TC008",
+    "title": "未认证用户尝试POST创建文章，应拒绝",
+    "precondition": "无有效认证凭据",
+    "steps": ["构造POST请求至 /wp-json/wp/v2/posts，无Authorization Header；Body含{ \"title\": \"NoAuth\" }"],
+    "expected": "响应状态码401；响应体含'jwt_auth_invalid_token'或'rest_not_logged_in'类错误；无文章创建",
+    "method": "错误推测法"
+  },
+  {
+    "id": "TC009",
+    "title": "GET请求携带非法status参数（如status=draft），匿名用户仍只返回publish文章",
+    "precondition": "系统中存在publish和draft文章各1条",
+    "steps": ["发送 GET 请求至 /wp-json/wp/v2/posts?status=draft"],
+    "expected": "响应状态码200；返回内容仍仅为publish文章（1条）；status参数被忽略",
+    "method": "错误推测法"
+  },
+  {
+    "id": "TC010",
+    "title": "per_page为负数或非数字时，应默认为10且不报错",
+    "precondition": "系统中存在至少10条publish文章",
+    "steps": ["发送 GET 请求至 /wp-json/wp/v2/posts?per_page=-5", "发送 GET 请求至 /wp-json/wp/v2/posts?per_page=abc"],
+    "expected": "两次响应状态码均为200；均返回10条publish文章（默认值）；无服务端错误",
+    "method": "边界值分析+错误推测法"
+  }
+]

@@ -1,0 +1,122 @@
+[
+  {
+    "id": "CHK-01",
+    "title": "REST per_page 超过上限",
+    "expect": "400/限制为100",
+    "actual": "HTTP 400",
+    "status": "PASS",
+    "evidence": "{\"code\":\"rest_invalid_param\",\"message\":\"\\u65e0\\u6548\\u53c2\\u6570\\uff1aper_page\",\"data\":{\"status\":400,\"params\":{\"per_page\":\"per_page \\u5fc5\\u987b\\u4ecb\\u4e8e1\\uff08\\u542b\\uff09\\u548c100\\uff08\\u542b\\uff"
+  },
+  {
+    "id": "CHK-02",
+    "title": "REST per_page=0",
+    "expect": "400 或使用默认值",
+    "actual": "HTTP 400",
+    "status": "PASS",
+    "evidence": "{\"code\":\"rest_invalid_param\",\"message\":\"\\u65e0\\u6548\\u53c2\\u6570\\uff1aper_page\",\"data\":{\"status\":400,\"params\":{\"per_page\":\"per_page \\u5fc5\\u987b\\u4ecb\\u4e8e1\\uff08\\u542b\\uff09\\u548c100\\uff08\\u542b\\uff"
+  },
+  {
+    "id": "CHK-03",
+    "title": "REST 非法 status 参数",
+    "expect": "400 且返回结构化错误",
+    "actual": "HTTP 400",
+    "status": "PASS",
+    "evidence": "{\"code\":\"rest_invalid_param\",\"message\":\"\\u65e0\\u6548\\u53c2\\u6570\\uff1astatus\",\"data\":{\"status\":400,\"params\":{\"status\":\"\\u72b6\\u6001\\u88ab\\u7981\\u6b62\\u3002\"},\"details\":{\"status\":{\"code\":\"rest_forbidde"
+  },
+  {
+    "id": "CHK-04",
+    "title": "匿名读取文章列表是否泄漏非公开内容",
+    "expect": "仅 publish",
+    "actual": "仅 publish",
+    "status": "PASS",
+    "evidence": "[\"publish\"]"
+  },
+  {
+    "id": "CHK-05",
+    "title": "匿名创建文章",
+    "expect": "401",
+    "actual": "HTTP 401",
+    "status": "PASS",
+    "evidence": "{\"code\":\"rest_cannot_create\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u4e3a\\u6b64\\u7528\\u6237\\u521b\\u5efa\\u6587\\u7ae0\\u3002\",\"data\":{\"status\":401}}"
+  },
+  {
+    "id": "CHK-06",
+    "title": "作者身份创建用户",
+    "expect": "401/403",
+    "actual": "HTTP 400",
+    "status": "DEFECT",
+    "evidence": "{\"code\":\"rest_missing_callback_param\",\"message\":\"\\u7f3a\\u5c11\\u53c2\\u6570\\uff1aemail\",\"data\":{\"status\":400,\"params\":[\"email\"]}}"
+  },
+  {
+    "id": "CHK-07",
+    "title": "未认证读取用户列表",
+    "expect": "不应暴露内部字段",
+    "actual": "HTTP 200，字段 ['_links', 'avatar_urls', 'description', 'id', 'link', 'meta', 'name', 'slug', 'url']",
+    "status": "OBSERVE",
+    "evidence": "[{\"id\":1,\"name\":\"admin\",\"url\":\"http:\",\"description\":\"\",\"link\":\"http:\\/\\/localhost:8080\\/author\\/admin\\/\",\"slug\":\"admin\",\"avatar_urls\":{\"24\":\"https:\\/\\/secure.gravatar.com\\/avatar\\/258d8dc916db8cea2caf"
+  },
+  {
+    "id": "CHK-08",
+    "title": "安全响应头",
+    "expect": "应设置常见安全头",
+    "actual": "缺失 ['X-Frame-Options', 'X-Content-Type-Options', 'Referrer-Policy', 'Permissions-Policy']",
+    "status": "DEFECT",
+    "evidence": "{'Date': 'Mon, 23 Nov 2026 14:28:26 GMT', 'Server': 'Apache/2.4.52 (Ubuntu)', 'Link': '<http://localhost:8080/wp-json/>; rel=\"https://api.w.org/\"', 'Vary': 'Accept-Encoding', 'Content-Encoding': 'gzip', 'Content-Length': '13130', 'Keep-Alive': 'timeout=5, max=99', 'Connection': 'Keep-Alive', 'Conten"
+  },
+  {
+    "id": "CHK-09",
+    "title": "搜索框 XSS 反射",
+    "expect": "脚本标签被转义",
+    "actual": "已转义/未反射",
+    "status": "PASS",
+    "evidence": "<!DOCTYPE html>\n<html lang=\"zh-Hans\">\n<head>\n\t<meta charset=\"UTF-8\" />\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<meta name='robots' content='noindex, follow, max-image-p"
+  },
+  {
+    "id": "CHK-10",
+    "title": "搜索超长关键词",
+    "expect": "不返回 5xx",
+    "actual": "HTTP 200",
+    "status": "PASS",
+    "evidence": ""
+  },
+  {
+    "id": "CHK-11",
+    "title": "上传 0 字节文件",
+    "expect": "400 拒绝",
+    "actual": "HTTP 500",
+    "status": "PASS",
+    "evidence": "{\"code\":\"rest_upload_unknown_error\",\"message\":\"File is empty. Please upload something more substantial. This error could also be caused by uploads being disabled in your php.ini file or by post_max_si"
+  },
+  {
+    "id": "CHK-12",
+    "title": "上传伪装成 jpg 的 php 文件",
+    "expect": "400 拒绝",
+    "actual": "HTTP 500",
+    "status": "PASS",
+    "evidence": "{\"code\":\"rest_upload_unknown_error\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u4e0a\\u4f20\\u6b64\\u6587\\u4ef6\\u7c7b\\u578b\\u3002\",\"data\":{\"status\":500}}"
+  },
+  {
+    "id": "CHK-13",
+    "title": "上传目录是否可列目录",
+    "expect": "403/404",
+    "actual": "HTTP 200",
+    "status": "DEFECT",
+    "evidence": ""
+  },
+  {
+    "id": "CHK-14",
+    "title": "XML-RPC 是否开放",
+    "expect": "建议关闭（可被用于暴力破解/放大攻击）",
+    "actual": "HTTP 200",
+    "status": "OBSERVE",
+    "evidence": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<methodResponse>\n  <params>\n    <param>\n      <value>\n      <array><data>\n  <value><string>system.multicall</string></value>\n  <value><string>system.listMethods<"
+  },
+  {
+    "id": "CHK-15",
+    "title": "连续 6 次错误密码是否触发限制",
+    "expect": "应出现锁定/验证码/429",
+    "actual": "连续返回 [200, 200, 200, 200, 200]，无锁定",
+    "status": "DEFECT",
+    "evidence": ""
+  }
+]

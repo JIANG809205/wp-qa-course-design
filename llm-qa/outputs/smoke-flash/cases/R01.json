@@ -1,0 +1,110 @@
+[
+  {
+    "id": "TC-01",
+    "title": "管理员使用正确用户名和密码登录成功",
+    "precondition": "管理员账号已存在且处于启用状态，浏览器已打开 /wp-login.php",
+    "steps": [
+      "在 #user_login 输入管理员正确用户名",
+      "在 #user_pass 输入对应正确密码",
+      "点击 #wp-submit"
+    ],
+    "expected": "登录成功并跳转至后台仪表盘，页面不显示 #login_error，管理员会话建立",
+    "method": "等价类划分、场景法"
+  },
+  {
+    "id": "TC-02",
+    "title": "密码错误时显示登录失败提示且不进入后台",
+    "precondition": "管理员账号已存在，浏览器已打开 /wp-login.php",
+    "steps": [
+      "在 #user_login 输入管理员正确用户名",
+      "在 #user_pass 输入错误密码",
+      "点击 #wp-submit"
+    ],
+    "expected": "停留在登录页，显示 #login_error，提示用户名或密码不正确，不建立管理员会话，不进入后台",
+    "method": "等价类划分、错误推测"
+  },
+  {
+    "id": "TC-03",
+    "title": "用户名为空时提交登录",
+    "precondition": "浏览器已打开 /wp-login.php",
+    "steps": [
+      "清空 #user_login",
+      "在 #user_pass 输入任意密码",
+      "点击 #wp-submit"
+    ],
+    "expected": "停留在登录页，显示 #login_error，提示用户名不能为空，不建立登录会话",
+    "method": "边界值分析、等价类划分"
+  },
+  {
+    "id": "TC-04",
+    "title": "用户名和密码均为空时提交登录",
+    "precondition": "浏览器已打开 /wp-login.php",
+    "steps": [
+      "清空 #user_login",
+      "清空 #user_pass",
+      "点击 #wp-submit"
+    ],
+    "expected": "停留在登录页，显示 #login_error，至少提示用户名不能为空，不建立登录会话",
+    "method": "边界值分析、错误推测"
+  },
+  {
+    "id": "TC-05",
+    "title": "用户名仅包含空格时提交登录",
+    "precondition": "管理员账号已存在，浏览器已打开 /wp-login.php",
+    "steps": [
+      "在 #user_login 输入若干空格",
+      "在 #user_pass 输入管理员正确密码",
+      "点击 #wp-submit"
+    ],
+    "expected": "登录失败，停留在登录页并显示 #login_error，不建立管理员会话",
+    "method": "边界值分析、异常场景"
+  },
+  {
+    "id": "TC-06",
+    "title": "密码大小写不一致时登录失败",
+    "precondition": "管理员账号已存在，已知正确密码包含大小写字母，浏览器已打开 /wp-login.php",
+    "steps": [
+      "在 #user_login 输入管理员正确用户名",
+      "在 #user_pass 输入与正确密码字母相同但大小写不一致的密码",
+      "点击 #wp-submit"
+    ],
+    "expected": "登录失败，停留在登录页并显示 #login_error，不建立管理员会话",
+    "method": "等价类划分、错误推测"
+  },
+  {
+    "id": "TC-07",
+    "title": "用户名包含 SQL 注入字符串时不能绕过登录",
+    "precondition": "浏览器已打开 /wp-login.php",
+    "steps": [
+      "在 #user_login 输入 ' OR '1'='1",
+      "在 #user_pass 输入任意密码",
+      "点击 #wp-submit"
+    ],
+    "expected": "登录失败并显示 #login_error，页面不出现 SQL 错误或堆栈信息，不建立管理员会话",
+    "method": "错误推测、安全异常场景"
+  },
+  {
+    "id": "TC-08",
+    "title": "提交超长用户名和密码时系统正常处理",
+    "precondition": "浏览器已打开 /wp-login.php",
+    "steps": [
+      "在 #user_login 输入 256 个字符的用户名",
+      "在 #user_pass 输入 256 个字符的密码",
+      "点击 #wp-submit"
+    ],
+    "expected": "页面正常响应且不崩溃，登录失败并显示 #login_error 或输入无效提示，不建立管理员会话",
+    "method": "边界值分析、异常场景"
+  },
+  {
+    "id": "TC-09",
+    "title": "连续多次密码错误后使用正确密码仍可登录",
+    "precondition": "管理员账号已存在且未锁定，浏览器已打开 /wp-login.php",
+    "steps": [
+      "使用管理员正确用户名和错误密码连续提交 5 次",
+      "确认每次失败均显示 #login_error",
+      "使用管理员正确用户名和正确密码提交"
+    ],
+    "expected": "前 5 次均登录失败并显示 #login_error；第 6 次使用正确密码登录成功并进入后台，当前无失败次数锁定限制",
+    "method": "状态迁移、场景法"
+  }
+]

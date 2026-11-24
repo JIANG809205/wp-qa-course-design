@@ -1,0 +1,82 @@
+[
+  {
+    "id": "TC001",
+    "title": "匿名访客成功提交合法评论（正向）",
+    "precondition": "用户未登录，评论表单页面已加载，#comment、#author、#email字段均为空",
+    "steps": ["在#comment中输入'很好！', 在#author中输入'游客A', 在#email中输入'test@example.com', 点击#submit"],
+    "expected": "提交成功，页面提示'评论已提交，等待审核'；数据库comment表新增一条status='pending'的记录",
+    "method": "等价类划分"
+  },
+  {
+    "id": "TC002",
+    "title": "管理员审核通过待审评论（正向）",
+    "precondition": "数据库中存在一条status='pending'的评论记录，管理员已登录后台审核页",
+    "steps": ["管理员在后台找到该评论，点击'通过审核'按钮"],
+    "expected": "评论status更新为'approved'，前台对应文章页可正常展示该评论",
+    "method": "场景法"
+  },
+  {
+    "id": "TC003",
+    "title": "匿名访客提交空评论（负向）",
+    "precondition": "用户未登录，评论表单页面已加载",
+    "steps": ["清空#comment，#author和#email保持默认空值，点击#submit"],
+    "expected": "前端校验拦截，#comment下方显示'评论内容不能为空'，无网络请求发出",
+    "method": "边界值分析+错误推测"
+  },
+  {
+    "id": "TC004",
+    "title": "匿名访客提交超长评论（边界）",
+    "precondition": "用户未登录，评论表单页面已加载",
+    "steps": ["在#comment中输入1001个字符（超过最大长度1000），其他字段合法，点击#submit"],
+    "expected": "前端截断或提示'评论不能超过1000字'；后端拒绝保存，返回400状态码",
+    "method": "边界值分析"
+  },
+  {
+    "id": "TC005",
+    "title": "匿名访客提交非法邮箱格式（负向）",
+    "precondition": "用户未登录，评论表单页面已加载",
+    "steps": ["在#email中输入'invalid-email', 其他字段合法，点击#submit"],
+    "expected": "前端校验失败并提示邮箱格式错误；若绕过前端，后端应拒绝保存并返回校验错误",
+    "method": "等价类划分"
+  },
+  {
+    "id": "TC006",
+    "title": "重复提交相同内容评论（异常）",
+    "precondition": "用户未登录，刚成功提交一条待审评论（内容为'测试'）",
+    "steps": ["立即再次输入完全相同的#comment、#author、#email，点击#submit"],
+    "expected": "后端识别高频/重复提交，返回429或提示'请勿重复提交'，不新增待审记录",
+    "method": "错误推测"
+  },
+  {
+    "id": "TC007",
+    "title": "待审评论未被审核时前台不可见（安全验证）",
+    "precondition": "数据库中存在一条status='pending'的评论，前台文章页已加载",
+    "steps": ["直接访问前台文章页，检查DOM中是否渲染该评论"],
+    "expected": "该评论不在HTML中出现，且API接口/v1/comments?status=approved不返回该条记录",
+    "method": "场景法+安全测试"
+  },
+  {
+    "id": "TC008",
+    "title": "管理员误操作拒绝待审评论（负向）",
+    "precondition": "数据库中存在一条status='pending'的评论，管理员已登录后台审核页",
+    "steps": ["管理员找到该评论，点击'拒绝审核'按钮"],
+    "expected": "评论status更新为'rejected'，前台永不展示，且作者无法再次提交相同内容（需支持防重逻辑）",
+    "method": "场景法"
+  },
+  {
+    "id": "TC009",
+    "title": "网络中断时提交评论（异常）",
+    "precondition": "用户未登录，评论表单填写完整，浏览器开启离线模式",
+    "steps": ["点击#submit"],
+    "expected": "前端捕获网络异常，显示'网络错误，请重试'；本地不缓存未发送数据（或明确提示缓存失败）",
+    "method": "错误推测"
+  },
+  {
+    "id": "TC010",
+    "title": "XSS攻击尝试：评论内容含恶意脚本（安全）",
+    "precondition": "用户未登录，评论表单页面已加载",
+    "steps": ["在#comment中输入'<script>alert(1)</script>', 其他字段合法，点击#submit"],
+    "expected": "前端输出编码或服务端过滤，前台展示纯文本'<script>alert(1)</script>'，不执行JS",
+    "method": "安全测试+错误推测"
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "id": "TC001",
+    "title": "管理员使用正确用户名和密码成功登录",
+    "precondition": "系统正常运行；存在已激活的管理员账户（用户名：admin，密码：Admin@2024）",
+    "steps": ["访问 /wp-login.php", "在 #user_login 输入 'admin'", "在 #user_pass 输入 'Admin@2024'", "点击 #wp-submit"],
+    "expected": "跳转至 /wp-admin/ 仪表盘页面，页面显示管理员欢迎信息且状态码为 302 → 200",
+    "method": "等价类划分（正向）"
+  },
+  {
+    "id": "TC002",
+    "title": "用户名正确但密码错误，登录失败",
+    "precondition": "系统正常运行；存在管理员账户 'admin'，密码为 'Admin@2024'",
+    "steps": ["访问 /wp-login.php", "在 #user_login 输入 'admin'", "在 #user_pass 输入 'wrongpass'", "点击 #wp-submit"],
+    "expected": "停留在 /wp-login.php，显示红色错误提示 '密码错误。请重试。'，HTTP 状态码为 200",
+    "method": "等价类划分（负向）"
+  },
+  {
+    "id": "TC003",
+    "title": "密码正确但用户名不存在，登录失败",
+    "precondition": "系统正常运行；管理员账户 'admin' 存在，无用户 'invaliduser'",
+    "steps": ["访问 /wp-login.php", "在 #user_login 输入 'invaliduser'", "在 #user_pass 输入 'Admin@2024'", "点击 #wp-submit"],
+    "expected": "停留在 /wp-login.php，显示红色错误提示 '未知用户名。请重试。'，HTTP 状态码为 200",
+    "method": "等价类划分（负向）"
+  },
+  {
+    "id": "TC004",
+    "title": "用户名和密码均为空，提交后验证前端与后端校验",
+    "precondition": "系统正常运行；JavaScript 可能启用或禁用",
+    "steps": ["访问 /wp-login.php", "清空 #user_login 和 #user_pass 字段", "点击 #wp-submit"],
+    "expected": "若 JS 启用：前端阻止提交并聚焦 #user_login；若 JS 禁用：后端返回 200 并显示 '请输入用户名。' 和 '请输入密码。' 提示",
+    "method": "边界值分析 + 错误猜测法"
+  },
+  {
+    "id": "TC005",
+    "title": "用户名超长（100字符），密码正常，验证服务端截断或拒绝",
+    "precondition": "系统正常运行；管理员账户 'admin' 存在",
+    "steps": ["访问 /wp-login.php", "在 #user_login 输入 100 个 'a'", "在 #user_pass 输入 'Admin@2024'", "点击 #wp-submit"],
+    "expected": "停留在 /wp-login.php，显示 '未知用户名。请重试。' 或 400 错误；数据库未发生 SQL 注入或崩溃",
+    "method": "边界值分析（上边界）"
+  },
+  {
+    "id": "TC006",
+    "title": "密码含特殊字符（如 'Admin@2024!#$%'），验证兼容性与认证通过",
+    "precondition": "系统正常运行；管理员密码已设为 'Admin@2024!#$%'",
+    "steps": ["访问 /wp-login.php", "在 #user_login 输入 'admin'", "在 #user_pass 输入 'Admin@2024!#$%'", "点击 #wp-submit"],
+    "expected": "成功跳转至 /wp-admin/，仪表盘可正常加载，无乱码或 500 错误",
+    "method": "等价类划分（正向-特殊字符）"
+  },
+  {
+    "id": "TC007",
+    "title": "重复多次错误登录后触发临时锁定（尝试5次失败）",
+    "precondition": "系统启用了默认或插件级暴力防护（如 Limit Login Attempts）",
+    "steps": ["访问 /wp-login.php", "连续5次输入正确用户名+错误密码", "第6次输入正确凭据"],
+    "expected": "第6次提交返回 '您的账户已被暂时锁定，请稍后再试。'；即使凭据正确也无法登录，持续时间≥15分钟",
+    "method": "状态转换测试 + 异常场景"
+  },
+  {
+    "id": "TC008",
+    "title": "CSRF Token 缺失或篡改时 POST 登录请求被拒绝",
+    "precondition": "系统启用 CSRF 防护（wp_nonce_field 存在）",
+    "steps": ["手动构造 POST 请求至 /wp-login.php", "省略 _wpnonce 字段或提供过期/伪造值", "携带正确用户名密码"],
+    "expected": "返回 HTTP 403 或重定向至 /wp-login.php 并显示 '发生错误，请重试。'，不产生会话",
+    "method": "安全测试（异常）"
+  },
+  {
+    "id": "TC009",
+    "title": "登录后 Session Cookie 的 HttpOnly 和 Secure 属性校验（HTTPS 环境下）",
+    "precondition": "系统部署于 HTTPS 环境，WP_HOME/WP_SITEURL 配置为 https://",
+    "steps": ["使用正确凭据登录", "检查响应 Set-Cookie 头中 wordpress_logged_in_XXX Cookie"],
+    "expected": "Cookie 包含 'HttpOnly; Secure; Path=/;' 属性，且未暴露于 document.cookie（JS 不可读）",
+    "method": "配置与安全合规检查（异常/边界）"
+  }
+]

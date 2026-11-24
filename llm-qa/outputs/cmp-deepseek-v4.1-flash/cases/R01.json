@@ -1,0 +1,131 @@
+[
+  {
+    "id": "TC-LOGIN-001",
+    "title": "管理员使用正确用户名和密码登录成功",
+    "precondition": "系统中已存在状态正常的管理员账号；当前浏览器未登录",
+    "steps": [
+      "打开 /wp-login.php",
+      "在 #user_login 输入管理员正确用户名",
+      "在 #user_pass 输入对应正确密码",
+      "点击 #wp-submit"
+    ],
+    "expected": "登录成功并跳转到后台管理页面（如 /wp-admin/），页面显示管理员后台元素；不出现 #login_error 错误提示",
+    "method": "场景法、等价类划分"
+  },
+  {
+    "id": "TC-LOGIN-002",
+    "title": "密码错误时登录失败并显示错误提示",
+    "precondition": "系统中已存在管理员账号；当前浏览器未登录",
+    "steps": [
+      "打开 /wp-login.php",
+      "在 #user_login 输入管理员正确用户名",
+      "在 #user_pass 输入错误密码",
+      "点击 #wp-submit"
+    ],
+    "expected": "停留在 /wp-login.php，显示 #login_error 错误提示，不进入后台管理页面",
+    "method": "等价类划分"
+  },
+  {
+    "id": "TC-LOGIN-003",
+    "title": "用户名不存在时登录失败",
+    "precondition": "当前浏览器未登录；系统不存在该用户名",
+    "steps": [
+      "打开 /wp-login.php",
+      "在 #user_login 输入不存在的用户名",
+      "在 #user_pass 输入任意密码",
+      "点击 #wp-submit"
+    ],
+    "expected": "停留在 /wp-login.php，显示 #login_error 错误提示，不进入后台管理页面",
+    "method": "等价类划分、错误推测"
+  },
+  {
+    "id": "TC-LOGIN-004",
+    "title": "用户名为空时禁止登录",
+    "precondition": "系统中已存在管理员账号；当前浏览器未登录",
+    "steps": [
+      "打开 /wp-login.php",
+      "保持 #user_login 为空",
+      "在 #user_pass 输入正确密码",
+      "点击 #wp-submit"
+    ],
+    "expected": "停留在 /wp-login.php，显示 #login_error 错误提示（用户名不能为空/必填），不进入后台管理页面",
+    "method": "边界值分析"
+  },
+  {
+    "id": "TC-LOGIN-005",
+    "title": "密码为空时禁止登录",
+    "precondition": "系统中已存在管理员账号；当前浏览器未登录",
+    "steps": [
+      "打开 /wp-login.php",
+      "在 #user_login 输入管理员正确用户名",
+      "保持 #user_pass 为空",
+      "点击 #wp-submit"
+    ],
+    "expected": "停留在 /wp-login.php，显示 #login_error 错误提示（密码不能为空/必填），不进入后台管理页面",
+    "method": "边界值分析"
+  },
+  {
+    "id": "TC-LOGIN-006",
+    "title": "密码大小写不匹配时登录失败",
+    "precondition": "系统中已存在管理员账号；知道该账号正确密码；当前浏览器未登录",
+    "steps": [
+      "打开 /wp-login.php",
+      "在 #user_login 输入管理员正确用户名",
+      "在 #user_pass 输入仅大小写与正确密码不同的密码",
+      "点击 #wp-submit"
+    ],
+    "expected": "停留在 /wp-login.php，显示 #login_error 错误提示，不进入后台管理页面",
+    "method": "等价类划分、错误推测"
+  },
+  {
+    "id": "TC-LOGIN-007",
+    "title": "连续多次密码错误后无锁定限制",
+    "precondition": "系统中已存在管理员账号；当前浏览器未登录",
+    "steps": [
+      "打开 /wp-login.php",
+      "连续 5 次输入管理员正确用户名和错误密码并点击 #wp-submit",
+      "每次提交后确认页面显示 #login_error",
+      "第 6 次输入管理员正确用户名和正确密码并点击 #wp-submit"
+    ],
+    "expected": "前 5 次均停留在登录页并显示 #login_error，账号未被锁定；第 6 次使用正确密码可正常登录并进入后台",
+    "method": "场景法、错误推测"
+  },
+  {
+    "id": "TC-LOGIN-008",
+    "title": "登录表单恶意输入被安全处理",
+    "precondition": "当前浏览器未登录",
+    "steps": [
+      "打开 /wp-login.php",
+      "在 #user_login 输入 <script>alert(1)</script> 等脚本/SQL 特殊字符",
+      "在 #user_pass 输入 ' OR '1'='1 等特殊字符",
+      "点击 #wp-submit"
+    ],
+    "expected": "登录失败并停留在登录页，显示 #login_error；页面不执行脚本，不暴露 SQL 错误或系统敏感信息",
+    "method": "错误推测、安全测试"
+  },
+  {
+    "id": "TC-LOGIN-009",
+    "title": "未登录访问后台页面被重定向到登录页",
+    "precondition": "当前浏览器未登录；后台存在受保护页面 /wp-admin/",
+    "steps": [
+      "打开新浏览器会话",
+      "直接访问 /wp-admin/",
+      "观察页面跳转结果"
+    ],
+    "expected": "被重定向到 /wp-login.php，显示登录表单；无法直接访问后台管理内容",
+    "method": "场景法、权限测试"
+  },
+  {
+    "id": "TC-LOGIN-010",
+    "title": "超长用户名和密码输入时系统正常处理",
+    "precondition": "当前浏览器未登录",
+    "steps": [
+      "打开 /wp-login.php",
+      "在 #user_login 输入 1000 个字符的用户名",
+      "在 #user_pass 输入 1000 个字符的密码",
+      "点击 #wp-submit"
+    ],
+    "expected": "登录失败并停留在登录页，显示 #login_error 或表单校验提示；系统不出现 500 错误、页面崩溃或敏感错误信息泄露",
+    "method": "边界值分析"
+  }
+]

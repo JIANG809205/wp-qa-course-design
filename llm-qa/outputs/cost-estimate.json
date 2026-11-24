@@ -1,0 +1,27 @@
+{
+  "rows": [
+    {
+      "model": "DeepSeek-V4.1-Flash",
+      "sample_files": 30,
+      "avg_output_chars": 2438,
+      "calls": 94,
+      "tokens_est": 128715
+    },
+    {
+      "model": "DeepSeek-V4-Pro",
+      "sample_files": 30,
+      "avg_output_chars": 2097,
+      "calls": 54,
+      "tokens_est": 64719
+    },
+    {
+      "model": "Qwen-Plus",
+      "sample_files": 30,
+      "avg_output_chars": 2092,
+      "calls": 54,
+      "tokens_est": 64602
+    }
+  ],
+  "total_tokens_est": 258036,
+  "method": "调用次数 ×（平均输出字符 + 300）/ 2.0"
+}

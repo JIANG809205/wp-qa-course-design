@@ -1,0 +1,82 @@
+{
+  "rows": [
+    {
+      "model": "DeepSeek-V4.1-Flash",
+      "scripts": 20,
+      "selectors": 95,
+      "real": 20,
+      "fidelity": 21.1,
+      "by_kind": {
+        "id": [
+          37,
+          18
+        ],
+        "name": [
+          0,
+          0
+        ],
+        "css": [
+          53,
+          2
+        ],
+        "xpath": [
+          5,
+          0
+        ]
+      }
+    },
+    {
+      "model": "DeepSeek-V4-Pro",
+      "scripts": 20,
+      "selectors": 82,
+      "real": 20,
+      "fidelity": 24.4,
+      "by_kind": {
+        "id": [
+          62,
+          19
+        ],
+        "name": [
+          0,
+          0
+        ],
+        "css": [
+          16,
+          1
+        ],
+        "xpath": [
+          4,
+          0
+        ]
+      }
+    },
+    {
+      "model": "Qwen-Plus",
+      "scripts": 20,
+      "selectors": 64,
+      "real": 16,
+      "fidelity": 25.0,
+      "by_kind": {
+        "id": [
+          45,
+          15
+        ],
+        "name": [
+          2,
+          1
+        ],
+        "css": [
+          15,
+          0
+        ],
+        "xpath": [
+          2,
+          0
+        ]
+      }
+    }
+  ],
+  "real_ids": 1181,
+  "real_names": 193,
+  "real_classes": 769
+}

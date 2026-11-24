@@ -1,0 +1,82 @@
+[
+  {
+    "id": "TC001",
+    "title": "正向：上传合法JPG图片（<5MB），成功生成缩略图并插入文章",
+    "precondition": "用户已登录，具有管理员或作者角色；媒体库页面已加载；无同名文件冲突",
+    "steps": ["点击#plupload-browse-button", "选择本地合法JPG文件（4.8MB，尺寸2000x1500）", "点击‘开始上传’", "等待上传完成提示", "检查媒体列表中该文件条目", "点击‘插入到文章’"],
+    "expected": "上传进度100%，媒体列表显示原图及3种标准缩略图（thumbnail、medium、large），插入后编辑器出现img标签且src指向正确CDN路径",
+    "method": "等价类划分+场景法"
+  },
+  {
+    "id": "TC002",
+    "title": "负向：上传超大小文件（6MB PNG）应拒绝并提示明确错误",
+    "precondition": "用户已登录，具有作者角色；媒体库页面已加载",
+    "steps": ["点击#plupload-browse-button", "选择6MB PNG文件", "点击‘开始上传’"],
+    "expected": "上传立即中断，界面显示红色提示‘文件大小超出限制（最大5MB）’，媒体列表无新增项",
+    "method": "边界值分析+错误推测法"
+  },
+  {
+    "id": "TC003",
+    "title": "边界：上传恰好5MB的JPEG文件应成功处理",
+    "precondition": "用户已登录，具有管理员角色；媒体库页面已加载；服务器磁盘空间充足",
+    "steps": ["点击#plupload-browse-button", "选择精确5MB的JPEG文件（通过工具校验）", "点击‘开始上传’", "等待完成"],
+    "expected": "上传成功，生成全部缩略图，文件元数据显示size=5242880 bytes",
+    "method": "边界值分析"
+  },
+  {
+    "id": "TC004",
+    "title": "负向：上传非图像文件（.exe）应拦截并报错",
+    "precondition": "用户已登录，具有作者角色；媒体库页面已加载",
+    "steps": ["点击#plupload-browse-button", "选择test.exe文件", "点击‘开始上传’"],
+    "expected": "前端input[type=file]拒绝选择（或选择后立即弹出‘不支持的文件类型’提示），上传未发起",
+    "method": "等价类划分+输入验证测试"
+  },
+  {
+    "id": "TC005",
+    "title": "异常：上传过程中网络中断（模拟断连），应显示失败状态并允许重试",
+    "precondition": "用户已登录，具有管理员角色；媒体库页面已加载；上传进行至50%时触发断网",
+    "steps": ["点击#plupload-browse-button", "选择3MB JPG文件", "启动上传后立即禁用网络（开发者工具Network→Offline）", "观察上传控件状态"],
+    "expected": "上传进度条停止，状态显示‘上传失败：网络连接中断’，‘重试’按钮可点击且点击后恢复上传",
+    "method": "错误推测法+故障注入"
+  },
+  {
+    "id": "TC006",
+    "title": "正向：上传含中文文件名的PNG（≤5MB）应正常保存并生成缩略图",
+    "precondition": "用户已登录，具有作者角色；媒体库页面已加载",
+    "steps": ["点击#plupload-browse-button", "选择文件名‘产品截图-2024夏.png’（2.1MB）", "点击‘开始上传’"],
+    "expected": "上传成功，媒体列表显示文件名为原始中文名，缩略图可预览，插入文章后URL编码正确（如%e4%ba%a7%e5%93%81%e6%88%aa%e5%9b%be-2024%e5%a4%8f.png）",
+    "method": "等价类划分+国际化测试"
+  },
+  {
+    "id": "TC007",
+    "title": "边界：上传1x1像素GIF（<1KB）应成功生成缩略图（含空尺寸处理）",
+    "precondition": "用户已登录，具有管理员角色；媒体库页面已加载",
+    "steps": ["点击#plupload-browse-button", "选择1x1.gif（420B）", "点击‘开始上传’"],
+    "expected": "上传成功，生成所有缩略图（即使原始尺寸小于目标尺寸，亦按比例拉伸或填充），缩略图可正常访问",
+    "method": "边界值分析+健壮性测试"
+  },
+  {
+    "id": "TC008",
+    "title": "负向：同一会话内重复上传同名文件（未勾选覆盖）应提示并跳过",
+    "precondition": "用户已登录，具有作者角色；媒体库中已存在‘logo.jpg’；上传设置为默认‘不覆盖’",
+    "steps": ["点击#plupload-browse-button", "选择同名logo.jpg", "点击‘开始上传’"],
+    "expected": "弹出确认框‘文件logo.jpg已存在，是否覆盖？’，点击‘取消’后上传终止，媒体列表无变化",
+    "method": "场景法+状态转换测试"
+  },
+  {
+    "id": "TC009",
+    "title": "异常：上传时服务端缩略图生成服务宕机，应记录错误日志并返回用户友好提示",
+    "precondition": "用户已登录，具有管理员角色；媒体库页面已加载；手动停用缩略图微服务",
+    "steps": ["点击#plupload-browse-button", "选择2MB JPG", "点击‘开始上传’"],
+    "expected": "上传完成但缩略图生成失败，界面提示‘缩略图生成异常，请稍后重试’，原图可访问，后台日志包含ERROR级别‘ThumbnailService unavailable’",
+    "method": "错误推测法+服务依赖测试"
+  },
+  {
+    "id": "TC010",
+    "title": "权限负向：未登录用户尝试触发上传按钮应被阻止或重定向",
+    "precondition": "浏览器无有效登录态；直接访问媒体库上传页URL",
+    "steps": ["尝试点击#plupload-browse-button", "或尝试触发input[type=file] click事件"],
+    "expected": "按钮不可点击/灰显，或点击后跳转至登录页；控制台无Plupload初始化错误",
+    "method": "权限测试+安全测试"
+  }
+]

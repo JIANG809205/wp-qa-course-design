@@ -1,0 +1,248 @@
+[
+  {
+    "item": "用例总数",
+    "claimed": "43",
+    "actual": "43",
+    "ok": true
+  },
+  {
+    "item": "通过数",
+    "claimed": "39",
+    "actual": "39",
+    "ok": true
+  },
+  {
+    "item": "失败数",
+    "claimed": "4",
+    "actual": "4",
+    "ok": true
+  },
+  {
+    "item": "P1 缺陷数",
+    "claimed": "2",
+    "actual": "2",
+    "ok": true
+  },
+  {
+    "item": "P2 缺陷数",
+    "claimed": "5",
+    "actual": "5",
+    "ok": true
+  },
+  {
+    "item": "P3 缺陷数",
+    "claimed": "4",
+    "actual": "4",
+    "ok": true
+  },
+  {
+    "item": "观察项数",
+    "claimed": "1",
+    "actual": "1",
+    "ok": true
+  },
+  {
+    "item": "权限格数",
+    "claimed": "30",
+    "actual": "30",
+    "ok": true
+  },
+  {
+    "item": "三次一致的格数",
+    "claimed": "30",
+    "actual": "30",
+    "ok": true
+  },
+  {
+    "item": "权限矩阵重复次数",
+    "claimed": "3",
+    "actual": "3",
+    "ok": true
+  },
+  {
+    "item": "兼容性组数",
+    "claimed": "12",
+    "actual": "12",
+    "ok": true
+  },
+  {
+    "item": "兼容性通过组数",
+    "claimed": "12",
+    "actual": "12",
+    "ok": true
+  },
+  {
+    "item": "首页 10 并发 TPS",
+    "claimed": "122.8",
+    "actual": "122.8",
+    "ok": true
+  },
+  {
+    "item": "首页 50 并发 TPS",
+    "claimed": "126.7",
+    "actual": "126.7",
+    "ok": true
+  },
+  {
+    "item": "首页 100 并发 TPS",
+    "claimed": "127.5",
+    "actual": "127.5",
+    "ok": true
+  },
+  {
+    "item": "列表页 10 并发 TPS",
+    "claimed": "97.3",
+    "actual": "97.3",
+    "ok": true
+  },
+  {
+    "item": "列表页 50 并发 TPS",
+    "claimed": "87.8",
+    "actual": "87.8",
+    "ok": true
+  },
+  {
+    "item": "列表页 100 并发 TPS",
+    "claimed": "52.1",
+    "actual": "52.1",
+    "ok": true
+  },
+  {
+    "item": "首页 50 并发 P95",
+    "claimed": "520",
+    "actual": "520",
+    "ok": true
+  },
+  {
+    "item": "首页 100 并发 P95",
+    "claimed": "1058",
+    "actual": "1058",
+    "ok": true
+  },
+  {
+    "item": "列表页 10 并发 P95",
+    "claimed": "146",
+    "actual": "146",
+    "ok": true
+  },
+  {
+    "item": "列表页 50 并发 P95",
+    "claimed": "770",
+    "actual": "770",
+    "ok": true
+  },
+  {
+    "item": "列表页 100 并发 P95",
+    "claimed": "2824",
+    "actual": "2824",
+    "ok": true
+  },
+  {
+    "item": "Flash 严格合规均值",
+    "claimed": "95.6",
+    "actual": "95.6",
+    "ok": true
+  },
+  {
+    "item": "Flash 合规 CI",
+    "claimed": "8.0",
+    "actual": "8.0",
+    "ok": true
+  },
+  {
+    "item": "Flash 需求覆盖",
+    "claimed": "96.2",
+    "actual": "96.2",
+    "ok": true
+  },
+  {
+    "item": "Pro 用例数",
+    "claimed": "196",
+    "actual": "196",
+    "ok": true
+  },
+  {
+    "item": "Pro 需求覆盖",
+    "claimed": "96.2",
+    "actual": "96.2",
+    "ok": true
+  },
+  {
+    "item": "Qwen 用例数",
+    "claimed": "196",
+    "actual": "196",
+    "ok": true
+  },
+  {
+    "item": "Qwen 需求覆盖",
+    "claimed": "93.6",
+    "actual": "93.6",
+    "ok": true
+  },
+  {
+    "item": "DeepSeek-V4.1-Flash 定位器保真",
+    "claimed": "21.1",
+    "actual": "21.1",
+    "ok": true
+  },
+  {
+    "item": "DeepSeek-V4-Pro 定位器保真",
+    "claimed": "24.4",
+    "actual": "24.4",
+    "ok": true
+  },
+  {
+    "item": "Qwen-Plus 定位器保真",
+    "claimed": "25.0",
+    "actual": "25.0",
+    "ok": true
+  },
+  {
+    "item": "DeepSeek-V4.1-Flash 严格可运行",
+    "claimed": "5.0",
+    "actual": "5.0",
+    "ok": true
+  },
+  {
+    "item": "DeepSeek-V4-Pro 严格可运行",
+    "claimed": "0.0",
+    "actual": "0.0",
+    "ok": true
+  },
+  {
+    "item": "Qwen-Plus 严格可运行",
+    "claimed": "0.0",
+    "actual": "0.0",
+    "ok": true
+  },
+  {
+    "item": "DeepSeek-V4.1-Flash 归因准确率",
+    "claimed": "95.8",
+    "actual": "95.8",
+    "ok": true
+  },
+  {
+    "item": "DeepSeek-V4-Pro 归因准确率",
+    "claimed": "91.7",
+    "actual": "91.7",
+    "ok": true
+  },
+  {
+    "item": "Qwen-Plus 归因准确率",
+    "claimed": "91.7",
+    "actual": "91.7",
+    "ok": true
+  },
+  {
+    "item": "7.1.5 探针命中",
+    "claimed": "11",
+    "actual": "11",
+    "ok": true
+  },
+  {
+    "item": "7.1.4 探针命中",
+    "claimed": "11",
+    "actual": "11",
+    "ok": true
+  }
+]

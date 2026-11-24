@@ -1,0 +1,94 @@
+# host 网络版编排（适配 WSL 自定义内核：无 bridge 模块）
+# 适用场景：docker info 报 "operation not supported" / 无法创建 docker0
+# 用法：docker compose -f docker-compose.host.yml up -d
+#
+# 与标准版的差异：
+#   1) 所有服务使用 network_mode: host，容器直接占用所属网络命名空间的端口
+#   2) 容器间用 127.0.0.1 互访（不再有服务名解析）
+#   3) 端口映射交给 Apache 自身（监听 8080，见 init/apache-ports.conf）
+name: wp-test
+
+services:
+  db:
+    image: mariadb:11
+    container_name: wp-db
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --max_connections=300
+      - --bind-address=127.0.0.1
+    volumes:
+      - db_data:/var/lib/mysql
+
+  redis:
+    image: redis:7-alpine
+    container_name: wp-redis
+    restart: unless-stopped
+    network_mode: host
+    command: ["redis-server", "--bind", "127.0.0.1", "--appendonly", "yes", "--maxmemory", "256mb", "--maxmemory-policy", "allkeys-lru"]
+    volumes:
+      - redis_data:/data
+
+  wordpress:
+    image: wordpress:${WP_VERSION}
+    container_name: wp-app
+    restart: unless-stopped
+    network_mode: host
+    depends_on:
+      - db
+      - redis
+    environment:
+      WORDPRESS_DB_HOST: 127.0.0.1:3306
+      WORDPRESS_DB_NAME: ${DB_NAME}
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      WORDPRESS_TABLE_PREFIX: ${TABLE_PREFIX}
+      WORDPRESS_DEBUG: "1"
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_REDIS_HOST', '127.0.0.1');
+        define('WP_REDIS_PORT', 6379);
+        define('WP_DEBUG_LOG', true);
+        define('WP_DEBUG_DISPLAY', false);
+        define('WP_POST_REVISIONS', 5);
+    volumes:
+      - wp_data:/var/www/html
+      - ./init/uploads.ini:/usr/local/etc/php/conf.d/zz-uploads.ini:ro
+      - ./init/apache-ports.conf:/etc/apache2/ports.conf:ro
+      - ./init/apache-000-default.conf:/etc/apache2/sites-available/000-default.conf:ro
+
+  wpcli:
+    image: wordpress:cli-php8.2
+    profiles: ["tools"]
+    network_mode: host
+    depends_on:
+      - db
+    user: "33:33"
+    environment:
+      WORDPRESS_DB_HOST: 127.0.0.1:3306
+      WORDPRESS_DB_NAME: ${DB_NAME}
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      WORDPRESS_TABLE_PREFIX: ${TABLE_PREFIX}
+      SITE_URL: ${SITE_URL}
+      SITE_TITLE: ${SITE_TITLE}
+      ADMIN_USER: ${ADMIN_USER}
+      ADMIN_PASS: ${ADMIN_PASS}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      POST_COUNT: ${POST_COUNT}
+      COMMENT_COUNT: ${COMMENT_COUNT}
+    volumes:
+      - wp_data:/var/www/html
+      - ./init:/init:ro
+    entrypoint: ["wp"]
+
+volumes:
+  db_data:
+  redis_data:
+  wp_data:

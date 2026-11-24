@@ -1,0 +1,112 @@
+[
+  {
+    "id": "TC001",
+    "title": "正常文本评论不触发过滤",
+    "precondition": "匿名访客打开评论页面，评论框可见",
+    "steps": [
+      "在评论框输入：'今天天气真好'",
+      "点击提交按钮"
+    ],
+    "expected": "评论提交成功，页面显示评论内容为'今天天气真好'，无弹窗，无任何脚本执行",
+    "method": "等价类划分法"
+  },
+  {
+    "id": "TC002",
+    "title": "包含完整script标签的过滤",
+    "precondition": "匿名访客打开评论页面",
+    "steps": [
+      "在评论框输入：<script>alert('xss')</script>",
+      "点击提交"
+    ],
+    "expected": "评论提交成功，输入被转义为&lt;script&gt;alert('xss')&lt;/script&gt;或类似无害文本显示，不触发弹窗",
+    "method": "错误推测法"
+  },
+  {
+    "id": "TC003",
+    "title": "img标签onerror事件处理器过滤",
+    "precondition": "匿名访客打开评论页面",
+    "steps": [
+      "输入：<img src=x onerror=alert(1)>",
+      "提交评论"
+    ],
+    "expected": "评论中不执行onerror代码，HTML标签被转义为&lt;img src=x onerror=alert(1)&gt;显示，无弹窗",
+    "method": "错误推测法"
+  },
+  {
+    "id": "TC004",
+    "title": "script标签大小写变体处理",
+    "precondition": "匿名访客打开评论页面",
+    "steps": [
+      "输入：<ScRiPt>alert(1)</ScRiPt>",
+      "提交"
+    ],
+    "expected": "大小写混合的标签同样被转义，显示为&lt;ScRiPt&gt;alert(1)&lt;/ScRiPt&gt;，不执行脚本",
+    "method": "边界值分析法"
+  },
+  {
+    "id": "TC005",
+    "title": "body标签onload事件过滤",
+    "precondition": "匿名访客打开评论页面",
+    "steps": [
+      "输入：<body onload=alert(1)>",
+      "提交评论"
+    ],
+    "expected": "onload属性被移除或整个标签被转义，页面不会弹出alert，内容以文本形式显示",
+    "method": "边界值分析法"
+  },
+  {
+    "id": "TC006",
+    "title": "javascript伪协议链接过滤",
+    "precondition": "匿名访客打开评论页面",
+    "steps": [
+      "输入：<a href='javascript:alert(1)'>点我</a>",
+      "提交"
+    ],
+    "expected": "javascript:被移除或整个href值被安全编码，提交后显示为文本，点击无反应或链接失效",
+    "method": "边界值分析法"
+  },
+  {
+    "id": "TC007",
+    "title": "独立onerror注入尝试",
+    "precondition": "匿名访客打开评论页面",
+    "steps": [
+      "输入：'; onerror=alert(1);//",
+      "提交"
+    ],
+    "expected": "输入被原样转义显示，不会与页面原有代码拼接形成XSS，不会触发弹窗",
+    "method": "错误推测法"
+  },
+  {
+    "id": "TC008",
+    "title": "超长XSS载荷处理",
+    "precondition": "匿名访客打开评论页面",
+    "steps": [
+      "输入5000个'A'字符后接<script>alert('xss')</script>",
+      "提交"
+    ],
+    "expected": "系统正常接受，评论内容被截断或完整显示，但script标签必须被转义，页面不弹窗，无崩溃",
+    "method": "异常分析法"
+  },
+  {
+    "id": "TC009",
+    "title": "HTML实体编码的脚本载荷过滤",
+    "precondition": "匿名访客打开评论页面",
+    "steps": [
+      "输入：&#x3C;script&#x3E;alert(1)&#x3C;/script&#x3E;",
+      "提交"
+    ],
+    "expected": "存储或显示时不会解码为<script>执行，而是保持实体文本或转为&lt;script&gt;，确保不触发弹窗",
+    "method": "边界值分析法"
+  },
+  {
+    "id": "TC010",
+    "title": "嵌套script标签绕过测试",
+    "precondition": "匿名访客打开评论页面",
+    "steps": [
+      "输入：<scr<script>ipt>alert(1)</scr</script>ipt>",
+      "提交"
+    ],
+    "expected": "系统不因嵌套而形成有效脚本，整个输入被安全转义为文本，不会执行alert",
+    "method": "错误推测法"
+  }
+]

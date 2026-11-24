@@ -1,0 +1,8 @@
+HTTP/1.1 200 OK
+Date: Tue, 24 Nov 2026 09:50:12 GMT
+Server: Apache/2.4.52 (Ubuntu)
+Link: <http://localhost:8080/wp-json/>; rel="https://api.w.org/"
+Link: <http://localhost:8080/wp-json/wp/v2/pages/1053>; rel="alternate"; title="JSON"; type="application/json"
+Link: <http://localhost:8080/>; rel=shortlink
+Content-Type: text/html; charset=UTF-8
+

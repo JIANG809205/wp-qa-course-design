@@ -1,0 +1,40 @@
+# ===== 密钥（绝不入库）=====
+.env
+*.env
+*token*.txt
+
+# ===== 虚拟环境与二进制 =====
+venv-win/
+*.exe
+*.zip
+*.phar
+*.tar.gz
+
+# ===== 大体积测试产物（原始压测记录，按需本地保留）=====
+wp-perf/results*/
+wp-perf/results-rigor*/
+*.jtl
+
+# ===== 日志与临时文件 =====
+*.log
+**/_*.log
+**/_*.out
+wp-env/native/wp-config.tmp.php
+wp-env/native/htaccess
+
+# ===== 构建与缓存 =====
+__pycache__/
+*.pyc
+.pytest_cache/
+wp-autotest/target/
+wp-autotest/result/
+node_modules/
+
+# ===== 提交物压缩包（另存，不进仓库）=====
+提交物-*.zip
+附录-*.zip
+
+# ===== 已作废的旧报告与旧图表（数据已推翻，见 _旧数据说明.md）=====
+wp-perf/report-*/
+wp-perf/charts/
+wp-perf/results-interleaved/

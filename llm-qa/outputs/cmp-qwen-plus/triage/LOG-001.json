@@ -1,0 +1,1 @@
+{"category": "脚本问题", "reason": "脚本预期元素被移除（stale），但实际页面未跳转、URL未变化，且出现审核提示，说明等待条件设计错误——应等待新页面加载或审核提示出现，而非等待原页面元素stale", "evidence_needed": "测试脚本中对应等待逻辑的代码片段（如WebDriverWait.until(ExpectedConditions.stalenessOf(...))）"}

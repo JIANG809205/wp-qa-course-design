@@ -1,0 +1,82 @@
+[
+  {
+    "id": "TC001",
+    "title": "作者尝试编辑他人文章（REST API）",
+    "precondition": "用户A（作者）已登录；存在用户B（作者）创建的文章，ID为post_123",
+    "steps": ["发送PUT请求到 /api/posts/post_123，携带修改内容"],
+    "expected": "返回HTTP 403 Forbidden，响应体包含错误码 'forbidden.operation'",
+    "method": "权限边界测试"
+  },
+  {
+    "id": "TC002",
+    "title": "作者成功编辑自己创建的文章（正向）",
+    "precondition": "用户A（作者）已登录；用户A创建了文章post_456",
+    "steps": ["发送PUT请求到 /api/posts/post_456，携带合法更新字段"],
+    "expected": "返回HTTP 200 OK，响应体包含更新后的文章数据",
+    "method": "等价类划分（有效等价类）"
+  },
+  {
+    "id": "TC003",
+    "title": "编辑尝试通过后台菜单新建用户",
+    "precondition": "用户C（编辑）已登录后台管理界面",
+    "steps": ["导航至「用户管理」→「新增用户」页面；填写表单并点击提交"],
+    "expected": "页面不可见或按钮禁用；若可访问则提交后返回HTTP 403或前端拦截提示'无权限执行此操作'",
+    "method": "UI级权限验证 + 负向测试"
+  },
+  {
+    "id": "TC004",
+    "title": "编辑调用REST API审核他人评论（正向）",
+    "precondition": "用户C（编辑）已登录；存在待审核评论comment_789",
+    "steps": ["发送PATCH请求到 /api/comments/comment_789，body: {\"status\": \"approved\"}"],
+    "expected": "返回HTTP 200 OK，评论状态更新为'approved'",
+    "method": "正向功能测试"
+  },
+  {
+    "id": "TC005",
+    "title": "作者尝试审核评论（REST API）",
+    "precondition": "用户A（作者）已登录；存在待审核评论comment_999",
+    "steps": ["发送PATCH请求到 /api/comments/comment_999，body: {\"status\": \"approved\"}"],
+    "expected": "返回HTTP 403 Forbidden，响应体含'insufficient.permissions'",
+    "method": "权限最小权限原则验证"
+  },
+  {
+    "id": "TC006",
+    "title": "编辑尝试修改站点全局设置（REST）",
+    "precondition": "用户C（编辑）已登录；站点配置API端点 /api/settings 可达",
+    "steps": ["发送PUT请求到 /api/settings，携带新配置JSON"],
+    "expected": "返回HTTP 403 Forbidden；数据库中配置未变更",
+    "method": "负向测试 + 数据一致性验证"
+  },
+  {
+    "id": "TC007",
+    "title": "作者删除他人文章（UI后台操作）",
+    "precondition": "用户A（作者）已登录后台；列表中显示用户B的文章（带删除按钮）",
+    "steps": ["在文章列表页找到用户B的文章，点击「删除」按钮；确认弹窗后提交"],
+    "expected": "前端禁用删除按钮；或点击后触发403错误提示，文章未被删除",
+    "method": "UI/UX层权限覆盖测试"
+  },
+  {
+    "id": "TC008",
+    "title": "越权角色混淆：伪造编辑JWT Token以作者身份调用审核接口",
+    "precondition": "获取一个有效但角色声明为'author'的JWT（手动篡改role字段为'editor'）",
+    "steps": ["使用篡改后的Token发送PATCH /api/comments/abc123 {\"status\":\"approved\"}"],
+    "expected": "服务端校验role字段失败，返回HTTP 401或403；拒绝处理请求",
+    "method": "安全边界测试（Token鉴权验证）"
+  },
+  {
+    "id": "TC009",
+    "title": "编辑角色用户尝试访问用户创建API（POST /api/users）",
+    "precondition": "用户C（编辑）已登录，持有有效会话",
+    "steps": ["发送POST请求到 /api/users，携带新用户数据"],
+    "expected": "返回HTTP 403 Forbidden；响应头X-Content-Type-Options: nosniff，无敏感信息泄露",
+    "method": "接口级权限穷举测试"
+  },
+  {
+    "id": "TC010",
+    "title": "空角色或缺失role字段的Token访问评论审核接口",
+    "precondition": "构造一个JWT，其中claims中无'role'字段或role为空字符串",
+    "steps": ["使用该Token调用 PATCH /api/comments/xyz {\"status\":\"approved\"}"],
+    "expected": "返回HTTP 401 Unauthorized 或 403；服务端拒绝解析为任意角色",
+    "method": "异常输入测试（健壮性验证）"
+  }
+]

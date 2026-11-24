@@ -1,0 +1,28 @@
+{
+  "provider": "mock",
+  "model": "mock-1",
+  "temperature": 0.2,
+  "time": "20261123-214553",
+  "cases": {
+    "features": 6,
+    "generated_cases": 12,
+    "valid_json_rate": 100.0,
+    "field_complete_rate": 100.0,
+    "human_overlap_rate": 0.0,
+    "new_cases": 12
+  },
+  "scripts": {
+    "cases": 3,
+    "syntax_ok_rate": 100.0,
+    "assert_rate": 100.0,
+    "wait_rate": 0.0
+  },
+  "triage": {
+    "logs": 5,
+    "accuracy": 40.0,
+    "hallucination_to_defect": 0
+  },
+  "report": {
+    "chars": 44
+  }
+}

@@ -1,0 +1,122 @@
+[
+  {
+    "id": "TC-01",
+    "title": "管理员使用应用密码创建并发布文章成功",
+    "precondition": "站点已启用 HTTPS 与应用密码功能；存在管理员账号 admin，且已生成有效应用密码；/wp-json/wp/v2/posts 可访问",
+    "steps": [
+      "使用 Basic Auth：用户名 admin + 应用密码构造 Authorization 头",
+      "发送 POST /wp-json/wp/v2/posts，请求体 {\"title\":\"管理员发布文章\",\"content\":\"正文内容\",\"status\":\"publish\"}",
+      "检查响应状态码与响应体字段"
+    ],
+    "expected": "返回 201 Created；响应体包含 id、status=\"publish\"、author=管理员用户ID、link 可访问；数据库中文章状态为已发布",
+    "method": "场景法（正向主流程）+ 等价类划分（合法角色×合法参数）"
+  },
+  {
+    "id": "TC-02",
+    "title": "作者角色使用应用密码创建并发布自己的文章成功",
+    "precondition": "存在作者角色账号 author1 及其有效应用密码",
+    "steps": [
+      "使用 author1 的应用密码构造 Authorization 头",
+      "发送 POST /wp-json/wp/v2/posts，请求体 {\"title\":\"作者文章\",\"content\":\"内容\",\"status\":\"publish\"}",
+      "查询该文章详情 GET /wp-json/wp/v2/posts/{id}"
+    ],
+    "expected": "返回 201；status=\"publish\"，author=author1 的用户ID；后续 GET 返回 200 且内容与提交一致",
+    "method": "场景法 + 等价类划分（有发布权限的角色）"
+  },
+  {
+    "id": "TC-03",
+    "title": "投稿者创建草稿文章成功（仅限 draft 状态）",
+    "precondition": "存在投稿者角色账号 contributor1 及其有效应用密码",
+    "steps": [
+      "使用 contributor1 的应用密码构造 Authorization 头",
+      "发送 POST /wp-json/wp/v2/posts，请求体 {\"title\":\"投稿者草稿\",\"content\":\"内容\",\"status\":\"draft\"}",
+      "检查响应体 status 与 author 字段"
+    ],
+    "expected": "返回 201；status=\"draft\"，author=contributor1 的ID；文章未公开可见（未登录访问 link 返回 404/401）",
+    "method": "场景法 + 等价类划分（受限角色的合法子集）"
+  },
+  {
+    "id": "TC-04",
+    "title": "投稿者越权直接发布文章被拒绝",
+    "precondition": "存在投稿者角色账号 contributor1 及其有效应用密码",
+    "steps": [
+      "使用 contributor1 的应用密码构造 Authorization 头",
+      "发送 POST /wp-json/wp/v2/posts，请求体 {\"title\":\"越权发布\",\"content\":\"内容\",\"status\":\"publish\"}",
+      "查询文章列表确认是否产生新文章"
+    ],
+    "expected": "返回 403 Forbidden；响应体 code 为 rest_cannot_publish_posts（或同类权限错误码）；数据库中未新增已发布文章",
+    "method": "负向测试 + 权限矩阵法（角色×操作）"
+  },
+  {
+    "id": "TC-05",
+    "title": "未携带认证信息创建文章被拒绝",
+    "precondition": "站点未开启匿名投稿；无任何 Authorization 头、Cookie 或 nonce",
+    "steps": [
+      "构造不带 Authorization 头的 POST /wp-json/wp/v2/posts 请求，请求体为合法文章数据",
+      "发送请求并检查响应"
+    ],
+    "expected": "返回 401 Unauthorized；响应体 code 为 rest_cannot_create；数据库中无新文章产生",
+    "method": "负向测试 + 等价类划分（无凭证类）"
+  },
+  {
+    "id": "TC-06",
+    "title": "使用错误或已撤销的应用密码创建文章失败",
+    "precondition": "存在管理员账号 admin；已知一个错误密码字符串及一个已被撤销的应用密码",
+    "steps": [
+      "分别用错误密码与已撤销应用密码作为 Basic Auth 凭证",
+      "发送 POST /wp-json/wp/v2/posts，请求体为合法文章数据",
+      "对比两次响应"
+    ],
+    "expected": "两次均返回 401 Unauthorized，code 为 rest_cannot_create（或 invalid_username/incorrect_password 相关码）；不产生文章，且账号未被锁定",
+    "method": "负向测试 + 错误推测法（凭证失效场景）"
+  },
+  {
+    "id": "TC-07",
+    "title": "作者修改他人文章被拒绝",
+    "precondition": "存在作者账号 author1、author2，均持有有效应用密码；author2 名下已存在文章 postId",
+    "steps": [
+      "使用 author1 的应用密码构造 Authorization 头",
+      "发送 POST /wp-json/wp/v2/posts/{postId}，请求体 {\"title\":\"被篡改的标题\"}",
+      "以 author2 身份 GET 该文章校验内容"
+    ],
+    "expected": "返回 403 Forbidden，code 为 rest_cannot_edit_post；文章标题保持不变",
+    "method": "负向测试 + 权限矩阵法（对象级越权）"
+  },
+  {
+    "id": "TC-08",
+    "title": "更新不存在的文章 ID 返回 404",
+    "precondition": "管理员应用密码有效；数据库中不存在 ID 为 999999 的文章",
+    "steps": [
+      "使用管理员应用密码构造 Authorization 头",
+      "发送 POST /wp-json/wp/v2/posts/999999，请求体 {\"title\":\"更新不存在文章\"}",
+      "检查响应状态码与 code 字段"
+    ],
+    "expected": "返回 404 Not Found，code 为 rest_post_invalid_id；不产生任何文章或脏数据",
+    "method": "异常场景测试 + 边界值分析（ID 越界/不存在）"
+  },
+  {
+    "id": "TC-09",
+    "title": "请求体为非法 JSON 时创建文章失败",
+    "precondition": "管理员应用密码有效；Content-Type 设置为 application/json",
+    "steps": [
+      "发送 POST /wp-json/wp/v2/posts，请求体为不合法 JSON，如 {\"title\":\"缺少闭合",
+      "检查响应状态码与错误码",
+      "再次发送合法 JSON 请求确认接口可正常恢复"
+    ],
+    "expected": "返回 400 Bad Request，code 为 rest_invalid_json；不产生文章；后续合法请求返回 201，服务无异常日志堆积",
+    "method": "异常场景测试 + 错误推测法（畸形输入）"
+  },
+  {
+    "id": "TC-10",
+    "title": "创建文章时 slug 冲突与标题长度边界的处理",
+    "precondition": "管理员应用密码有效；已存在 slug 为 existing-slug 的文章",
+    "steps": [
+      "发送 POST /wp-json/wp/v2/posts，请求体 {\"title\":\"重复slug\",\"slug\":\"existing-slug\",\"status\":\"draft\"}",
+      "检查返回的 slug 值",
+      "发送 POST /wp-json/wp/v2/posts，请求体标题长度达到上限（200 字符）且 content 为空字符串，检查是否创建成功",
+      "发送 status 为非法枚举值（如 \"published\"）的请求"
+    ],
+    "expected": "第1步返回 201，slug 被自动去重为 existing-slug-2 等唯一值；第3步返回 201，标题完整保存、内容为空；第4步返回 400，code 为 rest_invalid_param 并提示 status 枚举非法",
+    "method": "边界值分析（长度上限/空值/枚举边界）+ 等价类划分（冲突与非法值）"
+  }
+]

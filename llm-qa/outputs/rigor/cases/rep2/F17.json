@@ -1,0 +1,82 @@
+[
+  {
+    "id": "TC001",
+    "title": "管理员使用有效应用密码成功创建文章",
+    "precondition": "管理员用户已启用应用密码功能，且存在一个未过期的有效应用密码；目标站点启用REST API写入权限。",
+    "steps": ["构造POST请求到/wp-json/wp/v2/posts", "在Authorization头中携带Basic认证：用户名+应用密码Base64编码", "请求体包含合法title、content字段（JSON格式）"],
+    "expected": "HTTP 201 Created，响应体包含新创建文章的完整对象，id字段为非零整数",
+    "method": "等价类划分+场景法"
+  },
+  {
+    "id": "TC002",
+    "title": "作者使用有效应用密码成功创建文章（自身草稿）",
+    "precondition": "作者用户已启用应用密码；其角色具备'publish_posts'以外的'post_posts'能力（即仅可保存草稿）",
+    "steps": ["发送POST请求到/wp-json/wp/v2/posts", "Authorization头含作者用户名+有效应用密码", "请求体中status字段显式设为'draft'"],
+    "expected": "HTTP 201 Created，返回文章status为'draft'，author.id等于该作者ID",
+    "method": "角色权限矩阵分析+场景法"
+  },
+  {
+    "id": "TC003",
+    "title": "投稿者使用有效应用密码尝试创建已发布文章（越权）",
+    "precondition": "投稿者用户已启用应用密码；其角色无'publish_posts'或'edit_others_posts'能力",
+    "steps": ["发送POST请求到/wp-json/wp/v2/posts", "Authorization头含投稿者用户名+有效应用密码", "请求体中status字段设为'publish'"],
+    "expected": "HTTP 401 Unauthorized 或 HTTP 403 Forbidden（依WP配置），响应体含error code 'rest_cannot_create'或'woocommerce_rest_cannot_create_post'",
+    "method": "权限边界分析+错误推测法"
+  },
+  {
+    "id": "TC004",
+    "title": "使用过期/已撤销的应用密码尝试创建文章",
+    "precondition": "用户曾生成应用密码，但已在WP后台手动撤销或已超过90天有效期",
+    "steps": ["发送POST请求到/wp-json/wp/v2/posts", "Authorization头使用该失效密码的Base64编码"],
+    "expected": "HTTP 401 Unauthorized，响应体error code为'rest_authentication_failed'，message含'invalid application password'",
+    "method": "边界值分析（时间/状态边界）+错误推测法"
+  },
+  {
+    "id": "TC005",
+    "title": "未提供Authorization头时尝试创建文章",
+    "precondition": "无任何认证凭据",
+    "steps": ["发送POST请求到/wp-json/wp/v2/posts", "不携带Authorization头"],
+    "expected": "HTTP 401 Unauthorized，响应体error code为'rest_authentication_required'",
+    "method": "缺失输入测试+错误推测法"
+  },
+  {
+    "id": "TC006",
+    "title": "使用错误用户名+正确应用密码进行Basic认证",
+    "precondition": "存在有效应用密码，但请求中Basic头的用户名与该密码所属用户不匹配",
+    "steps": ["构造Authorization头：Base64('wronguser:valid_app_pass')", "发送POST请求到/wp-json/wp/v2/posts"],
+    "expected": "HTTP 401 Unauthorized，error code为'rest_authentication_failed'，message提示用户不存在或密码不匹配",
+    "method": "错误推测法+等价类划分（非法用户）"
+  },
+  {
+    "id": "TC007",
+    "title": "管理员使用有效应用密码成功更新已有文章（PUT）",
+    "precondition": "管理员拥有ID=123的文章编辑权限；该文章存在且状态可编辑",
+    "steps": ["发送PUT请求到/wp-json/wp/v2/posts/123", "Authorization头含管理员用户名+有效应用密码", "请求体包含修改后的title字段"],
+    "expected": "HTTP 200 OK，响应体中title字段为更新值，modified字段时间戳已变更",
+    "method": "正向流程覆盖+场景法"
+  },
+  {
+    "id": "TC008",
+    "title": "作者尝试PUT更新他人发布的文章（无edit_others_posts权限）",
+    "precondition": "作者A存在，文章ID=456由管理员B发布且状态为'publish'",
+    "steps": ["发送PUT请求到/wp-json/wp/v2/posts/456", "Authorization头含作者A用户名+有效应用密码", "请求体含任意修改字段"],
+    "expected": "HTTP 403 Forbidden，error code为'rest_cannot_edit_post'，message指出无权编辑该文章",
+    "method": "权限边界分析+角色冲突场景法"
+  },
+  {
+    "id": "TC009",
+    "title": "POST请求体为空JSON或缺失必需字段（title）",
+    "precondition": "使用有效管理员应用密码认证",
+    "steps": ["发送POST请求到/wp-json/wp/v2/posts", "Authorization头正确", "请求体为{}或{'content': 'ok'}（缺title）"],
+    "expected": "HTTP 400 Bad Request，error code为'rest_missing_callback_param'或'rest_invalid_param'，message指出title为必需字段",
+    "method": "输入域分析（必填字段验证）+错误推测法"
+  },
+  {
+    "id": "TC010",
+    "title": "并发高频请求（10次/秒持续5秒）下鉴权稳定性验证",
+    "precondition": "管理员应用密码有效；系统未限流",
+    "steps": ["使用压测工具发起10并发、5秒持续的POST创建请求（均带有效认证）"],
+    "expected": "≥95%请求返回HTTP 201，无500/503错误；所有成功响应id唯一且递增；无鉴权缓存穿透或会话污染现象",
+    "method": "可靠性测试+边界压力分析"
+  }
+]

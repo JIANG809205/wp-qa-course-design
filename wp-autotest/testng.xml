@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="WordPress Web 自动化测试" verbose="1" parallel="false">
+
+    <test name="登录与账号">
+        <classes>
+            <class name="edu.qa.wp.tests.LoginTest"/>
+        </classes>
+    </test>
+
+    <test name="内容管理">
+        <classes>
+            <class name="edu.qa.wp.tests.PostTest"/>
+        </classes>
+    </test>
+
+    <test name="角色权限">
+        <classes>
+            <class name="edu.qa.wp.tests.PermissionTest"/>
+        </classes>
+    </test>
+
+    <test name="评论与安全">
+        <classes>
+            <class name="edu.qa.wp.tests.CommentTest"/>
+        </classes>
+    </test>
+
+</suite>

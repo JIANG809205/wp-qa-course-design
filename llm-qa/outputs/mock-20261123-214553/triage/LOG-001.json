@@ -1,0 +1,1 @@
+{"category": "脚本问题", "reason": "元素定位在页面刷新后失效", "evidence_needed": "截图与 DOM 快照"}

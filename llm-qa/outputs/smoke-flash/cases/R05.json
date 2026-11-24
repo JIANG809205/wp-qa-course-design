@@ -1,0 +1,118 @@
+[
+  {
+    "id": "TC-01",
+    "title": "匿名获取文章列表仅返回已发布文章",
+    "precondition": "系统中存在已发布、草稿、待审核、私密状态文章各至少1篇",
+    "steps": [
+      "匿名访问 GET /wp-json/wp/v2/posts?per_page=100",
+      "检查响应状态码和响应体",
+      "比对返回文章ID与各状态文章ID"
+    ],
+    "expected": "响应状态码为200；返回JSON数组；仅包含已发布文章；不包含草稿、待审核、私密文章；不泄露未发布文章内容",
+    "method": "等价类划分 + 场景法"
+  },
+  {
+    "id": "TC-02",
+    "title": "匿名读取未发布单篇文章被拒绝",
+    "precondition": "存在1篇草稿状态文章，记录其ID",
+    "steps": [
+      "匿名访问 GET /wp-json/wp/v2/posts/{草稿文章ID}",
+      "检查响应状态码和响应体"
+    ],
+    "expected": "响应状态码为401或403；返回权限错误信息；不返回草稿文章标题、正文等敏感内容",
+    "method": "负向测试 + 权限矩阵"
+  },
+  {
+    "id": "TC-03",
+    "title": "作者使用应用密码创建已发布文章成功",
+    "precondition": "存在作者角色账号，已生成有效应用密码；请求体包含合法标题和正文",
+    "steps": [
+      "使用作者账号和应用密码进行Basic Auth认证",
+      "POST /wp-json/wp/v2/posts，请求体包含 title、content、status=publish",
+      "检查响应状态码和响应体中的文章状态",
+      "匿名GET该文章ID确认可读"
+    ],
+    "expected": "创建请求返回201；响应包含新文章ID；status为publish；匿名GET该文章返回200并可读取已发布内容",
+    "method": "正向场景法 + 状态转换"
+  },
+  {
+    "id": "TC-04",
+    "title": "未认证用户创建文章被拒绝",
+    "precondition": "不携带任何认证信息；准备合法文章创建请求体",
+    "steps": [
+      "不携带Authorization请求头",
+      "POST /wp-json/wp/v2/posts，请求体包含 title、content、status=publish",
+      "检查响应状态码和数据库中是否新增文章"
+    ],
+    "expected": "响应状态码为401；返回未认证或权限不足错误；系统不创建文章",
+    "method": "负向测试 + 等价类划分"
+  },
+  {
+    "id": "TC-05",
+    "title": "投稿者以publish状态创建文章被拒绝",
+    "precondition": "存在投稿者角色账号，已生成有效应用密码",
+    "steps": [
+      "使用投稿者账号和应用密码进行Basic Auth认证",
+      "POST /wp-json/wp/v2/posts，请求体包含 title、content、status=publish",
+      "检查响应状态码、错误码和文章创建结果"
+    ],
+    "expected": "响应状态码为403；返回不能发布文章的错误信息；系统不创建publish状态文章",
+    "method": "权限矩阵 + 负向测试"
+  },
+  {
+    "id": "TC-06",
+    "title": "使用无效应用密码创建文章被拒绝",
+    "precondition": "存在作者账号；使用错误或已失效的应用密码",
+    "steps": [
+      "使用作者账号和无效应用密码进行Basic Auth认证",
+      "POST /wp-json/wp/v2/posts，请求体包含合法 title、content、status=publish",
+      "检查响应状态码和文章创建结果"
+    ],
+    "expected": "响应状态码为401；返回认证失败错误；系统不创建文章",
+    "method": "异常测试 + 错误推测"
+  },
+  {
+    "id": "TC-07",
+    "title": "per_page等于上限100时请求成功",
+    "precondition": "系统中已发布文章数量不少于101篇",
+    "steps": [
+      "匿名访问 GET /wp-json/wp/v2/posts?per_page=100",
+      "检查响应状态码、返回数组长度和分页响应头"
+    ],
+    "expected": "响应状态码为200；返回文章数量不超过100篇，数据充足时为100篇；X-WP-Total表示总数且不少于101；无参数错误",
+    "method": "边界值分析"
+  },
+  {
+    "id": "TC-08",
+    "title": "per_page超过上限101时请求被拒绝",
+    "precondition": "接口允许匿名读取文章列表",
+    "steps": [
+      "匿名访问 GET /wp-json/wp/v2/posts?per_page=101",
+      "检查响应状态码和错误信息"
+    ],
+    "expected": "响应状态码为400；返回rest_invalid_param类参数错误；提示per_page最大值为100；不返回文章列表数据",
+    "method": "边界值分析 + 负向测试"
+  },
+  {
+    "id": "TC-09",
+    "title": "per_page为0时请求被拒绝",
+    "precondition": "接口允许匿名读取文章列表",
+    "steps": [
+      "匿名访问 GET /wp-json/wp/v2/posts?per_page=0",
+      "检查响应状态码和错误信息"
+    ],
+    "expected": "响应状态码为400；返回参数无效错误；不返回文章列表数据",
+    "method": "边界值分析 + 负向测试"
+  },
+  {
+    "id": "TC-10",
+    "title": "per_page为非整数时请求被拒绝",
+    "precondition": "接口允许匿名读取文章列表",
+    "steps": [
+      "匿名访问 GET /wp-json/wp/v2/posts?per_page=abc",
+      "检查响应状态码和错误信息"
+    ],
+    "expected": "响应状态码为400；返回rest_invalid_param类参数类型错误；不返回文章列表数据",
+    "method": "异常测试 + 等价类划分"
+  }
+]

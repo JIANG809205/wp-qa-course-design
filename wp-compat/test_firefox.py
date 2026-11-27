@@ -14,7 +14,7 @@ from selenium.webdriver.firefox.service import Service
 
 BASE = os.getenv("WP_BASE", "http://localhost:8080")
 OUT = os.getenv("OUT_DIR", r"E:\软件质量保证与测试课程设计\wp-compat\firefox")
-FF = r"C:\Program Files (x86)\Mozilla Firefox\firefox.exe"
+FF = os.getenv("FIREFOX_BIN", r"C:\Program Files (x86)\Mozilla Firefox\firefox.exe")
 DRIVER = os.getenv("GECKO", r"E:\软件质量保证与测试课程设计\wp-compat\geckodriver.exe")
 
 os.makedirs(OUT, exist_ok=True)

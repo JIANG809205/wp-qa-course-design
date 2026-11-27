@@ -32,12 +32,12 @@ public class CommentTest extends BaseTest {
         return new WebDriverWait(driver, Duration.ofSeconds(Config.WAIT_SECONDS));
     }
 
-    /** 打开首页第一篇文章（先取 href 再跳转，避免元素失效） */
+    /** 从博客列表页打开第一篇文章（首页是静态介绍页，不再承载文章列表） */
     private FrontPage openFirstArticle() {
-        driver.get(Config.BASE_URL + "/");
+        driver.get(Config.BASE_URL + "/qa-blog/");
         List<WebElement> links = waiter().until(ExpectedConditions.presenceOfAllElementsLocatedBy(
                 By.cssSelector("h2.entry-title a, h2 a")));
-        assertFalse(links.isEmpty(), "首页应至少有一篇文章链接");
+        assertFalse(links.isEmpty(), "博客列表页应至少有一篇文章链接");
         String href = links.get(0).getAttribute("href");
         driver.get(href);
         waiter().until(ExpectedConditions.presenceOfElementLocated(By.id("comment")));

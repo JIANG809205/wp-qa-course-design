@@ -61,80 +61,80 @@
   },
   {
     "item": "兼容性组数",
-    "claimed": "12",
-    "actual": "12",
+    "claimed": "24",
+    "actual": "24",
     "ok": true
   },
   {
     "item": "兼容性通过组数",
-    "claimed": "12",
-    "actual": "12",
+    "claimed": "24",
+    "actual": "24",
     "ok": true
   },
   {
     "item": "首页 10 并发 TPS",
-    "claimed": "122.8",
-    "actual": "122.8",
+    "claimed": "129.8",
+    "actual": "129.8",
     "ok": true
   },
   {
     "item": "首页 50 并发 TPS",
-    "claimed": "126.7",
-    "actual": "126.7",
+    "claimed": "127.8",
+    "actual": "127.8",
     "ok": true
   },
   {
     "item": "首页 100 并发 TPS",
-    "claimed": "127.5",
-    "actual": "127.5",
+    "claimed": "127.2",
+    "actual": "127.2",
     "ok": true
   },
   {
     "item": "列表页 10 并发 TPS",
-    "claimed": "97.3",
-    "actual": "97.3",
+    "claimed": "102.9",
+    "actual": "102.9",
     "ok": true
   },
   {
     "item": "列表页 50 并发 TPS",
-    "claimed": "87.8",
-    "actual": "87.8",
+    "claimed": "88.4",
+    "actual": "88.4",
     "ok": true
   },
   {
     "item": "列表页 100 并发 TPS",
-    "claimed": "52.1",
-    "actual": "52.1",
+    "claimed": "55.1",
+    "actual": "55.1",
     "ok": true
   },
   {
     "item": "首页 50 并发 P95",
-    "claimed": "520",
-    "actual": "520",
+    "claimed": "526",
+    "actual": "526",
     "ok": true
   },
   {
     "item": "首页 100 并发 P95",
-    "claimed": "1058",
-    "actual": "1058",
+    "claimed": "1061",
+    "actual": "1061",
     "ok": true
   },
   {
     "item": "列表页 10 并发 P95",
-    "claimed": "146",
-    "actual": "146",
+    "claimed": "147",
+    "actual": "147",
     "ok": true
   },
   {
     "item": "列表页 50 并发 P95",
-    "claimed": "770",
-    "actual": "770",
+    "claimed": "783",
+    "actual": "783",
     "ok": true
   },
   {
     "item": "列表页 100 并发 P95",
-    "claimed": "2824",
-    "actual": "2824",
+    "claimed": "2834",
+    "actual": "2834",
     "ok": true
   },
   {

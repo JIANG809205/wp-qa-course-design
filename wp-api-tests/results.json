@@ -10,175 +10,175 @@
     "nodeid": "test_cases.py::test_TC_POST_002_status_flow",
     "case": "TC-POST-002",
     "outcome": "passed",
-    "duration": 0.46,
+    "duration": 0.18,
     "detail": ""
   },
   {
     "nodeid": "test_cases.py::test_TC_POST_003_scheduled",
     "case": "TC-POST-003",
     "outcome": "passed",
-    "duration": 0.13,
+    "duration": 0.07,
     "detail": ""
   },
   {
     "nodeid": "test_cases.py::test_TC_POST_005_long_title",
     "case": "TC-POST-005",
     "outcome": "passed",
-    "duration": 0.31,
+    "duration": 0.13,
     "detail": ""
   },
   {
     "nodeid": "test_cases.py::test_TC_POST_006_trash_restore",
     "case": "TC-POST-006",
     "outcome": "passed",
-    "duration": 0.51,
+    "duration": 0.32,
     "detail": ""
   },
   {
     "nodeid": "test_cases.py::test_TC_MEDIA_001_upload_png",
     "case": "TC-MEDIA-001",
     "outcome": "passed",
-    "duration": 0.23,
+    "duration": 0.08,
     "detail": ""
   },
   {
     "nodeid": "test_cases.py::test_TC_MEDIA_003_php_disguised",
     "case": "TC-MEDIA-003",
     "outcome": "passed",
-    "duration": 0.09,
+    "duration": 0.05,
     "detail": ""
   },
   {
     "nodeid": "test_cases.py::test_TC_MEDIA_004_chinese_filename",
     "case": "TC-MEDIA-004",
     "outcome": "passed",
-    "duration": 0.1,
+    "duration": 0.07,
     "detail": ""
   },
   {
     "nodeid": "test_cases.py::test_TC_COMM_002_approve",
     "case": "TC-COMM-002",
     "outcome": "passed",
-    "duration": 0.19,
+    "duration": 0.08,
     "detail": ""
   },
   {
     "nodeid": "test_cases.py::test_TC_COMM_005_spam_hidden",
     "case": "TC-COMM-005",
     "outcome": "passed",
-    "duration": 0.62,
+    "duration": 0.22,
     "detail": ""
   },
   {
     "nodeid": "test_cases.py::test_TC_API_001_anon_only_published",
     "case": "TC-API-001",
     "outcome": "passed",
-    "duration": 0.38,
+    "duration": 0.24,
     "detail": ""
   },
   {
     "nodeid": "test_cases.py::test_TC_API_002_auth_create",
     "case": "TC-API-002",
     "outcome": "passed",
-    "duration": 0.12,
+    "duration": 0.13,
     "detail": ""
   },
   {
     "nodeid": "test_cases.py::test_TC_API_003_contributor_cannot_publish",
     "case": "TC-API-003",
     "outcome": "passed",
-    "duration": 0.15,
+    "duration": 0.14,
     "detail": ""
   },
   {
     "nodeid": "test_cases.py::test_TC_API_004_per_page_boundary",
     "case": "TC-API-004",
     "outcome": "passed",
-    "duration": 0.49,
+    "duration": 0.3,
     "detail": ""
   },
   {
     "nodeid": "test_cases.py::test_TC_API_005_invalid_param",
     "case": "TC-API-005",
     "outcome": "passed",
-    "duration": 0.06,
+    "duration": 0.09,
     "detail": ""
   },
   {
     "nodeid": "test_cases.py::test_TC_PERM_003_author_edit_others",
     "case": "TC-PERM-003",
     "outcome": "passed",
-    "duration": 0.11,
+    "duration": 0.13,
     "detail": ""
   },
   {
     "nodeid": "test_cases.py::test_TC_PERM_004_editor_scope",
     "case": "TC-PERM-004",
     "outcome": "passed",
-    "duration": 0.15,
+    "duration": 0.09,
     "detail": ""
   },
   {
     "nodeid": "test_cases.py::test_TC_PERM_005_author_delete_others",
     "case": "TC-PERM-005",
     "outcome": "passed",
-    "duration": 0.14,
+    "duration": 0.1,
     "detail": ""
   },
   {
     "nodeid": "test_cases.py::test_TC_SET_001_title_sync",
     "case": "TC-SET-001",
     "outcome": "passed",
-    "duration": 0.27,
+    "duration": 0.19,
     "detail": ""
   },
   {
     "nodeid": "test_cases.py::test_TC_SET_003_comments_closed",
     "case": "TC-SET-003",
     "outcome": "passed",
-    "duration": 0.62,
+    "duration": 0.25,
     "detail": ""
   },
   {
     "nodeid": "test_cases.py::test_TC_THEME_001_switch",
     "case": "TC-THEME-001",
     "outcome": "passed",
-    "duration": 17.46,
+    "duration": 18.89,
     "detail": ""
   },
   {
     "nodeid": "test_cases.py::test_TC_PLUG_001_disable_plugin",
     "case": "TC-PLUG-001",
     "outcome": "passed",
-    "duration": 2.82,
+    "duration": 4.04,
     "detail": ""
   },
   {
     "nodeid": "test_cases.py::test_TC_SEC_001_comment_without_nonce",
     "case": "TC-SEC-001",
     "outcome": "passed",
-    "duration": 0.1,
+    "duration": 0.06,
     "detail": ""
   },
   {
     "nodeid": "test_cases.py::test_TC_SET_002_permalink",
     "case": "TC-SET-002",
     "outcome": "passed",
-    "duration": 12.36,
+    "duration": 15.61,
     "detail": ""
   },
   {
     "nodeid": "test_cases.py::test_TC_COMM_004_reply_nested",
     "case": "TC-COMM-004",
     "outcome": "passed",
-    "duration": 0.08,
+    "duration": 0.07,
     "detail": ""
   },
   {
     "nodeid": "test_cases.py::test_TC_PLUG_002_install_zip",
     "case": "TC-PLUG-002",
     "outcome": "passed",
-    "duration": 17.8,
+    "duration": 17.22,
     "detail": ""
   }
 ]

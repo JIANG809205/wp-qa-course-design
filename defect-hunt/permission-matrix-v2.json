@@ -8,7 +8,7 @@
     "ui_denied": false,
     "ui_marker": true,
     "api": "allow",
-    "api_msg": "{\"id\":1173,\"date\":\"2026-11-24T18:43:57\",\"date_gmt\":\"2026-11-24T10:43:57\",\"guid\":{\"rendered\":\"http:\\/"
+    "api_msg": "{\"id\":1272,\"date\":\"2026-11-27T10:30:49\",\"date_gmt\":\"2026-11-27T02:30:49\",\"guid\":{\"rendered\":\"http:\\/"
   },
   {
     "role": "admin",
@@ -30,7 +30,7 @@
     "ui_denied": false,
     "ui_marker": true,
     "api": "allow",
-    "api_msg": "{\"id\":19984,\"post\":4,\"parent\":0,\"author\":0,\"author_name\":\"\\u8bbf\\u5ba219983\",\"author_email\":\"guest19"
+    "api_msg": "{\"id\":19974,\"post\":41,\"parent\":0,\"author\":0,\"author_name\":\"\\u8bbf\\u5ba219973\",\"author_email\":\"guest1"
   },
   {
     "role": "admin",
@@ -41,7 +41,7 @@
     "ui_denied": false,
     "ui_marker": true,
     "api": "allow",
-    "api_msg": "{\"id\":1174,\"date\":\"2026-11-24T18:43:57\",\"date_gmt\":\"2026-11-24T10:43:57\",\"guid\":{\"rendered\":\"http:\\/"
+    "api_msg": "{\"id\":1273,\"date\":\"2026-11-27T10:30:49\",\"date_gmt\":\"2026-11-27T02:30:49\",\"guid\":{\"rendered\":\"http:\\/"
   },
   {
     "role": "admin",
@@ -52,7 +52,7 @@
     "ui_denied": false,
     "ui_marker": true,
     "api": "allow",
-    "api_msg": "{\"id\":16,\"username\":\"perm2_admin\",\"name\":\"perm2_admin\",\"first_name\":\"\",\"last_name\":\"\",\"email\":\"p2_ad"
+    "api_msg": "{\"id\":20,\"username\":\"perm2_admin\",\"name\":\"perm2_admin\",\"first_name\":\"\",\"last_name\":\"\",\"email\":\"p2_ad"
   },
   {
     "role": "admin",
@@ -74,7 +74,7 @@
     "ui_denied": false,
     "ui_marker": true,
     "api": "allow",
-    "api_msg": "{\"id\":1176,\"date\":\"2026-11-24T18:43:58\",\"date_gmt\":\"2026-11-24T10:43:58\",\"guid\":{\"rendered\":\"http:\\/"
+    "api_msg": "{\"id\":1275,\"date\":\"2026-11-27T10:30:50\",\"date_gmt\":\"2026-11-27T02:30:50\",\"guid\":{\"rendered\":\"http:\\/"
   },
   {
     "role": "editor",
@@ -96,7 +96,7 @@
     "ui_denied": false,
     "ui_marker": true,
     "api": "allow",
-    "api_msg": "{\"id\":19984,\"post\":4,\"parent\":0,\"author\":0,\"author_name\":\"\\u8bbf\\u5ba219983\",\"author_email\":\"guest19"
+    "api_msg": "{\"id\":19974,\"post\":41,\"parent\":0,\"author\":0,\"author_name\":\"\\u8bbf\\u5ba219973\",\"author_email\":\"guest1"
   },
   {
     "role": "editor",
@@ -107,7 +107,7 @@
     "ui_denied": false,
     "ui_marker": true,
     "api": "allow",
-    "api_msg": "{\"id\":1177,\"date\":\"2026-11-24T18:43:58\",\"date_gmt\":\"2026-11-24T10:43:58\",\"guid\":{\"rendered\":\"http:\\/"
+    "api_msg": "{\"id\":1276,\"date\":\"2026-11-27T10:30:50\",\"date_gmt\":\"2026-11-27T02:30:50\",\"guid\":{\"rendered\":\"http:\\/"
   },
   {
     "role": "editor",
@@ -140,7 +140,7 @@
     "ui_denied": false,
     "ui_marker": true,
     "api": "allow",
-    "api_msg": "{\"id\":1179,\"date\":\"2026-11-24T18:43:59\",\"date_gmt\":\"2026-11-24T10:43:59\",\"guid\":{\"rendered\":\"http:\\/"
+    "api_msg": "{\"id\":1278,\"date\":\"2026-11-27T10:30:51\",\"date_gmt\":\"2026-11-27T02:30:51\",\"guid\":{\"rendered\":\"http:\\/"
   },
   {
     "role": "author",
@@ -173,7 +173,7 @@
     "ui_denied": false,
     "ui_marker": true,
     "api": "allow",
-    "api_msg": "{\"id\":1180,\"date\":\"2026-11-24T18:43:59\",\"date_gmt\":\"2026-11-24T10:43:59\",\"guid\":{\"rendered\":\"http:\\/"
+    "api_msg": "{\"id\":1279,\"date\":\"2026-11-27T10:30:51\",\"date_gmt\":\"2026-11-27T02:30:51\",\"guid\":{\"rendered\":\"http:\\/"
   },
   {
     "role": "author",
@@ -199,138 +199,6 @@
   },
   {
     "role": "contributor",
-    "op": "OP1",
-    "name": "OP1 发布文章",
-    "expect": "C",
-    "ui_status": 200,
-    "ui_denied": false,
-    "ui_marker": true,
-    "api": "allow_pending",
-    "api_msg": "{\"code\":\"rest_cannot_publish\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u5728\\u6b64\\u6587\\u7ae"
-  },
-  {
-    "role": "contributor",
-    "op": "OP2",
-    "name": "OP2 编辑他人文章",
-    "expect": "N",
-    "ui_status": 403,
-    "ui_denied": true,
-    "ui_marker": false,
-    "api": "deny",
-    "api_msg": "{\"code\":\"rest_cannot_edit\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u4fee\\u6539\\u8fd9\\u7bc7\\u"
-  },
-  {
-    "role": "contributor",
-    "op": "OP3",
-    "name": "OP3 审核评论",
-    "expect": "N",
-    "ui_status": 200,
-    "ui_denied": false,
-    "ui_marker": true,
-    "api": "deny",
-    "api_msg": "{\"code\":\"rest_cannot_edit\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u7f16\\u8f91\\u6b64\\u8bc4\\u"
-  },
-  {
-    "role": "contributor",
-    "op": "OP4",
-    "name": "OP4 上传媒体",
-    "expect": "N",
-    "ui_status": 403,
-    "ui_denied": true,
-    "ui_marker": false,
-    "api": "deny",
-    "api_msg": "{\"code\":\"rest_cannot_create\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u4e3a\\u6b64\\u7528\\u6237"
-  },
-  {
-    "role": "contributor",
-    "op": "OP5",
-    "name": "OP5 新建用户",
-    "expect": "N",
-    "ui_status": 403,
-    "ui_denied": true,
-    "ui_marker": false,
-    "api": "deny",
-    "api_msg": "{\"code\":\"rest_cannot_create_user\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u521b\\u5efa\\u65b0\\"
-  },
-  {
-    "role": "contributor",
-    "op": "OP6",
-    "name": "OP6 修改设置",
-    "expect": "N",
-    "ui_status": 403,
-    "ui_denied": true,
-    "ui_marker": false,
-    "api": "deny",
-    "api_msg": "{\"code\":\"rest_forbidden\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u8fd9\\u4e48\\u505a\\u3002\",\"d"
-  },
-  {
-    "role": "subscriber",
-    "op": "OP1",
-    "name": "OP1 发布文章",
-    "expect": "N",
-    "ui_status": 403,
-    "ui_denied": true,
-    "ui_marker": false,
-    "api": "deny",
-    "api_msg": "{\"code\":\"rest_cannot_create\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u4e3a\\u6b64\\u7528\\u6237"
-  },
-  {
-    "role": "subscriber",
-    "op": "OP2",
-    "name": "OP2 编辑他人文章",
-    "expect": "N",
-    "ui_status": 403,
-    "ui_denied": true,
-    "ui_marker": false,
-    "api": "deny",
-    "api_msg": "{\"code\":\"rest_cannot_edit\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u4fee\\u6539\\u8fd9\\u7bc7\\u"
-  },
-  {
-    "role": "subscriber",
-    "op": "OP3",
-    "name": "OP3 审核评论",
-    "expect": "N",
-    "ui_status": 403,
-    "ui_denied": true,
-    "ui_marker": false,
-    "api": "deny",
-    "api_msg": "{\"code\":\"rest_cannot_edit\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u7f16\\u8f91\\u6b64\\u8bc4\\u"
-  },
-  {
-    "role": "subscriber",
-    "op": "OP4",
-    "name": "OP4 上传媒体",
-    "expect": "N",
-    "ui_status": 403,
-    "ui_denied": true,
-    "ui_marker": false,
-    "api": "deny",
-    "api_msg": "{\"code\":\"rest_cannot_create\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u4e3a\\u6b64\\u7528\\u6237"
-  },
-  {
-    "role": "subscriber",
-    "op": "OP5",
-    "name": "OP5 新建用户",
-    "expect": "N",
-    "ui_status": 403,
-    "ui_denied": true,
-    "ui_marker": false,
-    "api": "deny",
-    "api_msg": "{\"code\":\"rest_cannot_create_user\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u521b\\u5efa\\u65b0\\"
-  },
-  {
-    "role": "subscriber",
-    "op": "OP6",
-    "name": "OP6 修改设置",
-    "expect": "N",
-    "ui_status": 403,
-    "ui_denied": true,
-    "ui_marker": false,
-    "api": "deny",
-    "api_msg": "{\"code\":\"rest_forbidden\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u8fd9\\u4e48\\u505a\\u3002\",\"d"
-  },
-  {
-    "role": "auditor",
     "op": "OP1",
     "name": "OP1 发布文章",
     "expect": "C",
@@ -341,6 +209,138 @@
     "api_msg": "{\"code\":\"rest_cannot_publish\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u5728\\u6b64\\u6587\\u7ae"
   },
   {
+    "role": "contributor",
+    "op": "OP2",
+    "name": "OP2 编辑他人文章",
+    "expect": "N",
+    "ui_status": 403,
+    "ui_denied": true,
+    "ui_marker": false,
+    "api": "deny",
+    "api_msg": "{\"code\":\"rest_cannot_edit\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u4fee\\u6539\\u8fd9\\u7bc7\\u"
+  },
+  {
+    "role": "contributor",
+    "op": "OP3",
+    "name": "OP3 审核评论",
+    "expect": "N",
+    "ui_status": 200,
+    "ui_denied": false,
+    "ui_marker": true,
+    "api": "deny",
+    "api_msg": "{\"code\":\"rest_cannot_edit\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u7f16\\u8f91\\u6b64\\u8bc4\\u"
+  },
+  {
+    "role": "contributor",
+    "op": "OP4",
+    "name": "OP4 上传媒体",
+    "expect": "N",
+    "ui_status": 403,
+    "ui_denied": true,
+    "ui_marker": false,
+    "api": "deny",
+    "api_msg": "{\"code\":\"rest_cannot_create\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u4e3a\\u6b64\\u7528\\u6237"
+  },
+  {
+    "role": "contributor",
+    "op": "OP5",
+    "name": "OP5 新建用户",
+    "expect": "N",
+    "ui_status": 403,
+    "ui_denied": true,
+    "ui_marker": false,
+    "api": "deny",
+    "api_msg": "{\"code\":\"rest_cannot_create_user\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u521b\\u5efa\\u65b0\\"
+  },
+  {
+    "role": "contributor",
+    "op": "OP6",
+    "name": "OP6 修改设置",
+    "expect": "N",
+    "ui_status": 403,
+    "ui_denied": true,
+    "ui_marker": false,
+    "api": "deny",
+    "api_msg": "{\"code\":\"rest_forbidden\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u8fd9\\u4e48\\u505a\\u3002\",\"d"
+  },
+  {
+    "role": "subscriber",
+    "op": "OP1",
+    "name": "OP1 发布文章",
+    "expect": "N",
+    "ui_status": 403,
+    "ui_denied": true,
+    "ui_marker": false,
+    "api": "deny",
+    "api_msg": "{\"code\":\"rest_cannot_create\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u4e3a\\u6b64\\u7528\\u6237"
+  },
+  {
+    "role": "subscriber",
+    "op": "OP2",
+    "name": "OP2 编辑他人文章",
+    "expect": "N",
+    "ui_status": 403,
+    "ui_denied": true,
+    "ui_marker": false,
+    "api": "deny",
+    "api_msg": "{\"code\":\"rest_cannot_edit\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u4fee\\u6539\\u8fd9\\u7bc7\\u"
+  },
+  {
+    "role": "subscriber",
+    "op": "OP3",
+    "name": "OP3 审核评论",
+    "expect": "N",
+    "ui_status": 403,
+    "ui_denied": true,
+    "ui_marker": false,
+    "api": "deny",
+    "api_msg": "{\"code\":\"rest_cannot_edit\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u7f16\\u8f91\\u6b64\\u8bc4\\u"
+  },
+  {
+    "role": "subscriber",
+    "op": "OP4",
+    "name": "OP4 上传媒体",
+    "expect": "N",
+    "ui_status": 403,
+    "ui_denied": true,
+    "ui_marker": false,
+    "api": "deny",
+    "api_msg": "{\"code\":\"rest_cannot_create\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u4e3a\\u6b64\\u7528\\u6237"
+  },
+  {
+    "role": "subscriber",
+    "op": "OP5",
+    "name": "OP5 新建用户",
+    "expect": "N",
+    "ui_status": 403,
+    "ui_denied": true,
+    "ui_marker": false,
+    "api": "deny",
+    "api_msg": "{\"code\":\"rest_cannot_create_user\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u521b\\u5efa\\u65b0\\"
+  },
+  {
+    "role": "subscriber",
+    "op": "OP6",
+    "name": "OP6 修改设置",
+    "expect": "N",
+    "ui_status": 403,
+    "ui_denied": true,
+    "ui_marker": false,
+    "api": "deny",
+    "api_msg": "{\"code\":\"rest_forbidden\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u8fd9\\u4e48\\u505a\\u3002\",\"d"
+  },
+  {
+    "role": "auditor",
+    "op": "OP1",
+    "name": "OP1 发布文章",
+    "expect": "C",
+    "ui_status": 200,
+    "ui_denied": false,
+    "ui_marker": true,
+    "api": "allow_pending",
+    "api_msg": "{\"code\":\"rest_cannot_publish\",\"message\":\"\\u62b1\\u6b49\\uff0c\\u60a8\\u4e0d\\u80fd\\u5728\\u6b64\\u6587\\u7ae"
+  },
+  {
     "role": "auditor",
     "op": "OP2",
     "name": "OP2 编辑他人文章",
@@ -360,7 +360,7 @@
     "ui_denied": false,
     "ui_marker": true,
     "api": "allow",
-    "api_msg": "{\"id\":19984,\"post\":4,\"parent\":0,\"author\":0,\"author_name\":\"\\u8bbf\\u5ba219983\",\"author_email\":\"guest19"
+    "api_msg": "{\"id\":19974,\"post\":41,\"parent\":0,\"author\":0,\"author_name\":\"\\u8bbf\\u5ba219973\",\"author_email\":\"guest1"
   },
   {
     "role": "auditor",

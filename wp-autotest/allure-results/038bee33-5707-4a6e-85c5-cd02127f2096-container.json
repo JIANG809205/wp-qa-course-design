@@ -1,0 +1,1 @@
+{"uuid":"038bee33-5707-4a6e-85c5-cd02127f2096","name":"edu.qa.wp.BaseTest.setUp","children":["f7891785-28ba-4c2b-9ad2-8410fb8710e4"],"description":"","befores":[{"name":"setUp","status":"passed","stage":"finished","description":"","steps":[],"attachments":[],"parameters":[],"start":1795703826998,"stop":1795703828657}],"afters":[],"start":1795703826998,"stop":1795703828657}

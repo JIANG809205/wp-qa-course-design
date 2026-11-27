@@ -17,7 +17,7 @@ OUT = os.getenv("OUT_DIR", "/opt/qa/compat")
 os.makedirs(OUT, exist_ok=True)
 
 VIEWPORTS = [("desktop-1920", 1920, 1080), ("laptop-1366", 1366, 768), ("mobile-375", 375, 812)]
-PAGES = [("home", "/"), ("post", "/?p=1002"), ("login", "/wp-login.php"), ("admin", "/wp-admin/edit.php")]
+PAGES = [("home", "/"), ("blog", "/qa-blog/"), ("login", "/wp-login.php"), ("admin", "/wp-admin/edit.php")]
 
 ADMIN = ("admin", "Admin@2026")
 

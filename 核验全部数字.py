@@ -63,18 +63,22 @@ check("权限格数", 36, len(reps[0]), 0)
 check("三次一致的格数", 36, same, 0)
 check("权限矩阵重复次数", 3, len(reps), 0)
 
-# ---------- 4. 兼容性 ----------
-compat = json.load(open(os.path.join(ROOT, "wp-compat", "compat.json"), encoding="utf-8"))
-check("兼容性组数", 12, len(compat), 0)
-check("兼容性通过组数", 12, sum(1 for c in compat if c["pass"]), 0)
+# ---------- 4. 兼容性（Chrome 12 组 + Firefox 12 组 = 24 组） ----------
+compat_chrome = json.load(open(os.path.join(ROOT, "wp-compat", "compat.json"), encoding="utf-8"))
+compat_ff = json.load(open(os.path.join(ROOT, "wp-compat", "firefox", "compat-firefox.json"), encoding="utf-8"))
+compat = compat_chrome + compat_ff
+check("兼容性组数", 24, len(compat), 0)
+check("兼容性通过组数", 24, sum(1 for c in compat if c["pass"]), 0)
 
-# ---------- 5. 性能 ----------
-def jtl(path):
+# ---------- 5. 性能（稳态口径：剔除前 10 秒爬坡） ----------
+def jtl(path, ramp_ms=10000):
     rows = list(csv.DictReader(open(path, encoding="utf-8", errors="replace")))
-    el = sorted(float(r["elapsed"]) for r in rows)
-    ts = [int(r["timeStamp"]) for r in rows]
-    dur = max(max(ts) - min(ts), 1) / 1000
-    return len(rows) / dur, el[int(0.95 * len(rows)) - 1]
+    t0 = min(int(r["timeStamp"]) for r in rows)
+    t1 = max(int(r["timeStamp"]) for r in rows)
+    steady = [r for r in rows if int(r["timeStamp"]) >= t0 + ramp_ms]
+    el = sorted(float(r["elapsed"]) for r in steady)
+    dur = max((t1 - (t0 + ramp_ms)) / 1000, 1)
+    return len(steady) / dur, el[max(int(round(0.95 * len(el))) - 1, 0)]
 
 
 def perf(directory: str, prefix: str):
@@ -92,13 +96,13 @@ def perf(directory: str, prefix: str):
 home = perf("results-rigor", "home")
 blog = perf("results-rigor-blog", "list")
 
-for t, claim in ((10, 122.8), (50, 126.7), (100, 127.5)):
+for t, claim in ((10, 129.8), (50, 127.8), (100, 127.2)):
     check(f"首页 {t} 并发 TPS", claim, home.get(t, (0, 0))[0], 0.6)
-for t, claim in ((10, 97.3), (50, 87.8), (100, 52.1)):
+for t, claim in ((10, 102.9), (50, 88.4), (100, 55.1)):
     check(f"列表页 {t} 并发 TPS", claim, blog.get(t, (0, 0))[0], 0.6)
-for t, claim in ((50, 520), (100, 1058)):
+for t, claim in ((50, 526), (100, 1061)):
     check(f"首页 {t} 并发 P95", claim, home.get(t, (0, 0))[1], 3)
-for t, claim in ((10, 146), (50, 770), (100, 2824)):
+for t, claim in ((10, 147), (50, 783), (100, 2834)):
     check(f"列表页 {t} 并发 P95", claim, blog.get(t, (0, 0))[1], 3)
 
 # ---------- 6. 大模型 ----------

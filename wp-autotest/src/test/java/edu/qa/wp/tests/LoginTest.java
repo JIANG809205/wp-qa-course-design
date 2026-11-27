@@ -43,8 +43,9 @@ public class LoginTest extends BaseTest {
         LoginPage page = new LoginPage(driver).open();
         page.login(Config.ADMIN_USER, "wrong-password-999");
 
-        assertFalse(page.currentUrl().contains("wp-admin/edit"),
-                "错误密码不应进入后台");
+        // 断言停留在登录页（而非只断言"不在编辑页"——后者在登录成功进仪表盘时也会通过）
+        assertTrue(page.currentUrl().contains("wp-login.php"),
+                "错误密码应停留在登录页，实际 URL=" + page.currentUrl());
         assertTrue(page.hasError(), "应显示登录错误提示");
         System.out.println("[INFO] 错误提示文案: " + page.errorText());
     }
@@ -57,10 +58,8 @@ public class LoginTest extends BaseTest {
         LoginPage page = new LoginPage(driver).open();
         page.login("", "Any@2026");
 
-        assertFalse(page.currentUrl().contains("wp-admin/edit"),
-                "空用户名不应进入后台");
         assertTrue(page.currentUrl().contains("wp-login.php"),
-                "应停留在登录页，实际 URL=" + page.currentUrl());
+                "空用户名应停留在登录页，实际 URL=" + page.currentUrl());
         assertTrue(driver.getTitle() != null && !driver.getTitle().isEmpty(),
                 "页面不应白屏");
     }

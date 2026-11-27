@@ -1,0 +1,2 @@
+URL: http://localhost:8080/
+TITLE: WP-QA-Lab – Software Quality Assurance & Testing Lab

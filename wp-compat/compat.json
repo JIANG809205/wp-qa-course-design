@@ -5,18 +5,18 @@
     "url": "/",
     "overflow_px": 0,
     "wide_elements": [],
-    "title": "WP-QA-Lab – 软件质量保证与测试课程设计 · 被测环境",
+    "title": "WP-QA-Lab – Software Quality Assurance & Testing Lab",
     "screenshot": "/opt/qa/compat/desktop-1920-home.png",
     "pass": true
   },
   {
     "viewport": "desktop-1920",
-    "page": "post",
-    "url": "/?p=1002",
+    "page": "blog",
+    "url": "/qa-blog/",
     "overflow_px": 0,
     "wide_elements": [],
-    "title": "测试文章 1000：质量保证与测试实践 – WP-QA-Lab",
-    "screenshot": "/opt/qa/compat/desktop-1920-post.png",
+    "title": "博客 – WP-QA-Lab",
+    "screenshot": "/opt/qa/compat/desktop-1920-blog.png",
     "pass": true
   },
   {
@@ -45,18 +45,18 @@
     "url": "/",
     "overflow_px": 0,
     "wide_elements": [],
-    "title": "WP-QA-Lab – 软件质量保证与测试课程设计 · 被测环境",
+    "title": "WP-QA-Lab – Software Quality Assurance & Testing Lab",
     "screenshot": "/opt/qa/compat/laptop-1366-home.png",
     "pass": true
   },
   {
     "viewport": "laptop-1366",
-    "page": "post",
-    "url": "/?p=1002",
+    "page": "blog",
+    "url": "/qa-blog/",
     "overflow_px": 0,
     "wide_elements": [],
-    "title": "测试文章 1000：质量保证与测试实践 – WP-QA-Lab",
-    "screenshot": "/opt/qa/compat/laptop-1366-post.png",
+    "title": "博客 – WP-QA-Lab",
+    "screenshot": "/opt/qa/compat/laptop-1366-blog.png",
     "pass": true
   },
   {
@@ -85,18 +85,18 @@
     "url": "/",
     "overflow_px": 0,
     "wide_elements": [],
-    "title": "WP-QA-Lab – 软件质量保证与测试课程设计 · 被测环境",
+    "title": "WP-QA-Lab – Software Quality Assurance & Testing Lab",
     "screenshot": "/opt/qa/compat/mobile-375-home.png",
     "pass": true
   },
   {
     "viewport": "mobile-375",
-    "page": "post",
-    "url": "/?p=1002",
+    "page": "blog",
+    "url": "/qa-blog/",
     "overflow_px": 0,
     "wide_elements": [],
-    "title": "测试文章 1000：质量保证与测试实践 – WP-QA-Lab",
-    "screenshot": "/opt/qa/compat/mobile-375-post.png",
+    "title": "博客 – WP-QA-Lab",
+    "screenshot": "/opt/qa/compat/mobile-375-blog.png",
     "pass": true
   },
   {

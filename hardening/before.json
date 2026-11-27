@@ -1,0 +1,79 @@
+{
+ "base": "http://localhost:8080",
+ "hits": 11,
+ "total": 12,
+ "items": [
+  {
+   "id": "P01",
+   "name": "安全响应头",
+   "hit": true,
+   "evidence": "缺失 4/4：x-frame-options,x-content-type-options,referrer-policy,permissions-policy"
+  },
+  {
+   "id": "P02",
+   "name": "debug.log 可下载",
+   "hit": true,
+   "evidence": "HTTP 200, 9713 字节"
+  },
+  {
+   "id": "P03",
+   "name": "上传目录可列",
+   "hit": true,
+   "evidence": "HTTP 200"
+  },
+  {
+   "id": "P04",
+   "name": "readme.html 可访问",
+   "hit": true,
+   "evidence": "HTTP 200"
+  },
+  {
+   "id": "P05",
+   "name": "XML-RPC 可用",
+   "hit": true,
+   "evidence": "HTTP 200"
+  },
+  {
+   "id": "P06",
+   "name": "作者枚举",
+   "hit": true,
+   "evidence": "HTTP 301 -> http://localhost:8080/author/admin/"
+  },
+  {
+   "id": "P07",
+   "name": "REST 用户可枚举",
+   "hit": true,
+   "evidence": "HTTP 200, 1 个用户"
+  },
+  {
+   "id": "P08",
+   "name": "空文件上传 500",
+   "hit": true,
+   "evidence": "HTTP 500"
+  },
+  {
+   "id": "P09",
+   "name": "重名用户 500",
+   "hit": true,
+   "evidence": "HTTP 500"
+  },
+  {
+   "id": "P10",
+   "name": "登录无失败限制",
+   "hit": true,
+   "evidence": "6 次状态码 [200, 200, 200, 200, 200, 200]"
+  },
+  {
+   "id": "P11",
+   "name": "非法参数 500",
+   "hit": false,
+   "evidence": "HTTP 400"
+  },
+  {
+   "id": "P12",
+   "name": "license.txt 可访问",
+   "hit": true,
+   "evidence": "HTTP 200"
+  }
+ ]
+}

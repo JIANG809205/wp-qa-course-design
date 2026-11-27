@@ -1,0 +1,249 @@
+{
+  "entries": [
+    {
+      "level": 1,
+      "text": "基于 DeepSeek 的开源 CMS 系统 Web 测试与质量评估报告",
+      "page": 5
+    },
+    {
+      "level": 1,
+      "text": "摘要",
+      "page": 5
+    },
+    {
+      "level": 1,
+      "text": "目的与要求",
+      "page": 6
+    },
+    {
+      "level": 2,
+      "text": "小组成员及任务分配",
+      "page": 6
+    },
+    {
+      "level": 2,
+      "text": "团队协作",
+      "page": 7
+    },
+    {
+      "level": 1,
+      "text": "测试需求与测试计划",
+      "page": 7
+    },
+    {
+      "level": 2,
+      "text": "一、测试需求",
+      "page": 8
+    },
+    {
+      "level": 2,
+      "text": "二、测试范围",
+      "page": 9
+    },
+    {
+      "level": 2,
+      "text": "三、测试策略与方法",
+      "page": 9
+    },
+    {
+      "level": 2,
+      "text": "四、准入与准出标准",
+      "page": 10
+    },
+    {
+      "level": 2,
+      "text": "五、项目进度",
+      "page": 11
+    },
+    {
+      "level": 2,
+      "text": "六、风险与应对",
+      "page": 11
+    },
+    {
+      "level": 2,
+      "text": "七、用例设计",
+      "page": 12
+    },
+    {
+      "level": 1,
+      "text": "工具应用",
+      "page": 14
+    },
+    {
+      "level": 1,
+      "text": "实践环境",
+      "page": 16
+    },
+    {
+      "level": 1,
+      "text": "实践过程及记录",
+      "page": 18
+    },
+    {
+      "level": 2,
+      "text": "功能测试",
+      "page": 18
+    },
+    {
+      "level": 2,
+      "text": "接口与权限测试",
+      "page": 21
+    },
+    {
+      "level": 2,
+      "text": "性能测试",
+      "page": 22
+    },
+    {
+      "level": 2,
+      "text": "安全测试",
+      "page": 26
+    },
+    {
+      "level": 2,
+      "text": "兼容性测试",
+      "page": 26
+    },
+    {
+      "level": 2,
+      "text": "缺陷分析",
+      "page": 27
+    },
+    {
+      "level": 2,
+      "text": "缺陷修复与复测",
+      "page": 30
+    },
+    {
+      "level": 1,
+      "text": "大模型应用说明",
+      "page": 33
+    },
+    {
+      "level": 2,
+      "text": "一、真实用途：三条线，性质不同",
+      "page": 33
+    },
+    {
+      "level": 2,
+      "text": "二、量化使用规模",
+      "page": 34
+    },
+    {
+      "level": 2,
+      "text": "三、哪些环节大模型帮不上忙",
+      "page": 34
+    },
+    {
+      "level": 2,
+      "text": "四、测试流程中的介入点",
+      "page": 35
+    },
+    {
+      "level": 2,
+      "text": "五、使用风险与合规",
+      "page": 36
+    },
+    {
+      "level": 1,
+      "text": "大模型使用过程及经验",
+      "page": 37
+    },
+    {
+      "level": 2,
+      "text": "一、使用过程",
+      "page": 37
+    },
+    {
+      "level": 2,
+      "text": "二、经验与心得",
+      "page": 38
+    },
+    {
+      "level": 1,
+      "text": "大模型生成质量评测",
+      "page": 38
+    },
+    {
+      "level": 2,
+      "text": "一、用例生成质量",
+      "page": 38
+    },
+    {
+      "level": 2,
+      "text": "二、脚本可运行性",
+      "page": 39
+    },
+    {
+      "level": 2,
+      "text": "三、失败日志归因",
+      "page": 41
+    },
+    {
+      "level": 1,
+      "text": "遇到问题及解决方法",
+      "page": 41
+    },
+    {
+      "level": 2,
+      "text": "IS-01　自动更新差点毁掉版本前提",
+      "page": 42
+    },
+    {
+      "level": 2,
+      "text": "IS-02　nonce 取错导致的假越权",
+      "page": 43
+    },
+    {
+      "level": 2,
+      "text": "IS-09　评论用例栽在\"首页改版\"上",
+      "page": 43
+    },
+    {
+      "level": 1,
+      "text": "实践总结",
+      "page": 43
+    },
+    {
+      "level": 1,
+      "text": "附录",
+      "page": 44
+    },
+    {
+      "level": 2,
+      "text": "附录 A　代码与数据仓库结构",
+      "page": 44
+    },
+    {
+      "level": 2,
+      "text": "附录 B　复现命令",
+      "page": 45
+    },
+    {
+      "level": 2,
+      "text": "附录 C　数据核验说明",
+      "page": 45
+    },
+    {
+      "level": 2,
+      "text": "附录 D　需求—用例追溯矩阵",
+      "page": 46
+    },
+    {
+      "level": 2,
+      "text": "附录 E　标准符合性对照",
+      "page": 47
+    },
+    {
+      "level": 2,
+      "text": "附录 F　术语与缩写",
+      "page": 48
+    },
+    {
+      "level": 2,
+      "text": "附录 G　参考文献",
+      "page": 48
+    }
+  ]
+}

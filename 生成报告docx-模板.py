@@ -74,6 +74,14 @@ GRADE_ROWS = [
 ]
 
 FIG = {
+    "flow-test": "diagrams/flow-test.png",
+    "flow-state": "diagrams/flow-state.png",
+    "defect-flow": "diagrams/defect-flow.png",
+    "fix-compare": "diagrams/fix-compare.png",
+    "env-topology": "diagrams/env-topology.png",
+    "llm-workflow": "diagrams/llm-workflow.png",
+    "ci-pipeline": "diagrams/ci-pipeline.png",
+    "perf-chain": "diagrams/perf-chain.png",
     "perf-tps": "wp-perf/charts-final/perf-tps.png",
     "perf-p95": "wp-perf/charts-final/perf-p95.png",
     "perf-cpu": "wp-perf/charts-final/perf-cpu.png",
@@ -86,10 +94,6 @@ FIG = {
     "uploads": "defect-hunt/evidence/uploads-index.png",
     "perf-box": "wp-perf/charts-final/perf-box.png",
     "defects-by-module": "wp-perf/charts-final/defects-by-module.png",
-    "flow-test": "wp-perf/charts-final/flow-test.png",
-    "flow-state": "wp-perf/charts-final/flow-state.png",
-    "fix-compare": "wp-perf/charts-final/fix-compare.png",
-    "defect-flow": "wp-perf/charts-final/defect-flow.png",
     "ev-mvn": "evidence/mvn-test.png",
     "ev-pytest": "evidence/pytest.png",
     "ev-matrix": "evidence/matrix.png",
@@ -276,7 +280,10 @@ def add_figure(doc: Document, key: str, cap: str) -> None:
     p.paragraph_format.keep_with_next = True
     run = p.add_run()
     # 横版图表按宽度 11.3cm；竖版截图按高度 8.5cm；拼版截图单独指定宽度
-    override = {"compat-mobile": 10.4}
+    override = {"compat-mobile": 10.4,
+            "env-topology": 15.2, "flow-test": 15.2, "flow-state": 15.2,
+            "defect-flow": 15.2, "llm-workflow": 15.2, "ci-pipeline": 15.2,
+            "perf-chain": 15.2, "fix-compare": 13.6}
     try:
         from PIL import Image
         with Image.open(path) as im:
@@ -377,7 +384,13 @@ def build_cover(doc: Document) -> None:
         p = doc.add_paragraph()
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
         p.paragraph_format.space_after = Pt(14)
-        _cover_run(p, label + value, 16)
+        if label == "题目：" and "）" in value:
+            head, tail = value.split("）", 1)
+            _cover_run(p, label + head + "）", 16)
+            p.add_run().add_break()
+            _cover_run(p, tail.strip(), 16)
+        else:
+            _cover_run(p, label + value, 16)
 
     doc.add_paragraph().paragraph_format.space_after = Pt(10)
 
@@ -446,6 +459,58 @@ def build_taskbook(doc: Document) -> None:
     doc.add_page_break()
 
 
+
+def add_toc(doc: Document) -> None:
+    """插入静态目录页：标题与页码来自 toc.json，未生成时用占位符。"""
+    import json as _json
+    import os as _os
+
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p.paragraph_format.space_before = Pt(6)
+    p.paragraph_format.space_after = Pt(14)
+    r = p.add_run("目　　录")
+    r.font.name = "黑体"
+    r._element.rPr.rFonts.set(qn("w:eastAsia"), "黑体")
+    r.font.size = Pt(16)
+    r.bold = True
+    r.font.color.rgb = RGBColor(0, 0, 0)
+
+    toc_path = _os.path.join(ROOT, "toc.json")
+    entries = []
+    if _os.path.exists(toc_path):
+        data = _json.load(open(toc_path, encoding="utf-8"))
+        entries = data.get("entries", [])
+
+    if not entries:
+        # 无页码数据时，退化为仅列标题
+        lines = open(SRC, encoding="utf-8").read().splitlines()
+        for ln in lines:
+            m = re.match(r"^(#{1,2})\s+(.*)$", ln.strip())
+            if m:
+                entries.append({"level": len(m.group(1)), "text": m.group(2).strip(), "page": "—"})
+
+    from docx.enum.text import WD_TAB_ALIGNMENT, WD_TAB_LEADER
+    for e in entries:
+        level = e.get("level", 1)
+        text = e.get("text", "")
+        page = str(e.get("page", "—"))
+        p = doc.add_paragraph()
+        p.paragraph_format.first_line_indent = Cm(0)
+        p.paragraph_format.left_indent = Cm(0 if level == 1 else 0.85)
+        p.paragraph_format.line_spacing = 1.3
+        p.paragraph_format.space_after = Pt(2)
+        p.paragraph_format.tab_stops.add_tab_stop(Cm(14.8), WD_TAB_ALIGNMENT.RIGHT, WD_TAB_LEADER.DOTS)
+        r = p.add_run(text + "\t" + page)
+        r.font.name = "Times New Roman"
+        r._element.rPr.rFonts.set(qn("w:eastAsia"), "宋体")
+        r.font.size = Pt(12)
+        r.bold = (level == 1)
+        r.font.color.rgb = RGBColor(0, 0, 0)
+
+    doc.add_page_break()
+
+
 def build() -> None:
     doc = Document()
     setup_styles(doc)
@@ -453,10 +518,12 @@ def build() -> None:
         s.page_width, s.page_height = Cm(21.0), Cm(29.7)
         s.top_margin, s.bottom_margin = Cm(2.5), Cm(2.5)
         s.left_margin, s.right_margin = Cm(3.2), Cm(3.2)
+        s.different_first_page_header_footer = True
         add_page_number(s)
 
     build_cover(doc)
     build_taskbook(doc)
+    add_toc(doc)
 
     lines = open(SRC, encoding="utf-8").read().splitlines()
     i = 0
